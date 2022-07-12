@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: Jun 28, 2022 at 09:20 AM
+-- Generation Time: Jul 12, 2022 at 10:30 AM
 -- Server version: 10.4.18-MariaDB
 -- PHP Version: 8.1.2
 
@@ -258,6 +258,31 @@ INSERT INTO `activity_log` (`id`, `log_name`, `description`, `subject_type`, `ev
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `articles`
+--
+
+CREATE TABLE `articles` (
+  `id` int(40) NOT NULL,
+  `from_user` varchar(400) DEFAULT NULL,
+  `f_c_a` varchar(40) DEFAULT NULL,
+  `title` varchar(400) DEFAULT NULL,
+  `image` varchar(400) DEFAULT NULL,
+  `describtion` text DEFAULT NULL,
+  `status` int(11) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `articles`
+--
+
+INSERT INTO `articles` (`id`, `from_user`, `f_c_a`, `title`, `image`, `describtion`, `status`, `created_at`, `updated_at`) VALUES
+(1, '0', '4|User', 'hai', 'public/Articel/ENZbBf2awF5FSkJI3F6NGYDKqfElknGUM4ltQQ0R.jpg', 'goohf', 1, '2022-07-03 06:51:23', '2022-07-03 06:51:23');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `carts`
 --
 
@@ -308,8 +333,9 @@ CREATE TABLE `categories` (
 --
 
 INSERT INTO `categories` (`id`, `type`, `name`, `categories_id`, `description`, `tags`, `img`, `sort_no_list`, `sort_no_home`, `display_in_home`, `status`, `created_at`, `updated_at`) VALUES
-(5, 0, 'Arun pandian 12', NULL, 'dfrwe 12', '[{\"value\":\"rtre\"},{\"value\":\"hj\"}]', 'public/uploadFiles/category/dLNjuaHBKOek32ZDBbPNEahHXiFx7V2dVJWaqQWC.jpg', 125, 1235, 0, 1, '2022-06-13 06:39:10', '2022-06-13 07:34:20'),
-(6, 1, 'Arun', '5', 'ert', '[{\"value\":\"reter\"}]', 'public/uploadFiles/category/Xv4BwFyZwQZLiKcVvzXNBoJArLsQDKfC8ygpWOo2.jpg', 1223, 123, 1, 1, '2022-06-15 01:07:20', '2022-06-15 01:07:20');
+(12, 0, 'parent', NULL, 'hai', '[{\"value\":\"df\"}]', 'uploadFiles/category/9PmJljJk5BuEiDyFkWpuJ6DMyE6qv5jY3clqhKVb.jpg', 1, 2, 1, 1, '2022-07-11 10:33:58', '2022-07-11 10:35:06'),
+(13, 1, 'tr', '12', 'fgd', '[{\"value\":\"fdgfdg\"}]', 'uploadFiles/category/GWFX9qxi0YkhvykTX5tR0PmQp37YQM1zCMp7qrCV.jpg', 2, 3, 1, 1, '2022-07-11 10:34:50', '2022-07-11 10:34:50'),
+(14, 0, 'checking', NULL, 'tytry', '[{\"value\":\"ruyryu\"}]', 'uploadFiles/category/E8zalsFAmrb6ManxXFiGjc1zTNRbbANT76vajXAg.jpg', 454, 121, 1, 1, '2022-07-11 10:55:08', '2022-07-11 10:55:08');
 
 -- --------------------------------------------------------
 
@@ -341,7 +367,7 @@ INSERT INTO `cities` (`id`, `country_id`, `state_id`, `city_name`, `status`, `cr
 (37, 230, NULL, 'Abu Dhabi', '1', '2021-10-22 08:47:53', '2021-10-22 08:47:53'),
 (38, 230, '60', 'Abu Dhabi', '1', '2021-10-22 08:50:58', '2021-10-22 08:50:58'),
 (44, 231, NULL, 'Dubai', '1', '2021-12-28 04:05:26', '2021-12-28 04:05:26'),
-(45, 13, NULL, 's', '1', '2021-12-28 20:37:17', '2021-12-28 20:37:17'),
+(45, 13, '6', 'si', '1', '2021-12-28 20:37:17', '2022-07-09 05:53:44'),
 (46, 13, '68', 'si', '1', '2021-12-28 20:37:23', '2021-12-28 20:37:23'),
 (47, 232, '69', 'k', '1', '2021-12-29 20:40:23', '2021-12-29 20:40:23'),
 (48, 232, '69', 'keses', '1', '2021-12-29 20:41:28', '2021-12-29 20:41:28'),
@@ -349,7 +375,9 @@ INSERT INTO `cities` (`id`, `country_id`, `state_id`, `city_name`, `status`, `cr
 (50, 2, '71', 'Aliban', '1', '2021-12-30 20:26:51', '2021-12-30 20:26:51'),
 (51, 100, '3', 'test', '1', '2022-01-03 00:26:47', '2022-01-03 00:26:47'),
 (52, 100, '25', 'Select City', '1', '2022-02-03 03:38:47', '2022-02-03 03:38:47'),
-(53, 1, '1', 'test', '1', '2022-06-15 05:41:04', '2022-06-15 05:41:04');
+(53, 1, '1', 'test', '0', '2022-06-15 05:41:04', '2022-07-08 21:07:31'),
+(54, 100, '1', 'test', '1', '2022-07-08 22:14:54', '2022-07-08 22:14:54'),
+(55, 100, '1', 'test1', '1', '2022-07-08 22:16:29', '2022-07-08 22:16:29');
 
 -- --------------------------------------------------------
 
@@ -415,7 +443,68 @@ CREATE TABLE `consultantcategories` (
 --
 
 INSERT INTO `consultantcategories` (`id`, `categorie_id`, `subcategorie_id`, `title`, `status`, `created_at`, `updated_at`) VALUES
-(1, 5, 6, 'as', 1, '2022-06-15 01:13:57', '2022-06-20 18:30:00');
+(3, 12, 13, 'thanks', 1, '2022-07-11 13:23:01', '2022-07-11 20:30:49');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `consultants`
+--
+
+CREATE TABLE `consultants` (
+  `id` int(40) NOT NULL,
+  `step` int(3) DEFAULT 2,
+  `phone_no` varchar(400) DEFAULT NULL,
+  `name` varchar(400) DEFAULT NULL,
+  `email` varchar(400) DEFAULT NULL,
+  `bio_data` text DEFAULT NULL,
+  `dob` varchar(40) DEFAULT NULL,
+  `exp_year` int(40) DEFAULT NULL,
+  `landline` varchar(40) DEFAULT NULL,
+  `language` text DEFAULT NULL,
+  `register_address` text DEFAULT NULL,
+  `country_id` varchar(40) DEFAULT NULL,
+  `state_id` varchar(40) DEFAULT NULL,
+  `city_id` varchar(40) DEFAULT NULL,
+  `zipcode` varchar(40) DEFAULT NULL,
+  `type` varchar(40) DEFAULT NULL,
+  `firm_choose` varchar(400) DEFAULT NULL,
+  `other` varchar(400) DEFAULT NULL,
+  `specialized` varchar(400) DEFAULT NULL,
+  `categorie_id` varchar(400) DEFAULT NULL,
+  `preferre_slot` varchar(40) DEFAULT NULL,
+  `video` varchar(40) DEFAULT NULL,
+  `video_amount` varchar(40) DEFAULT NULL,
+  `voice` varchar(40) DEFAULT NULL,
+  `voice_amount` varchar(40) DEFAULT NULL,
+  `text` varchar(40) DEFAULT NULL,
+  `text_amount` varchar(40) DEFAULT NULL,
+  `direct` varchar(40) DEFAULT NULL,
+  `direct_amount` varchar(40) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `account_name` varchar(400) DEFAULT NULL,
+  `account_number` varchar(400) DEFAULT NULL,
+  `bank_name` varchar(400) DEFAULT NULL,
+  `branch` varchar(400) DEFAULT NULL,
+  `ifsc_code` varchar(400) DEFAULT NULL,
+  `bank_status` varchar(400) DEFAULT NULL,
+  `proof` text DEFAULT NULL,
+  `insurance_id` text DEFAULT NULL,
+  `com_con_type` varchar(400) DEFAULT NULL,
+  `com_con_amount` varchar(400) DEFAULT NULL,
+  `com_off_type` varchar(400) DEFAULT NULL,
+  `com_off_amount` varchar(400) DEFAULT NULL,
+  `com_pay_type` varchar(400) DEFAULT NULL,
+  `com_pay_amount` varchar(400) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `consultants`
+--
+
+INSERT INTO `consultants` (`id`, `step`, `phone_no`, `name`, `email`, `bio_data`, `dob`, `exp_year`, `landline`, `language`, `register_address`, `country_id`, `state_id`, `city_id`, `zipcode`, `type`, `firm_choose`, `other`, `specialized`, `categorie_id`, `preferre_slot`, `video`, `video_amount`, `voice`, `voice_amount`, `text`, `text_amount`, `direct`, `direct_amount`, `updated_at`, `created_at`, `account_name`, `account_number`, `bank_name`, `branch`, `ifsc_code`, `bank_status`, `proof`, `insurance_id`, `com_con_type`, `com_con_amount`, `com_off_type`, `com_off_amount`, `com_pay_type`, `com_pay_amount`) VALUES
+(1, 10, '9499032251', 'Arun pandian', 'admin@admin.com', 'manavalan', '06/28/2022', 1, NULL, 'name,categories_id,description', 'Arun 5/5 manavalan salai kulasekara puram', '100', '25', '1', '600092', '2', 'other', 'good', 'j2_1, 1, 2', '6, 5', '60', '1', '10', '1', '10', '0', NULL, '0', NULL, '2022-07-01 05:08:48', '2022-06-29 03:02:30', '5645', '565458', '578', '8554', '5687575', '1', 'public/uploadFiles/proof/9499032251//6CNIlLVH0PcjWysARGVK0MTUMFTy01u3pr987NHP.webp,public/uploadFiles/proof/9499032251//YcB1L7zyCt8tAqhBTSNNPqaMcYn7Hz1kgaQhGjtl.jpg,public/uploadFiles/proof/9499032251//YGZ2oh3xMykVhHmveUPf5Iub0G412PlnPF1CYL0a.jpg', '1', '1', '100', '0', '1245785', '1', '100');
 
 -- --------------------------------------------------------
 
@@ -975,6 +1064,36 @@ INSERT INTO `currencies` (`id`, `countryname`, `countrycode`, `currencycode`, `s
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `customers`
+--
+
+CREATE TABLE `customers` (
+  `id` int(40) NOT NULL,
+  `phone_no` varchar(40) DEFAULT NULL,
+  `name` varchar(40) DEFAULT NULL,
+  `dob` varchar(40) DEFAULT NULL,
+  `gender` varchar(40) DEFAULT NULL,
+  `email` varchar(40) DEFAULT NULL,
+  `register_address` text DEFAULT NULL,
+  `country_id` varchar(40) DEFAULT NULL,
+  `state_id` int(40) DEFAULT NULL,
+  `city_id` int(40) DEFAULT NULL,
+  `zipcode` int(40) DEFAULT NULL,
+  `status` int(4) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `customers`
+--
+
+INSERT INTO `customers` (`id`, `phone_no`, `name`, `dob`, `gender`, `email`, `register_address`, `country_id`, `state_id`, `city_id`, `zipcode`, `status`, `created_at`, `updated_at`) VALUES
+(1, '9499032251', 'arun', '07/03/2022', 'male', NULL, 'manavalan', '100', 25, 1, 45634, 1, '2022-07-04 01:17:54', '2022-07-04 01:17:54');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `documents`
 --
 
@@ -991,8 +1110,7 @@ CREATE TABLE `documents` (
 --
 
 INSERT INTO `documents` (`id`, `title`, `status`, `updated_at`, `created_at`) VALUES
-(1, 'hai 12', 1, '2022-06-13 02:44:47', '2022-06-13 02:15:53'),
-(2, 'hai', 1, '2022-06-13 02:45:14', '2022-06-13 02:45:14');
+(1, 'hai 1269', 1, '2022-07-09 06:08:14', '2022-06-13 02:15:53');
 
 -- --------------------------------------------------------
 
@@ -1064,7 +1182,9 @@ CREATE TABLE `firms` (
 --
 
 INSERT INTO `firms` (`id`, `comapany_name`, `legal_name`, `have_tax`, `taxation_number`, `register_on`, `about_us`, `logo`, `register_address`, `country_id`, `state_id`, `city_id`, `zipcode`, `cname`, `ctitle`, `cemail`, `cmobile`, `cphone`, `categorie_id`, `account_number`, `account_name`, `ifsc_code`, `bank_name`, `branch`, `bank_status`, `email`, `user_name`, `role`, `login_status`, `gallery`, `updated_at`, `created_at`, `status`, `sunday`, `monday`, `tuesday`, `wednesday`, `thursday`, `friday`, `saturday`) VALUES
-(1, 'dfd', 'fd', 1, '45457', '06/03/2022', '<p>fdgfdgf</p>', 'E:\\xampp\\tmp\\php4FBB.tmp', '<p>dghdhgd</p>', 100, 25, 1, '600035', 'arun,eruyyt', 'yuy,yuy', 'admin@gmail.com,admin@gmail.com', '+915678,45678', '+91,aerewr', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022-06-20 21:42:08', '2022-06-20 21:42:08', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+(1, 'dfd', 'fd', 1, '45457', '06/03/2022', '<p>fdgfdgf</p>', 'E:\\xampp\\tmp\\php4FBB.tmp', '<p>dghdhgd</p>', 100, 25, 1, '600035', 'arun,eruyyt', 'yuy,yuy', 'admin@gmail.com,admin@gmail.com', '+915678,45678', '+91,aerewr', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022-06-20 21:42:08', '2022-06-20 21:42:08', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(2, 'Arun 12', 'arun 12', 1, '1234578925', '06/01/2022', '<p>hai how are you</p>', '', '<p>that is me are not&nbsp;</p>', 100, 1, 34, '600092', 'th', 'th', 'arun@gmail.com', '+918056472756', '+918056472756', '12, 13, 14', '565458', '5645', '5687575', '578', '8554', 1, 'admin@admin.com', 'pkm', 'tet', 1, 'uploadFiles/firm/gallery/pALLMD6yjnwG9jPvG1UlY8RpdLHCLY7YDTf1qTLI.jpg', '2022-07-11 22:46:41', '2022-07-11 22:46:41', NULL, NULL, '{\"monday_from\":\"09:02\",\"monday_to\":\"12:00\"}', '{\"tuesday_from\":\"13:04\",\"tuesday_to\":\"13:05\"}', '{\"wednesday_from\":\"13:05\",\"wednesday_to\":\"14:05\"}', '{\"thursday_from\":\"13:04\",\"thursday_to\":\"14:04\"}', '{\"friday_from\":\"13:04\",\"friday_to\":\"13:04\"}', '{\"saturday_from\":\"14:04\",\"saturday_to\":\"12:03\"}'),
+(3, 'Arun', 'arun 12', 1, '523', '06/02/2022', '<p>fgfdg</p>', '', '<p>fdg</p>', 100, 3, 51, '4254', 'dsf df', '657657', 'admin@admin.com', '+91', '+91', '12, 13, 14', '565458', '5645', '5687575', '578', '8554', 1, 'admin@gmail.com', 'admin', 'tet', 1, 'uploadFiles/firm/gallery/zGbbgvfKuKwRuIagg8d8nqw8igbyLqGWw3WxNuWD.jpg', '2022-07-11 22:55:44', '2022-07-11 22:55:44', 1, '[{\"sunday_from\":\"09:50\",\"sunday_to\":\"09:50\"},{\"sunday_from\":\"09:51\",\"sunday_to\":\"12:48\"}]', '[{\"monday_from\":\"09:50\",\"monday_to\":\"09:51\"}]', '[{\"tuesday_from\":\"09:51\",\"tuesday_to\":\"09:51\"}]', '[{\"wednesday_from\":\"09:48\",\"wednesday_to\":\"09:51\"}]', '[{\"thursday_from\":\"09:50\",\"thursday_to\":\"09:48\"}]', '[{\"friday_from\":\"09:51\",\"friday_to\":\"09:51\"}]', '[{\"saturday_from\":\"09:51\",\"saturday_to\":\"09:51\"}]');
 
 -- --------------------------------------------------------
 
@@ -1240,7 +1360,7 @@ CREATE TABLE `states` (
 
 INSERT INTO `states` (`id`, `country_id`, `state_name`, `status`, `created_at`, `updated_at`) VALUES
 (1, '100', 'Andhra Pradesh', '1', '2021-08-18 23:32:53', '2021-08-19 00:11:59'),
-(2, '100', 'Arunachal Pradesh', '1', '2021-08-19 00:12:17', '2021-08-19 00:12:17'),
+(2, '100', 'Arunachal Pradesh', '0', '2021-08-19 00:12:17', '2022-07-09 04:33:24'),
 (3, '100', 'Assam', '1', '2021-08-19 00:12:45', '2021-08-19 00:12:45'),
 (4, '100', 'Bihar', '1', '2021-08-19 00:13:10', '2021-08-19 00:13:10'),
 (5, '100', 'Chhattisgarh', '1', '2021-08-19 00:13:25', '2021-08-19 00:13:25'),
@@ -1263,7 +1383,6 @@ INSERT INTO `states` (`id`, `country_id`, `state_name`, `status`, `created_at`, 
 (22, '100', 'Punjab', '1', '2021-08-19 00:19:23', '2021-08-19 00:19:23'),
 (23, '100', 'Rajasthan', '1', '2021-08-19 00:19:40', '2021-08-19 00:19:40'),
 (24, '100', 'Sikkim', '1', '2021-08-19 00:20:14', '2021-08-19 00:20:14'),
-(25, '100', 'Tamil Nadu', '1', '2021-08-19 00:20:52', '2021-08-19 00:20:52'),
 (26, '100', 'Telegana', '1', '2021-08-19 00:21:09', '2021-08-19 00:21:09'),
 (27, '100', 'Tripura', '1', '2021-08-19 00:21:25', '2021-08-19 00:21:25'),
 (28, '100', 'Uttar Pradesh', '1', '2021-08-19 00:21:44', '2021-08-19 00:21:44'),
@@ -1275,11 +1394,7 @@ INSERT INTO `states` (`id`, `country_id`, `state_name`, `status`, `created_at`, 
 (74, '100', 'Lakshadweep Islands', '1', '2022-01-18 07:35:52', '2022-01-18 07:35:52'),
 (75, '100', 'Andaman and Nicobar Islands', '1', '2022-01-18 07:38:08', '2022-01-18 07:38:08'),
 (76, '100', 'Chandigarh', '1', '2022-01-18 07:38:31', '2022-01-18 07:38:31'),
-(77, '100', 'Dadra & Nagar Haveli', '1', '2022-01-18 07:40:01', '2022-01-18 07:40:01'),
-(78, '100', 'Ladakh', '1', '2022-01-18 07:40:23', '2022-01-18 07:40:23'),
-(79, '100', 'select State', '1', '2022-01-28 07:31:11', '2022-01-28 07:31:11'),
-(80, 'Select Country', 'Select State', '1', '2022-02-03 00:36:12', '2022-02-03 00:36:12'),
-(81, '100', 'Delhi 12', '1', '2022-06-02 21:14:16', '2022-06-02 21:14:16');
+(77, '100', 'Chandigarh1', '0', '2022-01-18 07:40:01', '2022-07-08 20:15:21');
 
 -- --------------------------------------------------------
 
@@ -1557,6 +1672,12 @@ ALTER TABLE `activity_log`
   ADD KEY `activity_log_log_name_index` (`log_name`);
 
 --
+-- Indexes for table `articles`
+--
+ALTER TABLE `articles`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `carts`
 --
 ALTER TABLE `carts`
@@ -1587,6 +1708,12 @@ ALTER TABLE `consultantcategories`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `consultants`
+--
+ALTER TABLE `consultants`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `countries`
 --
 ALTER TABLE `countries`
@@ -1598,6 +1725,12 @@ ALTER TABLE `countries`
 -- Indexes for table `currencies`
 --
 ALTER TABLE `currencies`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `customers`
+--
+ALTER TABLE `customers`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1710,6 +1843,12 @@ ALTER TABLE `activity_log`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=206;
 
 --
+-- AUTO_INCREMENT for table `articles`
+--
+ALTER TABLE `articles`
+  MODIFY `id` int(40) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `carts`
 --
 ALTER TABLE `carts`
@@ -1719,13 +1858,13 @@ ALTER TABLE `carts`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(40) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(40) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `cities`
 --
 ALTER TABLE `cities`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- AUTO_INCREMENT for table `companysettings`
@@ -1737,6 +1876,12 @@ ALTER TABLE `companysettings`
 -- AUTO_INCREMENT for table `consultantcategories`
 --
 ALTER TABLE `consultantcategories`
+  MODIFY `id` int(40) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `consultants`
+--
+ALTER TABLE `consultants`
   MODIFY `id` int(40) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
@@ -1750,6 +1895,12 @@ ALTER TABLE `countries`
 --
 ALTER TABLE `currencies`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=265;
+
+--
+-- AUTO_INCREMENT for table `customers`
+--
+ALTER TABLE `customers`
+  MODIFY `id` int(40) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `documents`
@@ -1767,7 +1918,7 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `firms`
 --
 ALTER TABLE `firms`
-  MODIFY `id` int(40) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(40) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `insurances`
