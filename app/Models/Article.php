@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class City extends Model
+class Article extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['state_id','city_name','country_id'];
+    protected $fillable = ['from_user','f_c_a','title','image','describtion','status'];
 
 }

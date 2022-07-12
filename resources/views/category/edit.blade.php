@@ -109,7 +109,7 @@
                                         <label class="required form-label fs-6 mb-2" >Choose Parent</label>
                                         <!--end::Label-->
                                         <!--begin::Select2-->
-                                        <select class="form-select" name="categories_id" data-control="select2" data-placeholder="Select an option">
+                                        <select class="form-select" name="categories_id" id="categories_id" data-control="select2" data-placeholder="Select an option">
                                             <option></option>
                                             @foreach ($Parent as $key => $value )
                                                 <option value="{{ $value->id }}" {{ ($Category->categories_id == $value->id)?'selected':'' }}>{{$value->name }}</option>
@@ -144,9 +144,9 @@
                                     </div>
                                     <div class="fv-row mb-10">
                                         <!--begin::Image input-->
-                                        <div class="image-input image-input-empty" data-kt-image-input="true" style="background-color: aliceblue;">
+                                        <div class="image-input" data-kt-image-input="true" style="background-color: aliceblue;">
                                             <!--begin::Image preview wrapper-->
-                                            <div class="image-input-wrapper w-125px h-125px"></div>
+                                            <div class="image-input-wrapper w-125px h-125px" style="background-image: url('{{ asset("storage/$Category->img") }}')"></div>
                                             <!--end::Image preview wrapper-->
 
                                             <!--begin::Edit button-->
@@ -231,7 +231,7 @@
                                         </div>
                                     </div>
                                     <div class="mb-10">
-                                        <button type="submit" class="btn btn-primary btn-hover-rise me-5">Submit</button>
+                                        <button type="submit" class="btn btn-primary btn-hover-rise me-5">Update</button>
                                     </div>
                                 </div>
                             </div>
@@ -248,9 +248,11 @@
     @section('scripts')
     <script>
         window.onload = function() {
+            back = `{{ route('master.category.index') }}`
             new Tagify(document.getElementById('tags'))
             const selecter = document.getElementById('selecter')
-            var RadioButton = document.getElementById('formCreate').elements['type'];
+            const categories_id = document.getElementById('categories_id')
+            var RadioButton = document.getElementById('formEdit').elements['type'];
             RadioButton.forEach(element => {
                 element.addEventListener('click',showhideParent)
                 if(element.checked)element.click()
@@ -258,11 +260,12 @@
             function showhideParent(event){
                 if(event.target.value == 1){
                     selecter.removeAttribute('hidden')
-                    selecter.setAttribute('required',true)
+                    categories_id.setAttribute('required',true)
 
                 }else{
                     selecter.setAttribute('hidden',true)
-                    selecter.removeAttribute('required')
+                    categories_id.value = ''
+                    categories_id.removeAttribute('required')
                 }
             }
         }

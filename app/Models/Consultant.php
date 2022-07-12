@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class City extends Model
+
+class Consultant extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['state_id','city_name','country_id'];
-
+    protected $fillable = ['phone_no','name','email'];
 }

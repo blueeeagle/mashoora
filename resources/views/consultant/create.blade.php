@@ -1,4 +1,20 @@
 <x-base-layout>
+    @section('styles')
+    <link href="{{ URL::asset(theme()->getDemo().'/plugins/custom/jstree/jstree.bundle.css')}}" rel="stylesheet" type="text/css" />
+        <style>
+            .stepper.stepper-pills .stepper-item.skip .stepper-icon .stepper-number {
+                color: #ffffff !important;
+                font-size: 1.35rem;
+            }
+            .stepper.stepper-pills .stepper-item.skip .stepper-icon {
+                transition: color 0.2s ease, background-color 0.2s ease;
+                background-color: #9a5400;
+            }
+            .stepper [data-kt-stepper-action=skip] {
+                display: none;
+            }
+        </style>
+    @endsection
     <div class="content d-flex flex-column flex-column-fluid card card-flush">
         <div class="d-flex flex-column flex-root">
 			<div class="d-flex flex-column flex-lg-row flex-column-fluid stepper stepper-pills stepper-column" id="kt_create_account_stepper">
@@ -24,6 +40,7 @@
 									<div class="stepper-line w-40px"></div>
 									<div class="stepper-icon w-40px h-40px">
 										<i class="stepper-check fas fa-check"></i>
+										<i class="stepper-check fas fa-warning"></i>
 										<span class="stepper-number">2</span>
 									</div>
 									<div class="stepper-label">
@@ -108,11 +125,33 @@
 										<div class="stepper-desc fw-bold"></div>
 									</div>
 								</div>
-								<div class="stepper-item" data-kt-stepper-element="nav">
+                                <div class="stepper-item" data-kt-stepper-element="nav">
 									<div class="stepper-line w-40px"></div>
 									<div class="stepper-icon w-40px h-40px">
 										<i class="stepper-check fas fa-check"></i>
 										<span class="stepper-number">10</span>
+									</div>
+									<div class="stepper-label">
+										<h3 class="stepper-title">Insurance</h3>
+										<div class="stepper-desc fw-bold"></div>
+									</div>
+								</div>
+                                <div class="stepper-item" data-kt-stepper-element="nav">
+									<div class="stepper-line w-40px"></div>
+									<div class="stepper-icon w-40px h-40px">
+										<i class="stepper-check fas fa-check"></i>
+										<span class="stepper-number">11</span>
+									</div>
+									<div class="stepper-label">
+										<h3 class="stepper-title">Commission</h3>
+										<div class="stepper-desc fw-bold"></div>
+									</div>
+								</div>
+								<div class="stepper-item" data-kt-stepper-element="nav">
+									<div class="stepper-line w-40px"></div>
+									<div class="stepper-icon w-40px h-40px">
+										<i class="stepper-check fas fa-check"></i>
+										<span class="stepper-number">12</span>
 									</div>
 									<div class="stepper-label">
 										<h3 class="stepper-title">Completed</h3>
@@ -332,121 +371,47 @@
                                             </select>
                                         </div>
                                         <div class="fv-row mb-10" hidden id="other">
-                                            <input type="number" name="other" id="other"  class="form-control mb-2 mb-md-0" placeholder="Enter Firm Name"/>
+                                            <input type="text" name="other" id="other"  class="form-control mb-2 mb-md-0" placeholder="Enter Firm Name"/>
                                         </div>
 									</div>
 									<!--end::Wrapper-->
 								</div>
                                 <div class="" data-kt-stepper-element="content">
 									<!--begin::Wrapper-->
-									<div class="w-100">
+                                    <div class="w-100">
 										<!--begin::Heading-->
 										<div class="pb-10 pb-lg-15">
 											<!--begin::Title-->
-											<h2 class="fw-bolder text-dark">Firm / Individual</h2>
+											<h2 class="fw-bolder text-dark">Profession</h2>
 											<!--end::Title-->
 											<!--begin::Notice-->
 											<div class="text-muted fw-bold fs-6"></div>
 											<!--end::Notice-->
 										</div>
-										<!--end::Heading-->
                                         <div class="fv-row mb-10">
-                                            <!--begin::Radio group-->
-                                            <div class="btn-group w-100 w-lg-50" data-kt-buttons="true" data-kt-buttons-target="[data-kt-button]">
-                                                <!--begin::Radio-->
-                                                <label class="btn btn-outline-secondary text-muted text-hover-white text-active-white btn-outline btn-active-success" data-kt-button="true">
-                                                    <!--begin::Input-->
-                                                    <input class="btn-check" type="radio" name="type" checked="checked" value="1"/>
-                                                    <!--end::Input-->
-                                                    Firm
-                                                </label>
-                                                <!--end::Radio-->
-
-                                                <!--begin::Radio-->
-                                                <label class="btn btn-outline-secondary text-muted text-hover-white text-active-white btn-outline btn-active-success active" data-kt-button="true">
-                                                    <!--begin::Input-->
-                                                    <input class="btn-check" type="radio" name="type"  value="2"/>
-                                                    <!--end::Input-->
-                                                    Individual
-                                                </label>
-                                                <!--end::Radio-->
-                                            </div>
-                                            <!--end::Radio group-->
+                                            <input type="hidden" name="categorie_id" id="categorie_id">
+                                            <div id="kt_docs_jstree_checkable"></div>
                                         </div>
-                                        <div class="fv-row mb-10">
-                                            <label class=" form-label fs-6 mb-2" >Choose Firm</label>
-                                            <select class="form-select form-select-solid" data-control="select2" data-placeholder="Search option" data-allow-clear="true" name="firm_choose" id="firm_choose">
-                                                <option value="type">Type</option>
-                                                <option value="name">Name</option>
-                                                <option value="categories_id">Categorie Name</option>
-                                                <option value="description">Description</option>
-                                                <option value="tags">Tags</option>
-                                                <option value="sort_no_list">sort Categorie list</option>
-                                                <option value="sort_no_home">sort Home list</option>
-                                                <option value="display_in_home">Display in Home</option>
-                                                <option value="other">Other</option>
-                                            </select>
-                                        </div>
-                                        <div class="fv-row mb-10" hidden id="other">
-                                            <input type="number" name="other" id="other"  class="form-control mb-2 mb-md-0" placeholder="Enter Firm Name"/>
-                                        </div>
-									</div>
+                                    </div>
 									<!--end::Wrapper-->
 								</div>
                                 <div class="" data-kt-stepper-element="content">
 									<!--begin::Wrapper-->
-									<div class="w-100">
+                                    <div class="w-100">
 										<!--begin::Heading-->
 										<div class="pb-10 pb-lg-15">
 											<!--begin::Title-->
-											<h2 class="fw-bolder text-dark">Firm / Individual</h2>
+											<h2 class="fw-bolder text-dark">Specialized </h2>
 											<!--end::Title-->
 											<!--begin::Notice-->
 											<div class="text-muted fw-bold fs-6"></div>
 											<!--end::Notice-->
 										</div>
-										<!--end::Heading-->
                                         <div class="fv-row mb-10">
-                                            <!--begin::Radio group-->
-                                            <div class="btn-group w-100 w-lg-50" data-kt-buttons="true" data-kt-buttons-target="[data-kt-button]">
-                                                <!--begin::Radio-->
-                                                <label class="btn btn-outline-secondary text-muted text-hover-white text-active-white btn-outline btn-active-success" data-kt-button="true">
-                                                    <!--begin::Input-->
-                                                    <input class="btn-check" type="radio" name="type" checked="checked" value="1"/>
-                                                    <!--end::Input-->
-                                                    Firm
-                                                </label>
-                                                <!--end::Radio-->
-
-                                                <!--begin::Radio-->
-                                                <label class="btn btn-outline-secondary text-muted text-hover-white text-active-white btn-outline btn-active-success active" data-kt-button="true">
-                                                    <!--begin::Input-->
-                                                    <input class="btn-check" type="radio" name="type"  value="2"/>
-                                                    <!--end::Input-->
-                                                    Individual
-                                                </label>
-                                                <!--end::Radio-->
-                                            </div>
-                                            <!--end::Radio group-->
+                                            <input type="hidden" name="specialized" id="specialized">
+                                            <div id="kt_docs_jstree_checkable1"></div>
                                         </div>
-                                        <div class="fv-row mb-10">
-                                            <label class=" form-label fs-6 mb-2" >Choose Firm</label>
-                                            <select class="form-select form-select-solid" data-control="select2" data-placeholder="Search option" data-allow-clear="true" name="firm_choose" id="firm_choose">
-                                                <option value="type">Type</option>
-                                                <option value="name">Name</option>
-                                                <option value="categories_id">Categorie Name</option>
-                                                <option value="description">Description</option>
-                                                <option value="tags">Tags</option>
-                                                <option value="sort_no_list">sort Categorie list</option>
-                                                <option value="sort_no_home">sort Home list</option>
-                                                <option value="display_in_home">Display in Home</option>
-                                                <option value="other">Other</option>
-                                            </select>
-                                        </div>
-                                        <div class="fv-row mb-10" hidden id="other">
-                                            <input type="number" name="other" id="other"  class="form-control mb-2 mb-md-0" placeholder="Enter Firm Name"/>
-                                        </div>
-									</div>
+                                    </div>
 									<!--end::Wrapper-->
 								</div>
 								<div class="" data-kt-stepper-element="content">
@@ -485,7 +450,7 @@
 
                                                 <!--begin:Input-->
                                                 <span class="form-check form-check-custom form-check-solid">
-                                                    <input class="form-check-input" type="radio"  name="preferre_slot" value="15"/>
+                                                    <input class="form-check-input" type="radio"  name="preferre_slot" checked value="15"/>
                                                 </span>
                                                 <!--end:Input-->
                                             </label>
@@ -678,7 +643,7 @@
 										</div>
                                         <div class="fv-row mb-10">
                                             <label class="required form-label fs-6 mb-2" >Account Number</label>
-                                            <input type="text" name="account_number" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Account Number" required />
+                                            <input type="number" name="account_number" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Account Number" required />
                                         </div>
                                         <div class="fv-row mb-10">
                                             <label class="required form-label fs-6 mb-2" >Account Name</label>
@@ -713,101 +678,111 @@
 										<!--begin::Heading-->
 										<div class="pb-8 pb-lg-10">
 											<!--begin::Title-->
-											<h2 class="fw-bolder text-dark">Your Are Done!</h2>
-											<!--end::Title-->
-											<!--begin::Notice-->
-											<div class="text-muted fw-bold fs-6">If you need more info, please
-											<a href="../../demo1/dist/authentication/sign-in/basic.html" class="link-primary fw-bolder">Sign In</a>.</div>
-											<!--end::Notice-->
+											<h2 class="fw-bolder text-dark">Proof</h2>
 										</div>
-										<!--end::Heading-->
-										<!--begin::Body-->
-										<div class="mb-0">
-											<!--begin::Text-->
-											<div class="fs-6 text-gray-600 mb-5">Writing headlines for blog posts is as much an art as it is a science and probably warrants its own post, but for all advise is with what works for your great &amp; amazing audience.</div>
-											<!--end::Text-->
-											<!--begin::Alert-->
-											<!--begin::Notice-->
-											<div class="notice d-flex bg-light-warning rounded border-warning border border-dashed p-6">
-												<!--begin::Icon-->
-												<!--begin::Svg Icon | path: icons/duotune/general/gen044.svg-->
-												<span class="svg-icon svg-icon-2tx svg-icon-warning me-4">
-													<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-														<rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor" />
-														<rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor" />
-														<rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor" />
-													</svg>
-												</span>
-												<!--end::Svg Icon-->
-												<!--end::Icon-->
-												<!--begin::Wrapper-->
-												<div class="d-flex flex-stack flex-grow-1">
-													<!--begin::Content-->
-													<div class="fw-bold">
-														<h4 class="text-gray-900 fw-bolder">We need your attention!</h4>
-														<div class="fs-6 text-gray-700">To start using great tools, please, please
-														<a href="#" class="fw-bolder">Create Team Platform</a></div>
-													</div>
-													<!--end::Content-->
-												</div>
-												<!--end::Wrapper-->
-											</div>
-											<!--end::Notice-->
-											<!--end::Alert-->
-										</div>
-										<!--end::Body-->
+                                        <div class="fv-row mb-10">
+                                            <label class="required form-label fs-6 mb-2" >Document</label>
+                                            <input id="proof" multiple type="file" name="proof" class="form-control form-control-solid mb-3 mb-lg-0"  />
+                                        </div>
 									</div>
 									<!--end::Wrapper-->
 								</div>
                                 <div class="" data-kt-stepper-element="content">
 									<!--begin::Wrapper-->
-									<div class="w-100">
+                                    <div class="w-100">
 										<!--begin::Heading-->
 										<div class="pb-8 pb-lg-10">
 											<!--begin::Title-->
-											<h2 class="fw-bolder text-dark">Your Are Done!</h2>
-											<!--end::Title-->
-											<!--begin::Notice-->
-											<div class="text-muted fw-bold fs-6">If you need more info, please
-											<a href="../../demo1/dist/authentication/sign-in/basic.html" class="link-primary fw-bolder">Sign In</a>.</div>
-											<!--end::Notice-->
+											<h2 class="fw-bolder text-dark">Insurance</h2>
 										</div>
-										<!--end::Heading-->
-										<!--begin::Body-->
-										<div class="mb-0">
-											<!--begin::Text-->
-											<div class="fs-6 text-gray-600 mb-5">Writing headlines for blog posts is as much an art as it is a science and probably warrants its own post, but for all advise is with what works for your great &amp; amazing audience.</div>
-											<!--end::Text-->
-											<!--begin::Alert-->
-											<!--begin::Notice-->
-											<div class="notice d-flex bg-light-warning rounded border-warning border border-dashed p-6">
-												<!--begin::Icon-->
-												<!--begin::Svg Icon | path: icons/duotune/general/gen044.svg-->
-												<span class="svg-icon svg-icon-2tx svg-icon-warning me-4">
-													<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-														<rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor" />
-														<rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="currentColor" />
-														<rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="currentColor" />
-													</svg>
-												</span>
-												<!--end::Svg Icon-->
-												<!--end::Icon-->
-												<!--begin::Wrapper-->
-												<div class="d-flex flex-stack flex-grow-1">
-													<!--begin::Content-->
-													<div class="fw-bold">
-														<h4 class="text-gray-900 fw-bolder">We need your attention!</h4>
-														<div class="fs-6 text-gray-700">To start using great tools, please, please
-														<a href="#" class="fw-bolder">Create Team Platform</a></div>
-													</div>
-													<!--end::Content-->
-												</div>
-												<!--end::Wrapper-->
-											</div>
-											<!--end::Notice-->
-											<!--end::Alert-->
+                                        <div class="mb-10 fv-row">
+                                            <label class="form-label fs-6 mb-2" >Select Insurance</label>
+                                            <select class="form-select form-select-solid" data-control="select2" data-placeholder="option" data-allow-clear="true" name="insurance_id" id="insurance_id" multiple="multiple">
+                                                @foreach ($Insurance as $value )
+                                                <option value="{{ $value->id }}">{{ $value->comapany_name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+									</div>
+									<!--end::Wrapper-->
+								</div>
+                                <div class="" data-kt-stepper-element="content">
+									<!--begin::Wrapper-->
+                                    <div class="w-100">
+										<!--begin::Heading-->
+										<div class="pb-8 pb-lg-10">
+											<!--begin::Title-->
+											<h2 class="fw-bolder text-dark">Commission</h2>
 										</div>
-										<!--end::Body-->
+                                        <h4>Commission For Consultant Fee</h4>
+                                        <div class="mb-10 fv-row">
+                                            <label class="required form-label fs-6 mb-2" >Flat or Percentage</label>
+                                            <div class="form-check form-check-custom form-check-solid mb-5">
+                                                <input class="form-check-input me-3" name="com_con_type" type="radio" value="0" checked id="com_con_flat" />
+                                                <label class="form-check-label" for="com_con_flat">
+                                                    <div class="fw-bolder text-gray-800">Flat</div>
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-custom form-check-solid mb-5">
+                                                <input class="form-check-input me-3" name="com_con_type" type="radio" value="1" id="com_con_per" />
+                                                <label class="form-check-label" for="com_con_per">
+                                                    <div class="fw-bolder text-gray-800">Percentage</div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="mb-10 fv-row">
+                                            <label class="required form-label fs-6 mb-2" >Commission Amount</label>
+                                            <div class="input-group mb-5">
+                                                <span class="input-group-text" id="inputGroup-sizing-default">Default</span>
+                                                <input type="number" class="form-control" name="com_con_amount" id="com_con_amount" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"/>
+                                            </div>
+                                        </div>
+                                        <h4>Commission For Offers</h4>
+                                        <div class="mb-10 fv-row">
+                                            <label class="required form-label fs-6 mb-2" >Flat or Percentage</label>
+                                            <div class="form-check form-check-custom form-check-solid mb-5">
+                                                <input class="form-check-input me-3" name="com_off_type" type="radio" value="0" checked id="com_off_flat" />
+                                                <label class="form-check-label" for="com_off_flat">
+                                                    <div class="fw-bolder text-gray-800">Flat</div>
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-custom form-check-solid mb-5">
+                                                <input class="form-check-input me-3" name="com_off_type" type="radio" value="1" id="com_off_per" />
+                                                <label class="form-check-label" for="com_off_per">
+                                                    <div class="fw-bolder text-gray-800">Percentage</div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="mb-10 fv-row">
+                                            <label class="required form-label fs-6 mb-2" >Commission Amount</label>
+                                            <div class="input-group mb-5">
+                                                <span class="input-group-text" id="inputGroup-sizing-default">Default</span>
+                                                <input type="number" class="form-control" name="com_off_amount" id="com_off_amount" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"/>
+                                            </div>
+                                        </div>
+                                        <h4>Payout Settings</h4>
+                                        <div class="mb-10 fv-row">
+                                            <label class="required form-label fs-6 mb-2" >Flat or Percentage</label>
+                                            <div class="form-check form-check-custom form-check-solid mb-5">
+                                                <input class="form-check-input me-3" name="com_pay_type" type="radio" value="0" checked id="com_pay_flat" />
+                                                <label class="form-check-label" for="com_pay_flat">
+                                                    <div class="fw-bolder text-gray-800">Flat</div>
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-custom form-check-solid mb-5">
+                                                <input class="form-check-input me-3" name="com_pay_type" type="radio" value="1" id="com_pay_per" />
+                                                <label class="form-check-label" for="com_pay_per">
+                                                    <div class="fw-bolder text-gray-800">Percentage</div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="mb-10 fv-row">
+                                            <label class="required form-label fs-6 mb-2" >Commission Amount</label>
+                                            <div class="input-group mb-5">
+                                                <span class="input-group-text" id="inputGroup-sizing-default">Default</span>
+                                                <input type="number" class="form-control" name="com_pay_amount" id="com_pay_amount" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"/>
+                                            </div>
+                                        </div>
 									</div>
 									<!--end::Wrapper-->
 								</div>
@@ -934,7 +909,29 @@
 		</div>
     </div>
     @section('scripts')
+    <script src='{{ URL::asset(theme()->getDemo().'/plugins/custom/jstree/jstree.bundle.js')}}'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
     <script>
+        const categorie_id = document.getElementById('categorie_id')
+        const specialized = document.getElementById('specialized')
+
+        const com_con_amount = document.getElementById('com_con_amount')
+        const com_off_amount = document.getElementById('com_off_amount')
+        const com_pay_amount = document.getElementById('com_pay_amount')
+
+        com_con_amount.addEventListener('keyup', function(event) {updateAmount(event.target,document.querySelector('input[name="com_con_type"]:checked').value) });
+        com_off_amount.addEventListener('keyup', function(event) {updateAmount(event.target,document.querySelector('input[name="com_off_type"]:checked').value) });
+        com_pay_amount.addEventListener('keyup', function(event) {updateAmount(event.target,document.querySelector('input[name="com_pay_type"]:checked').value) });
+        document.querySelectorAll('input[name="com_con_type"]').forEach(e => e.addEventListener('change', function(event){ updateAmount(com_con_amount,event.target.value) }) )
+        document.querySelectorAll('input[name="com_off_type"]').forEach(e => e.addEventListener('change', function(event){ updateAmount(com_off_amount,event.target.value) }) )
+        document.querySelectorAll('input[name="com_pay_type"]').forEach(e => e.addEventListener('change', function(event){ updateAmount(com_pay_amount,event.target.value) }) )
+
+        function updateAmount(event,type){
+            if(type == 1){
+                event.value > 100 ? (event.value = 100) : event.value = event.value
+            }
+        }
+
         const yesterday = new Date();
         var BasicDetails = null
         yesterday.setDate(yesterday.getDate() - 1);
@@ -1055,10 +1052,10 @@
             })
         })
 
-
 "use strict";
+
 var KTCreateAccount = function () {
-    var e, t, i, o, s, r, k, a = [];
+    var e, t, i, o, s, r, k, a = [],showSkip = [1,2,3,4,5,6,7,8,9,10,11,12],showpreview = [], funsave = [],funprev = [],triggervalue = [];
     return {
         init: function () {
             (e = document.querySelector("#kt_modal_create_account")) && new bootstrap.Modal(e),
@@ -1067,13 +1064,16 @@ var KTCreateAccount = function () {
             o = t.querySelector('[data-kt-stepper-action="submit"]'),
             k = t.querySelector('[data-kt-stepper-action="skip"]'),
             s = t.querySelector('[data-kt-stepper-action="next"]'),
+            pr = t.querySelector('[data-kt-stepper-action="previous"]'),
             (r = new KTStepper(t)).on("kt.stepper.changed", (function (e) {
-                9 === r.getCurrentStepIndex() ? (o.classList.remove("d-none"), o.classList.add("d-inline-block"), s.classList.add("d-none")) : 10 === r.getCurrentStepIndex() ? (o.classList.add("d-none"), s.classList.add("d-none")) : (o.classList.remove("d-inline-block"), o.classList.remove("d-none"), s.classList.remove("d-none"))
+                13 === r.getCurrentStepIndex() ? (o.classList.remove("d-none"), o.classList.add("d-inline-block"), s.classList.add("d-none")) : 13 === r.getCurrentStepIndex() ? (o.classList.add("d-none"), s.classList.add("d-none")) : (o.classList.remove("d-inline-block"), o.classList.remove("d-none"), s.classList.remove("d-none")),
+                showSkip.includes(r.currentStepIndex) ? (k.classList.add("d-inline-block"), k.classList.remove("d-none")) : (k.classList.add("d-none"), k.classList.remove("d-inline-block")),
+                showpreview.includes(r.currentStepIndex) ? (pr.classList.add("d-none"), pr.classList.remove("d-inline-block")) :(pr.classList.add("d-inline-block"), pr.classList.remove("d-none"))
             })), r.on("kt.stepper.next", (function (e) {
                 console.log("stepper.next");
                 var t = a[e.getCurrentStepIndex() - 1];
                 t ? t.validate().then((function (t) {
-                    console.log("validated!"), "Valid" == t ? (e.goNext(), KTUtil.scrollTop()) : Swal.fire({
+                    console.log("validated!"), "Valid" == t ? ( typeof funsave[e.getCurrentStepIndex() - 1] === 'function' ? funsave[e.getCurrentStepIndex() - 1]().then(function(data) { if(data?.step){ e.goTo(data.step);KTUtil.scrollTop();pr.classList.add('d-none');showpreview.push(data.step);  }else{ if(data){ e.goNext();KTUtil.scrollTop() } }  }):  e.goNext(), KTUtil.scrollTop()) : Swal.fire({
                         text: "Sorry, looks like there are some errors detected, please try again.",
                         icon: "error",
                         buttonsStyling: !1,
@@ -1084,9 +1084,10 @@ var KTCreateAccount = function () {
                     }).then((function () {
                         KTUtil.scrollTop()
                     }))
-                })) : (e.goNext(), KTUtil.scrollTop())
+                })) :( typeof funsave[e.getCurrentStepIndex() - 1] === 'function' ? funsave[e.getCurrentStepIndex() - 1]().then(function(data) { console.log(data); if(data){ e.goNext();KTUtil.scrollTop() } }):  e.goNext(), KTUtil.scrollTop())
             })), r.on("kt.stepper.previous", (function (e) {
-                console.log("stepper.previous"), e.goPrevious(), KTUtil.scrollTop()
+                console.log("stepper.previous"),
+                typeof funprev[e.getCurrentStepIndex() - 1] === 'function' ? funprev[e.getCurrentStepIndex() - 1]().then(function(t){ e.goPrevious(), KTUtil.scrollTop() }) : e.goPrevious(), KTUtil.scrollTop()
             })), r.on("kt.stepper.skip", (function (e) {
                 console.log("stepper.skip"), e.goNext(), KTUtil.scrollTop()
             })), a.push(FormValidation.formValidation(i, {
@@ -1228,7 +1229,19 @@ var KTCreateAccount = function () {
                         validating: 'fa fa-refresh',
                     }),
                 }
-            })), a.push(FormValidation.formValidation(i, {
+            })),a.push(FormValidation.formValidation(i, {
+                fields: {
+
+                },
+                plugins: {
+                    trigger: new FormValidation.plugins.Trigger,
+                    bootstrap: new FormValidation.plugins.Bootstrap5({
+                        rowSelector: ".fv-row",
+                        eleInvalidClass: "",
+                        eleValidClass: ""
+                    })
+                }
+            })),a.push(FormValidation.formValidation(i, {
                 fields: {
 
                 },
@@ -1264,7 +1277,364 @@ var KTCreateAccount = function () {
                         eleValidClass: ""
                     })
                 }
-            })), o.addEventListener("click", (function (e) {
+            })),a.push(FormValidation.formValidation(i, {
+                fields: {
+                    account_number : {
+                        validators: {
+                            notEmpty: {
+                                message: "Enter Account Number"
+                            }
+                        }
+                    },
+                    account_name : {
+                        validators: {
+                            notEmpty: {
+                                message: "Enter Account Name"
+                            }
+                        }
+                    },
+                    ifsc_code : {
+                        validators: {
+                            notEmpty: {
+                                message: "Enter IBAN Code / IFSC Code"
+                            }
+                        }
+                    },
+                    bank_name : {
+                        validators: {
+                            notEmpty: {
+                                message: "Enter Bank Name"
+                            }
+                        }
+                    },
+                    branch : {
+                        validators: {
+                            notEmpty: {
+                                message: "Enter Branch"
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    trigger: new FormValidation.plugins.Trigger,
+                    bootstrap: new FormValidation.plugins.Bootstrap5({
+                        rowSelector: ".fv-row",
+                        eleInvalidClass: "",
+                        eleValidClass: ""
+                    })
+                }
+            })),a.push(FormValidation.formValidation(i, {
+                fields: {
+                    proof : {
+                        validators: {
+                            notEmpty: {
+                                message: "Choose File"
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    trigger: new FormValidation.plugins.Trigger,
+                    bootstrap: new FormValidation.plugins.Bootstrap5({
+                        rowSelector: ".fv-row",
+                        eleInvalidClass: "",
+                        eleValidClass: ""
+                    })
+                }
+            })),a.push(FormValidation.formValidation(i, {
+                fields: {
+
+                },
+                plugins: {
+                    trigger: new FormValidation.plugins.Trigger,
+                    bootstrap: new FormValidation.plugins.Bootstrap5({
+                        rowSelector: ".fv-row",
+                        eleInvalidClass: "",
+                        eleValidClass: ""
+                    })
+                }
+            })),a.push(FormValidation.formValidation(i, {
+                fields: {
+                    com_con_amount : {
+                        validators: {
+                            notEmpty: {
+                                message: "Enter Amount"
+                            }
+                        }
+                    },
+                    com_off_amount : {
+                        validators: {
+                            notEmpty: {
+                                message: "Enter Amount"
+                            }
+                        }
+                    },
+                    com_pay_amount : {
+                        validators: {
+                            notEmpty: {
+                                message: "Enter Amount"
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    trigger: new FormValidation.plugins.Trigger,
+                    bootstrap: new FormValidation.plugins.Bootstrap5({
+                        rowSelector: ".fv-row",
+                        eleInvalidClass: "",
+                        eleValidClass: ""
+                    }),
+                    icon: new FormValidation.plugins.Icon({
+                        valid: 'fa fa-check',
+                        invalid: 'fa fa-times',
+                        validating: 'fa fa-refresh',
+                    }),
+                }
+            })),funsave.push(async function(){
+                var data = { _token: "{{ csrf_token() }}"};
+                data['step'] = 0
+                for(var key in triggervalue[0]){
+                    data[key] = triggervalue[0][key].value
+                }
+                return await fetch('{{ route('consultant.save') }}', {
+                    method: 'POST', // or 'PUT'
+                    headers: { 'Content-Type': 'application/json', },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then((response) => {
+                    if(response.next){ return response }
+                    return false
+                })
+                .catch(error => {
+                    funerror()
+                })
+            }),funsave.push(async function(){
+                var data = { _token: "{{ csrf_token() }}"};
+                data['step'] = 1
+                data['phone_no'] = document.getElementById('phone_no').value
+
+                for(var key in triggervalue[1]){
+                    data[key] = triggervalue[1][key].value
+                }
+                data['language'] = $('#language').val().toString()
+                return await fetch('{{ route('consultant.save') }}', {
+                    method: 'POST', // or 'PUT'
+                    headers: { 'Content-Type': 'application/json', },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then((response) => {
+                    if(response.next){ return true }
+                    return false
+                })
+                .catch(error => {
+                    funerror()
+                })
+            }),funsave.push(async function(){
+                var data = { _token: "{{ csrf_token() }}"};
+                data['step'] = 2
+                data['phone_no'] = document.getElementById('phone_no').value
+
+                for(var key in triggervalue[2]){
+                    data[key] = triggervalue[2][key].value
+                }
+                return await fetch('{{ route('consultant.save') }}', {
+                    method: 'POST', // or 'PUT'
+                    headers: { 'Content-Type': 'application/json', },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then((response) => {
+                    if(response.next){ return true }
+                    return false
+                })
+                .catch(error => {
+                    funerror()
+                })
+            }),funsave.push(async function(){
+                var data = { _token: "{{ csrf_token() }}"};
+                data['step'] = 3
+                data['phone_no'] = document.getElementById('phone_no').value
+
+                for(var key in triggervalue[3]){
+                    data[key] = triggervalue[3][key].value
+                }
+                return await fetch('{{ route('consultant.save') }}', {
+                    method: 'POST', // or 'PUT'
+                    headers: { 'Content-Type': 'application/json', },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then((response) => {
+                    if(response.next){ return true }
+                    return false
+                })
+                .catch(error => {
+                    funerror()
+                })
+            }),
+            funsave.push(async function(){
+                var data = { _token: "{{ csrf_token() }}"};
+                data['step'] = 4
+                data['phone_no'] = document.getElementById('phone_no').value
+                data['categorie_id'] = categorie_id.value
+
+                return await fetch('{{ route('consultant.save') }}', {
+                    method: 'POST', // or 'PUT'
+                    headers: { 'Content-Type': 'application/json', },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then((response) => {
+                    if(response.next){ return true }
+                    return false
+                })
+                .catch(error => {
+                    funerror()
+                })
+            }),funsave.push(async function(){
+                var data = { _token: "{{ csrf_token() }}"};
+                data['step'] = 5
+                data['phone_no'] = document.getElementById('phone_no').value
+                data['specialized'] = specialized.value
+
+                return await fetch('{{ route('consultant.save') }}', {
+                    method: 'POST', // or 'PUT'
+                    headers: { 'Content-Type': 'application/json', },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then((response) => {
+                    if(response.next){ return true }
+                    return false
+                })
+                .catch(error => {
+                    funerror()
+                })
+            }),funsave.push(async function(){
+                var data = { _token: "{{ csrf_token() }}"};
+                data['step'] = 6
+                data['phone_no'] = document.getElementById('phone_no').value
+
+                for(var key in triggervalue[6]){
+                    if(triggervalue[6][key].type == 'checkbox') data[key] = (triggervalue[6][key].checked)? 1 : 0
+                    else data[key] = triggervalue[6][key].value
+                }
+                return await fetch('{{ route('consultant.save') }}', {
+                    method: 'POST', // or 'PUT'
+                    headers: { 'Content-Type': 'application/json', },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then((response) => {
+                    if(response.next){ return true }
+                    return false
+                })
+                .catch(error => {
+                    funerror()
+                })
+            }),funsave.push(async function(){
+                var data = { _token: "{{ csrf_token() }}"};
+                data['step'] = 7
+                data['phone_no'] = document.getElementById('phone_no').value
+
+                for(var key in triggervalue[7]){
+                    if(triggervalue[7][key].type == 'checkbox') data[key] = (triggervalue[7][key].checked)? 1 : 0
+                    else data[key] = triggervalue[7][key].value
+                }
+                return await fetch('{{ route('consultant.save') }}', {
+                    method: 'POST', // or 'PUT'
+                    headers: { 'Content-Type': 'application/json', },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then((response) => {
+                    if(response.next){ return true }
+                    return false
+                })
+                .catch(error => {
+                    funerror()
+                })
+            }),funsave.push(async function(){
+                let formdata = new FormData()
+                let file = document.getElementById('proof').files
+
+                file.forEach((i,d) => formdata.append(`proof[${d}]`, i))
+                formdata.append("phone_no", document.getElementById('phone_no').value);
+                formdata.append("step", 8);
+                formdata.append("_token", "{{ csrf_token() }}");
+
+                // var data = { _token: "{{ csrf_token() }}"};
+                // data['step'] = 8
+                // data['phone_no'] = document.getElementById('phone_no').value
+                // data['proof'] = document.getElementById('proof').files
+
+                return await fetch('{{ route('consultant.save') }}', {
+                    method: 'POST', // or 'PUT'
+                    // headers: { 'Content-Type': 'application/json', },
+                    body: formdata
+                })
+                .then(response => response.json())
+                .then((response) => {
+                    if(response.next){ return true }
+                    return false
+                })
+                .catch(error => {
+                    funerror()
+                })
+            }),funsave.push(async function(){
+                var data = { _token: "{{ csrf_token() }}"};
+                data['step'] = 9
+                data['phone_no'] = document.getElementById('phone_no').value
+                data['insurance_id'] = document.getElementById('insurance_id').value
+
+                return await fetch('{{ route('consultant.save') }}', {
+                    method: 'POST', // or 'PUT'
+                    headers: { 'Content-Type': 'application/json', },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then((response) => {
+                    if(response.next){ return true }
+                    return false
+                })
+                .catch(error => {
+                    funerror()
+                })
+            }),funsave.push(async function(){
+                var data = { _token: "{{ csrf_token() }}"};
+                data['step'] = 10
+                data['phone_no'] = document.getElementById('phone_no').value
+                data['com_con_type'] = document.querySelector('input[name="com_con_type"]:checked').value
+                data['com_off_type'] = document.querySelector('input[name="com_off_type"]:checked').value
+                data['com_pay_type'] = document.querySelector('input[name="com_pay_type"]:checked').value
+                data['com_con_amount'] = com_con_amount.value
+                data['com_off_amount'] = com_off_amount.value
+                data['com_pay_amount'] = com_pay_amount.value
+
+                return await fetch('{{ route('consultant.save') }}', {
+                    method: 'POST', // or 'PUT'
+                    headers: { 'Content-Type': 'application/json', },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then((response) => {
+                    if(response.next){ return true }
+                    return false
+                })
+                .catch(error => {
+                    funerror()
+                })
+            }),
+            document.querySelectorAll('[data-kt-stepper-element="content"]').forEach(function (e,i){
+                var obj = { }
+                e.querySelectorAll('[name]').forEach(function (e){
+                    obj[e.name] = e
+                })
+                triggervalue.push(obj)
+            }),
+            o.addEventListener("click", (function (e) {
                 a[4].validate().then((function (t) {
                     console.log("validated!"), "Valid" == t ? (e.preventDefault(), o.disabled = !0, o.setAttribute("data-kt-indicator", "on"), setTimeout((function () {
                         o.removeAttribute("data-kt-indicator"), o.disabled = !1, r.goNext()
@@ -1284,9 +1654,83 @@ var KTCreateAccount = function () {
         }
     }
 }();
+
+var KTJSTreeCheckable = {
+    init: function () {
+        $("#kt_docs_jstree_checkable")
+          // listen for event
+            .on('changed.jstree', function (e, data) {
+                var i, j, r = [];
+                for(i = 0, j = data.selected.length; i < j; i++) {
+                    r.push(data.instance.get_node(data.selected[i]).id);
+                }
+                categorie_id.value = r.join(', ');
+                console.log(r);
+            })
+            .jstree({
+            plugins: ["wholerow", "checkbox", "types"],
+            core: {
+                themes: {
+                    responsive: !1
+                },
+                data: {!! json_encode($tree) !!}
+            },
+            types: {
+                default: {
+                    icon: ""
+                },
+                file: {
+                    icon: ""
+                }
+            }
+        })
+        $("#kt_docs_jstree_checkable1")
+          // listen for event
+            .on('changed.jstree', function (e, data) {
+                var i, j, r = [];
+                for(i = 0, j = data.selected.length; i < j; i++) {
+                    r.push(data.instance.get_node(data.selected[i]).id);
+                }
+                specialized.value = r.join(', ');
+                console.log(r);
+            })
+            .jstree({
+            plugins: ["wholerow", "checkbox", "types"],
+            core: {
+                themes: {
+                    responsive: !1
+                },
+                data: {!! json_encode($tree1) !!}
+            },
+            types: {
+                default: {
+                    icon: ""
+                },
+                file: {
+                    icon: ""
+                }
+            }
+        })
+    }
+}
+
 KTUtil.onDOMContentLoaded((function () {
     KTCreateAccount.init()
+    KTJSTreeCheckable.init()
 }));
+function funerror() {
+    Swal.fire({
+        text: "Sorry, looks like there are some errors detected, please try again.",
+        icon: "error",
+        buttonsStyling: !1,
+        confirmButtonText: "Ok, got it!",
+            customClass: {
+                confirmButton: "btn btn-light"
+            }
+    }).then((function () {
+        KTUtil.scrollTop()
+    }))
+}
 </script>
 @endsection
 </x-base-layout>

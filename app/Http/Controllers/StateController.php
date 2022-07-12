@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\State;
+use App\Models\City;
 use Auth;
 use Validator;
 use Illuminate\Support\Facades\Input;
@@ -31,22 +32,20 @@ class StateController extends Controller
         ->orderBy('states.id','desc')->select('states.*','countries.country_name as country_name')->get();
 
         return DataTables::of($datas)
-                			->addIndexColumn()
-                            ->addColumn('country_name', function(State $data) {
-                                 return $data->country_name;
-                            })
-                            ->addColumn('state_name', function(State $data) {
-                                return $data->state_name;
-                            })
-                            ->addColumn('status', function(State $data) {
-                                return $data->status;
-                            })
-                            ->addColumn('action', function(State $data) {
-                                return '<div class="action-list"><a href=""><i class="fas fa-edit"></i>Edit</a></div>';
-                            })
-                            ->rawColumns(['country_name','state_name','status','action'])
-                            ->toJson();
-    }
+            ->addIndexColumn()
+            ->addColumn('status', function(State $data) {
+                $status = ($data->status == 1)?'checked':'' ;
+                $route = \route('master.state.status',$data->id);
+                    return "<div class='form-check form-switch form-check-custom form-check-solid'>
+                            <input class='form-check-input' type='checkbox' status data-url='$route' value='' $status />
+                        </div>";
+            })
+            ->addColumn('action', function(State $data){
+                return ['Delete'=> \route('master.state.destroy',$data->id),'edit'=> \route('master.state.edit',$data->id)];
+            })
+            ->rawColumns(['status','action'])
+            ->toJson();
+        }
 
 	public function index(){
 		return view('state.index',['action'=>route('master.state.create')]);
@@ -62,100 +61,69 @@ class StateController extends Controller
 
 	public function store(Request $request){
 		$requestedData=$request->all();
-
 		$rules=[
-
 			'countryName' => 'required',
 			'stateName' => 'required|unique:states,state_name,NULL,id,country_id,'.$request->input('countryName'),
-
 		];
-
 		$customs=[
 			'countryName.required'  => 'Country Name should be filled',
 			'stateName.required'  	=> 'State Name should be filled',
 			'stateName.unique'      => 'State Name already taken for this country',
 		];
-
 		$validator = Validator::make($request->all(), $rules,$customs);
-
         if ($validator->fails()) {
           return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
-
         $data = new State;
-
         $data->country_id=$requestedData['countryName'];
         $data->state_name=$requestedData['stateName'];
         $data->save();
-
 		$data1['msg'] = 'New State Added Successfully.';
         return response()->json($data1);
 	}
 
 
-	public function update(Request $request,$id){
+	public function update(Request $request,State $state){
 		$requestedData=$request->all();
-
 		$rules=[
-
-			'countryName' => 'required',
-			'stateName' => 'required|unique:states,state_name,NULL,id,country_id,'.$id,
-
+			'country_id' => 'required',
+			'state_name' => 'required|unique:states,state_name,'.$state->id.',id,country_id,'.$request->country_id.',state_name,'.$request->state_name,
 		];
-
 		$customs=[
-			'countryName.required'  => 'Country Name should be filled',
-			'stateName.required'  	=> 'State Name should be filled',
-			'stateName.unique'      => 'State Name already taken for this country',
+			'country_id.required'  => 'Country Name should be filled',
+			'state_name.required'  	=> 'State Name should be filled',
+			'state_name.unique'      => 'State Name already taken for this country',
 		];
-
-		$validator = Validator::make(Input::all(), $rules,$customs);
-
+		$validator = Validator::make($request->all(), $rules,$customs);
         if ($validator->fails()) {
           return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
 
-        $data = State::findOrFail($id);
-
-        $data->country_id=$requestedData['countryName'];
-        $data->state_name=$requestedData['stateName'];
-        $data->save();
-
+        $state->country_id=$request->country_id;
+        $state->state_name=$request->state_name;
+        $state->update();
 		$data1['msg'] = 'State Updated Successfully.';
         return response()->json($data1);
-
 	}
 
-	public function status($id1,$id2)
+	public function status(Request $request,State $state)
       {
-          $data = State::findOrFail($id1);
-          $data->status = $id2;
-          $data->update();
-      }
-	  public function status1($id1,$id2)
-      {
-          $data = Country::findOrFail($id1);
-          $data->status = $id2;
-          $data->update();
+          $state->status = $request->status;
+          $state->update();
+          return response()->json(['status'=>true,'msg'=>'Status Updated']);
       }
 
-
-    public function edit($id){
-		$data=State::findOrFail($id);
-		$data1=Country::where('status','1')->get();
-		return view('admin.state.edit',compact('data','data1'));
+    public function edit(Request $request,State $state){
+		$data = Country::where('status','1')->get();
+		return view('state.edit',compact('state','data'));
 	}
 
-
-    public function destroy($id)
+    public function destroy(State $state)
     {
-        $data = State::findOrFail($id);
-
-        $data->delete();
-        //--- Redirect Section
+        $state->delete();
         $data1['msg'] = 'Data Deleted Successfully.';
+        $data1['status'] = true;
         return response()->json($data1);
-        //--- Redirect Section Ends
     }
 
 }

@@ -33,7 +33,7 @@
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
-                        <li class="breadcrumb-item text-muted"><a href="{{ route('master.documents.index') }}" class="text-muted text-hover-primary">Consultant Category</a></li>
+                        <li class="breadcrumb-item text-muted"><a href="{{ route('master.consultantcategory.index') }}" class="text-muted text-hover-primary">Consultant Category</a></li>
                         <!--end::Item-->
                         <!--begin::Item-->
                         <li class="breadcrumb-item">
@@ -68,10 +68,10 @@
                                         <label class="required form-label fs-6 mb-2" >Choose Main Category</label>
                                         <!--end::Label-->
                                         <!--begin::Select2-->
-                                        <select class="form-select" name="categorie_id" data-control="select2" data-placeholder="Select an option">
+                                        <select class="form-select" name="categorie_id" id="categorie_id" data-control="select2" required data-placeholder="Select an option">
                                             <option></option>
                                             @foreach ($Category as $key => $value )
-                                                <option value="{{ $value->id }}">{{$value->name }}</option>
+                                                <option url='{{ route('master.category.getchild',$value->id) }}' value="{{ $value->id }}">{{$value->name }}</option>
                                             @endforeach
                                         </select>
                                         <!--begin::Select2-->
@@ -81,11 +81,8 @@
                                         <label class="required form-label fs-6 mb-2" >Choose Child Category</label>
                                         <!--end::Label-->
                                         <!--begin::Select2-->
-                                        <select class="form-select" name="subcategorie_id" data-control="select2" data-placeholder="Select an option">
+                                        <select class="form-select" name="subcategorie_id" id="subcategorie_id" data-control="select2" required data-placeholder="Select an option">
                                             <option></option>
-                                            @foreach ($ChildCategory as $key => $value )
-                                                <option value="{{ $value->id }}">{{$value->name }}</option>
-                                            @endforeach
                                         </select>
                                         <!--begin::Select2-->
                                     </div>
@@ -107,7 +104,7 @@
                                         </div>
                                     </div>
                                     <div class="mb-10">
-                                        <button type="submit" class="btn btn-primary btn-hover-rise me-5">Submit</button>
+                                        <button type="submit" class="btn btn-primary btn-hover-rise me-5">Save</button>
                                     </div>
                                 </div>
                             </div>
@@ -121,4 +118,24 @@
         </div>
         <!--end::Post-->
     </div>
+    @section('scripts')
+    <script>
+    var child = $("#subcategorie_id")
+    $("#categorie_id").on('select2:select', function (e) {
+        var data = e.params.data.element.attributes[0].value
+        $.ajax({
+            url:data,
+            method:"POST",
+            data:{"_token": "{{ csrf_token() }}"},
+            success:function(data){
+                var option = null
+                data.child.forEach((e)=>{
+                    option += '<option value='+e.id+'>'+e.name+'</option>'
+                })
+                child.html(option)
+            }
+        })
+    })
+    </script>
+    @endsection
 </x-base-layout>

@@ -46,7 +46,7 @@
         <div class="toolbar" id="kt_toolbar">
             <div id="kt_toolbar_container" class="container-fluid d-flex flex-stack">
                 <div data-kt-swapper="true" data-kt-swapper-mode="prepend" data-kt-swapper-parent="{default: '#kt_content_container', 'lg': '#kt_toolbar_container'}" class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
-                    <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">Document</h1>
+                    <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">State</h1>
                     <span class="h-20px border-gray-300 border-start mx-4"></span>
                     <ul class="breadcrumb breadcrumb-separatorless fw-bold fs-7 my-1">
                         <li class="breadcrumb-item text-muted">
@@ -59,12 +59,11 @@
                         <li class="breadcrumb-item">
                             <span class="bullet bg-gray-300 w-5px h-2px"></span>
                         </li>
-                        <li class="breadcrumb-item text-muted"><a href="{{ route('master.documents.index') }}" class="text-muted text-hover-primary">Document</a></li>
-                        <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-300 w-5px h-2px"></span>
-                        </li>
-                        <li class="breadcrumb-item text-dark">Create Document</li>
+                        <li class="breadcrumb-item text-muted"><a href="{{ route('master.state.index') }}" class="text-muted text-hover-primary">state</a></li>
                     </ul>
+                </div>
+                <div class="d-flex align-items-center gap-2 gap-lg-3">
+                    <a href="{{ route('master.state.create') }}" class="btn btn-sm btn-primary">Create</a>
                 </div>
             </div>
         </div>
@@ -98,16 +97,22 @@
                                         <span id="kt_engage_demos_label">Advanced Search</span>
                                     </button>
                                 </div>
+                                <div class="position-relative w-md-300px me-md-2">
+                                    <select class="form-select" id="toogleColum" data-control="select2" data-placeholder="Toggle column" multiple="multiple">
+                                        <option></option>
+                                        <option selected value="0">SNo</option>
+                                        <option selected value="1">Country Name</option>
+                                        <option selected value="2">State Name</option>
+                                        <option selected value="3">Status</option>
+                                        <option selected hidden value="4">Action</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </form>
                 <div class="row gy-10 gx-xl-10">
                     <div class="card card-docs flex-row-fluid mb-2">
-                        <div>
-                            Toggle column: <a class="toggle-vis" data-column="0">SNo</a> - <a class="toggle-vis" data-column="1">Country Name</a> - <a class="toggle-vis" data-column="2">Code</a> -
-                            <a class="toggle-vis" data-column="3">Dialing</a> - <a class="toggle-vis" data-column="4">Action</a>
-                        </div>
                         <table id="kt_datatable" class="table table-row-bordered gy-5">
                             <thead>
                                 <tr class="fw-bold fs-6 text-muted">
@@ -136,43 +141,21 @@
 
     @section('scripts')
     <script>
+        var table = null;
         $(document).ready(function () {
-            const SearchSubmit = document.getElementById('search')
-            const SearchSubmit_two = document.getElementById('search_two')
-            const resetSubmit = document.getElementById('reset')
-            SearchSubmit.addEventListener('click',search)
-            SearchSubmit_two.addEventListener('click',search)
-            resetSubmit.addEventListener('click',reset)
-
-            function search(event){
-                event.preventDefault()
-                var params = {}
-                const datatable_input = document.querySelectorAll('.datatable-input')
-                datatable_input.forEach((data) => {
-                    var i = data.dataset.colIndex
-                    if (params[i]) {
-                        params[i] += '|' + data.value;
-                    } else {
-                        params[i] = data.value;
-                    }
-                })
-                $.each(params, function(i, val) {
-                    table.column(i).search(val ? val : '', false, false);
-                });
-                table.table().draw();
-            }
-
-            function reset(event){
-                event.preventDefault()
-                const datatable_input = document.querySelectorAll('.datatable-input')
-                datatable_input.forEach((data) => {
-                    data.value = ''
-                    table.column(data.dataset.colIndex).search('', false, false);
-                })
-                table.table().draw();
-            }
-
-            var table = $("#kt_datatable").DataTable({
+            table = $("#kt_datatable").DataTable({
+                initComplete: function(settings, json) {
+                    const select = ToogleColum.val()
+                    table.columns().every(function (index) {
+                        if(!select.includes(index.toString())){
+                            var column =  table.column(index)
+                            column.visible(false)
+                        }else{
+                            var column =  table.column(index)
+                            column.visible(true)
+                        }
+                    })
+                },
                 responsive: true,
                 buttons: [
                         'print',
@@ -197,7 +180,7 @@
                     type: 'POST',
                     data: {
                         "_token": "{{ csrf_token() }}",
-                        columnsDef : ['id','country_name','state_name','status','action']
+                        columnsDef : ['id','country_name','state_name','status',]
                     }
 
                 },
@@ -208,33 +191,21 @@
                     { data: 'status'},
                     { data: 'action'}
                 ],
-
+                columnDefs : [
+                    {
+                        targets: -1,
+                        data: null,
+                        orderable: false,
+                        className: 'text-end',
+                        render: function (data, type, row) {
+                            return `
+                                <a href="${data.edit}" class="btn btn-icon btn-primary"><i class="las la-edit fs-2 me-2"></i></a>
+                                <a href="${data.Delete}" delete class="btn btn-icon btn-danger"><i href="${data.Delete}" delete class="las la-trash fs-2 me-2"></i></a>
+                            `;
+                        },
+                    },
+                ],
                 drawCallback : function( settings ) { }
-            });
-
-            $('a.toggle-vis').on('click', function (e) {
-                e.preventDefault();
-                // Get the column API object
-                var column = table.column($(this).attr('data-column'));
-                // Toggle the visibility
-                column.visible(!column.visible());
-            });
-
-            $('#filter').on('change', function (e) {
-                const selected = $('#filter').val()
-                const length = selected.length
-                if(length > 0){
-                    document.getElementById('search_div').removeAttribute('hidden')
-                }else{
-                    document.getElementById('search_div').setAttribute('hidden',true)
-                }
-                document.querySelectorAll('[data-id-filter').forEach((a) =>{
-                    if(selected.indexOf(a.getAttribute('data-id-filter')) !== -1)  {
-                        a.removeAttribute('hidden')
-                    }else{
-                        a.setAttribute('hidden',true)
-                    }
-                })
             });
         });
         </script>

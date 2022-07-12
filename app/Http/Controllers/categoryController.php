@@ -8,73 +8,66 @@ use Illuminate\Support\Facades\Input;
 use DataTables;
 use Illuminate\Support\Collection;
 use Validator;
+use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
     public function index(){
-        return view('category.index');
+        $Category = Category::where('type',0)->get();
+        return view('category.index',['Category'=>$Category]);
     }
 
-    public function datatable(){
-        $datas = Category::where('type',0)->orderBy('id','desc')->get();
+    public function datatable(Request $request){
+        $search=[];
+        $columns=$request->columns;
+        foreach($columns as $colum){
+            $search[] = $colum['search']['value'];
+        }
+
+        $datas = Category::when($search[1],function($query,$search){   return $query->where('type',$search);   })
+        ->when($search[2],function($query,$search){ return $query->where('name','like',"%{$search}%");   })
+        ->when($search[3],function($query,$search){ $search = \explode(',',$search); return $query->whereIn('categories_id',$search);   })
+        ->when($search[4],function($query,$search){ return $query->where('description','like',"%{$search}%");   })
+        ->when($search[5],function($query,$search){ return $query->where('tags','like',"%{$search}%");   })
+        ->when($search[6],function($query,$search){ return $query->where('display_in_home',$search);   })
+        ->when($search[7],function($query,$search){ return $query->where('status',$search);   })
+        ->orderBy('id','desc')->get();
+
+
         return DataTables::of($datas)
         ->addIndexColumn()
-        ->addColumn('type', function(Category $data) {
-            return ($data->type == 0)?'Parent':'Child';
+        // ->addColumn('type', function(Category $data) {  return ($data->type == 0)?'Parent':'Child';  })
+        ->addColumn('display_in_home', function(Category $data) {
+            $status = ($data->display_in_home == 1)?'checked':'' ;
+            $route = \route('master.category.display_in_home',$data->id);
+            return "<div class='form-check form-switch form-check-custom form-check-solid'>
+                    <input class='form-check-input' type='checkbox' status data-url='$route' value=''$status />
+                </div>";
         })
-        ->addColumn('name', function(Category $data) {
-            return $data->name;
-        })
-        ->addColumn('img', function(Category $data) {
-            // Storage::disk('public')->get($filename);
-            $path = storage_path($data->img);
-            return '<div class="symbol symbol-circle symbol-50px overflow-hidden me-3">
-                <div class="symbol-label">
-                    <img src="'.$path.'" alt="Emma Smith" class="w-100">
-                </div>
-            </div>';
-        })
-        ->addColumn('tags', function(Category $data) {
-            return $data->name;
-        })
+        // ->addColumn('categories_id', function (Category $data){
+        //     if($data->categories_id) return $data->child->name;
+        //     return "";
+        // })
         ->addColumn('status', function(Category $data) {
-            return $data->status;
+            $status = ($data->status == 1)?'checked':'' ;
+            $route = \route('master.category.status',$data->id);
+            return "<div class='form-check form-switch form-check-custom form-check-solid'>
+                    <input class='form-check-input' type='checkbox' status data-url='$route' value='' $status />
+                </div>";
         })
-        ->addColumn('action', function(Category $data) {
-            return '<a href="#" class="btn btn-sm btn-light btn-active-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">Actions
-            <span class="svg-icon svg-icon-5 m-0">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path d="M11.4343 12.7344L7.25 8.55005C6.83579 8.13583 6.16421 8.13584 5.75 8.55005C5.33579 8.96426 5.33579 9.63583 5.75 10.05L11.2929 15.5929C11.6834 15.9835 12.3166 15.9835 12.7071 15.5929L18.25 10.05C18.6642 9.63584 18.6642 8.96426 18.25 8.55005C17.8358 8.13584 17.1642 8.13584 16.75 8.55005L12.5657 12.7344C12.2533 13.0468 11.7467 13.0468 11.4343 12.7344Z" fill="currentColor" />
-                </svg>
-            </span>
-            <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-125px py-4" data-kt-menu="true">
-                <div class="menu-item px-3">
-                    <a href="../../demo1/dist/apps/ecommerce/catalog/edit-product.html" class="menu-link px-3">Edit</a>
-                </div>
-                <div class="menu-item px-3">
-                    <a href="#" class="menu-link px-3" data-kt-ecommerce-product-filter="delete_row">Delete</a>
-                </div>
-            </div>';
+        ->addColumn('action', function(Category $data){
+            return ['Delete'=> \route('master.category.destroy',$data->id),'edit'=> \route('master.category.edit',$data->id),'Delete_text' => ($data->type == 0)?'If You Delete Parent Child also Delete':null];
         })
-        ->rawColumns(['type','name','img','action','status'])
+        ->addColumn('img', function(Category $data){
+            $exists = Storage::disk('public_custom')->exists($data->img);
+            if($exists) return "<img     width = 120
+            height = 150 src='".asset("storage/$data->img")."' />";
+            return "";
+        })
+
+        ->rawColumns(['type','status','action','img','display_in_home','categories_id'])
         ->toJson();
     }
-    // public function datatable(Request $request)
-    // {
-    //     $search=[];
-    //     $columns=$request->columns;
-    //     foreach($columns as $colum){
-    //         $search[] = $colum['search']['value'];
-    //     }
-
-    //     $data = Document::orderBy('id','desc')->get();
-    //     $recordsFiltered = count($data);
-    //     $recordsTotal = Document::count();
-    //     $rangeRow = (new Collection($data));
-
-    //     return response()->json(['data'=>$rangeRow,'recordsFiltered'=>$recordsFiltered,'recordsTotal'=>$recordsTotal]);
-
-    // }
 
     public function create(){
         $Category = Category::where('type',0)->get();
@@ -88,10 +81,12 @@ class CategoryController extends Controller
 
         $rules=[
 			'name' => 'required|unique:categories,name,'.$Request->input('name'),
+            'img'  => 'required'
 		];
 
 		$customs=[
 			'name.required'  => 'Title Name should be filled',
+			'img.required'  => 'Choose a Image',
 			'name.unique'      	=> 'Title Name already taken',
 		];
 
@@ -101,7 +96,7 @@ class CategoryController extends Controller
           return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
         $IMGname = $Request->file('img')->getClientOriginalName();
-        $path = $Request->file('img')->store('public/uploadFiles/category');
+        $path = $Request->file('img')->store('uploadFiles/category','public_custom');
 
         $Category = new Category();
         $Category->type = $Request->type;
@@ -136,13 +131,13 @@ class CategoryController extends Controller
         }
         if(isset($Request->img)){
             $IMGname = $Request->file('img')->getClientOriginalName();
-            $path = $Request->file('img')->store('public/uploadFiles/category');
+            $path = $Request->file('img')->store('uploadFiles/category','public_custom');
         }
 
 		$Category = Category::findOrFail($id);
         $Category->type = $Request->type;
         $Category->name = $Request->name;
-        $Category->categories_id = $Request->categories_id;
+        $Category->categories_id = ($Request->type == 1)?$Request->categories_id:'';
         $Category->description = $Request->description;
         $Category->tags = $Request->tags;
         $Category->sort_no_list = $Request->sort_no_list;
@@ -157,5 +152,36 @@ class CategoryController extends Controller
         return response()->json(['msg'=>'Update']);
 
     }
-
+    public function status(Request $request,Category $category){
+        $category->status = $request->status;
+        $category->update();
+        return response()->json(['status'=>true,'msg'=>'Status Updated']);
+    }
+    public function destroy(Category $category){
+        if($category->type == 0){
+            $cat = Category::where('categories_id',$category->id)->get();
+            foreach ($cat as $key => $value) {
+                # code...
+                $value->delete();
+            }
+            $category->delete();
+            $data1['msg'] = 'Data Deleted Successfully.';
+            $data1['status'] = true;
+            return response()->json($data1);
+        }else{
+            $category->delete();
+            $data1['msg'] = 'Data Deleted Successfully.';
+            $data1['status'] = true;
+            return response()->json($data1);
+        }
+    }
+    public function display_in_home(Request $request,Category $category){
+        $category->display_in_home = $request->status;
+        $category->update();
+        return response()->json(['status'=>true,'msg'=>'Status Updated']);
+    }
+    public function getchild(Request $Request,Category $category){
+        $child = Category::where('categories_id',$category->id)->where('status',1)->get();
+    	return response()->json(['child'=>$child]);
+    }
 }

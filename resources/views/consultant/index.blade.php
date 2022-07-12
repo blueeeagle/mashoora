@@ -51,7 +51,7 @@
         <div class="toolbar" id="kt_toolbar">
             <div id="kt_toolbar_container" class="container-fluid d-flex flex-stack">
                 <div data-kt-swapper="true" data-kt-swapper-mode="prepend" data-kt-swapper-parent="{default: '#kt_content_container', 'lg': '#kt_toolbar_container'}" class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
-                    <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">Country</h1>
+                    <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">Consultant</h1>
                     <span class="h-20px border-gray-300 border-start mx-4"></span>
                     <ul class="breadcrumb breadcrumb-separatorless fw-bold fs-7 my-1">
                         <li class="breadcrumb-item text-muted">
@@ -60,12 +60,11 @@
                         <li class="breadcrumb-item">
                             <span class="bullet bg-gray-300 w-5px h-2px"></span>
                         </li>
-                        <li class="breadcrumb-item text-muted">Master</li>
-                        <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-300 w-5px h-2px"></span>
-                        </li>
-                        <li class="breadcrumb-item text-muted"><a href="{{ route('master.country.index') }}" class="text-muted text-hover-primary">Country</a></li>
+                        <li class="breadcrumb-item text-muted">Consultant</li>
                     </ul>
+                </div>
+                <div class="d-flex align-items-center gap-2 gap-lg-3">
+                    <a href="{{ route('consultant.consultant.create') }}" class="btn btn-sm btn-primary">Create</a>
                 </div>
             </div>
         </div>
@@ -99,36 +98,103 @@
                                         <span id="kt_engage_demos_label">Advanced Search</span>
                                     </button>
                                 </div>
-                                <div class="position-relative w-md-300px me-md-2">
-                                    <select class="form-select" id="toogleColum" data-control="select2" data-placeholder="Toggle column" multiple="multiple">
-                                        <option></option>
-                                        <option selected value="0">SNo</option>
-                                        <option selected value="1">Country Name</option>
-                                        <option selected value="2">Code</option>
-                                        <option selected value="3">Dialing</option>
-                                    </select>
-                                </div>
                             </div>
                         </div>
                     </div>
                 </form>
                 <div class="row gy-10 gx-xl-10">
                     <div class="card card-docs flex-row-fluid mb-2">
+                        <div>
+                            Toggle column: <a class="toggle-vis" data-column="0">SNo</a> - <a class="toggle-vis" data-column="1">Country Name</a> - <a class="toggle-vis" data-column="2">Code</a> -
+                            <a class="toggle-vis" data-column="3">Dialing</a>
+                        </div>
                         <table id="kt_datatable" class="table table-row-bordered gy-5">
                             <thead>
                                 <tr class="fw-bold fs-6 text-muted">
-                                    <th>SNo</th>
-                                    <th>Country Name</th>
-                                    <th>Code</th>
-                                    <th>Dialing</th>
+                                    <th>Sno</th>
+                                    <th>Phone No</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Bio Data</th>
+                                    <th>Date of Birth</th>
+                                    <th>Expriance</th>
+                                    <th>landline</th>
+                                    <th>Language</th>
+                                    <th>Address</th>
+                                    <th>Country</th>
+                                    <th>State</th>
+                                    <th>City</th>
+                                    <th>Zip Code</th>
+                                    <th>Firm Type</th>
+                                    <th>specialized</th>
+                                    <th>Category</th>
+                                    <th>preferre Slot</th>
+                                    <th>Video</th>
+                                    <th>video Amount</th>
+                                    <th>voice</th>
+                                    <th>voice amount</th>
+                                    <th>Text</th>
+                                    <th>Text amount</th>
+                                    <th>Direct</th>
+                                    <th>Direct Amount</th>
+                                    <th>Account name</th>
+                                    <th>Account number</th>
+                                    <th>Bank name</th>
+                                    <th>Branch</th>
+                                    <th>IFCS code</th>
+                                    <th>Bank status</th>
+                                    <th>proof</th>
+                                    <th>Insurance</th>
+                                    <th>Commission Consultant Type</th>
+                                    <th>Commission Consultant Amount</th>
+                                    <th>Commission Offers Type</th>
+                                    <th>Commission Offers Amount</th>
+                                    <th>Commission Payout Type</th>
+                                    <th>Commission Payout Amount</th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
-                                    <th>SNo</th>
-                                    <th>Country Name</th>
-                                    <th>Code</th>
-                                    <th>Dialing</th>
+                                    <th>Sno</th>
+                                    <th>Phone No</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Bio Data</th>
+                                    <th>Date of Birth</th>
+                                    <th>Expriance</th>
+                                    <th>landline</th>
+                                    <th>Language</th>
+                                    <th>Address</th>
+                                    <th>Country</th>
+                                    <th>State</th>
+                                    <th>City</th>
+                                    <th>Zip Code</th>
+                                    <th>Firm Type</th>
+                                    <th>specialized</th>
+                                    <th>Category</th>
+                                    <th>preferre Slot</th>
+                                    <th>Video</th>
+                                    <th>video Amount</th>
+                                    <th>voice</th>
+                                    <th>voice amount</th>
+                                    <th>Text</th>
+                                    <th>Text amount</th>
+                                    <th>Direct</th>
+                                    <th>Direct Amount</th>
+                                    <th>Account name</th>
+                                    <th>Account number</th>
+                                    <th>Bank name</th>
+                                    <th>Branch</th>
+                                    <th>IFCS code</th>
+                                    <th>Bank status</th>
+                                    <th>proof</th>
+                                    <th>Insurance</th>
+                                    <th>Commission Consultant Type</th>
+                                    <th>Commission Consultant Amount</th>
+                                    <th>Commission Offers Type</th>
+                                    <th>Commission Offers Amount</th>
+                                    <th>Commission Payout Type</th>
+                                    <th>Commission Payout Amount</th>
                                 </tr>
                             </tfoot>
                         </table>
@@ -140,12 +206,10 @@
 
     @section('scripts')
     <script>
-        var table = null
         $(document).ready(function () {
             const SearchSubmit = document.getElementById('search')
             const SearchSubmit_two = document.getElementById('search_two')
             const resetSubmit = document.getElementById('reset')
-            const ToogleColum = $('#toogleColum');
             SearchSubmit.addEventListener('click',search)
             SearchSubmit_two.addEventListener('click',search)
             resetSubmit.addEventListener('click',reset)
@@ -178,20 +242,9 @@
                 table.table().draw();
             }
 
-            table = $("#kt_datatable").DataTable({
-                initComplete: function(settings, json) {
-                    const select = ToogleColum.val()
-                    table.columns().every(function (index) {
-                        if(!select.includes(index.toString())){
-                            var column =  table.column(index)
-                            column.visible(false)
-                        }else{
-                            var column =  table.column(index)
-                            column.visible(true)
-                        }
-                    })
-                },
+            var table = $("#kt_datatable").DataTable({
                 responsive: true,
+                scrollX: true,
                 buttons: [
                         'print',
                         'copyHtml5',
@@ -200,7 +253,8 @@
                         'pdfHtml5',
                     ],
                 // Pagination settings
-                dom: `<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>`,
+                dom: `<'row'<'col-sm-12'tr>>
+                <'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>`,
                 // read more: https://datatables.net/examples/basic_init/dom.html
 
                 lengthMenu: [5, 10, 25, 100],
@@ -210,36 +264,108 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url : "{{route('master.country.datatable')}}",
+                    url : "{{route('consultant.consultant.datatable')}}",
                     type: 'POST',
                     data: {
                         "_token": "{{ csrf_token() }}",
-                        columnsDef : ['id','country_name','country_code','dialing']
+                        columnsDef : [
+                            'DT_RowIndex',
+                            'phone_no',
+                            'name' ,
+                            'email' ,
+                            'bio_data' ,
+                            'dob' ,
+                            'exp_year' ,
+                            'landline' ,
+                            'language' ,
+                            'register_address' ,
+                            'country_id' ,
+                            'state_id' ,
+                            'city_id' ,
+                            'zipcode' ,
+                            'type' ,
+                            'specialized' ,
+                            'categorie_id' ,
+                            'preferre_slot' ,
+                            'video' ,
+                            'video_amount' ,
+                            'voice' ,
+                            'voice_amount' ,
+                            'text' ,
+                            'text_amount' ,
+                            'direct' ,
+                            'direct_amount' ,
+                            'account_name' ,
+                            'account_number' ,
+                            'bank_name' ,
+                            'branch' ,
+                            'ifsc_code' ,
+                            'bank_status' ,
+                            'proof' ,
+                            'insurance_id' ,
+                            'com_con_type' ,
+                            'com_con_amount' ,
+                            'com_off_type' ,
+                            'com_off_amount' ,
+                            'com_pay_type' ,
+                            'com_pay_amount',
+                        ]
                     }
 
                 },
                 columns: [
-                    { data: 'DT_RowIndex'},
-                    { data: 'country_name'},
-                    { data: 'country_code'},
-                    { data: 'dialing'},
+                    { data : 'DT_RowIndex'},
+                    { data : 'phone_no'},
+                    { data : 'name' },
+                    { data : 'email' },
+                    { data : 'bio_data' },
+                    { data : 'dob' },
+                    { data : 'exp_year' },
+                    { data : 'landline' },
+                    { data : 'language' },
+                    { data : 'register_address' },
+                    { data : 'country_id' },
+                    { data : 'state_id' },
+                    { data : 'city_id' },
+                    { data : 'zipcode' },
+                    { data : 'type' },
+                    { data : 'specialized' },
+                    { data : 'categorie_id' },
+                    { data : 'preferre_slot' },
+                    { data : 'video' },
+                    { data : 'video_amount' },
+                    { data : 'voice' },
+                    { data : 'voice_amount' },
+                    { data : 'text' },
+                    { data : 'text_amount' },
+                    { data : 'direct' },
+                    { data : 'direct_amount' },
+                    { data : 'account_name' },
+                    { data : 'account_number' },
+                    { data : 'bank_name' },
+                    { data : 'branch' },
+                    { data : 'ifsc_code' },
+                    { data : 'bank_status' },
+                    { data : 'proof' },
+                    { data : 'insurance_id' },
+                    { data : 'com_con_type' },
+                    { data : 'com_con_amount' },
+                    { data : 'com_off_type' },
+                    { data : 'com_off_amount' },
+                    { data : 'com_pay_type' },
+                    { data : 'com_pay_amount' },
                 ],
 
                 drawCallback : function( settings ) { }
             });
 
-            ToogleColum.on('change', function (e) {
-                const select = ToogleColum.val()
-                table.columns().every(function (index) {
-                    if(!select.includes(index.toString())){
-                        var column =  table.column(index)
-                        column.visible(false)
-                    }else{
-                        var column =  table.column(index)
-                        column.visible(true)
-                    }
-                })
-            })
+            $('a.toggle-vis').on('click', function (e) {
+                e.preventDefault();
+                // Get the column API object
+                var column = table.column($(this).attr('data-column'));
+                // Toggle the visibility
+                column.visible(!column.visible());
+            });
 
             $('#filter').on('change', function (e) {
                 const selected = $('#filter').val()
@@ -256,7 +382,7 @@
                         a.setAttribute('hidden',true)
                     }
                 })
-            })
+            });
         });
     </script>
     @endsection

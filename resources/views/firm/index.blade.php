@@ -25,43 +25,50 @@
                 <div id="kt_explore_scroll" class="scroll-y me-n5 pe-5" data-kt-scroll="true" data-kt-scroll-height="auto" data-kt-scroll-wrappers="#kt_engage_demos_body" data-kt-scroll-dependencies="#kt_engage_demos_header" data-kt-scroll-offset="5px">
                     <!--begin::Wrapper-->
                     <div class="fv-row mb-12">
-                        <select class="form-select form-select-solid" data-control="select2" data-placeholder="Search option" data-allow-clear="true" multiple="multiple">
-                            <option></option>
-
+                        <select class="form-select form-select-solid" data-control="select2" data-placeholder="Search option" data-allow-clear="true" id="filter" multiple="multiple">
+                            <option value="state_name">State Name</option>
+                            <option value="city_name">city Name</option>
                         </select>
                     </div>
-                    <!--end::Wrapper-->
+                    <div class="row">
+                        <div class="col-xxl-4" data-id-filter="state_name" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">State Name</label>
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='2' />
+                        </div>
+                        <div class="col-xxl-4" data-id-filter="city_name" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">city Name</label>
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='3' />
+                        </div>
+                    </div>
+                    <div class="rounded py-4 px-6 mb-5" hidden id="search_div">
+                        <button type="button" id="search_two" class="btn btn-primary me-5">Search</button>
+                    </div>
                 </div>
-                <!--end::Content-->
             </div>
-            <!--end::Body-->
         </div>
-        <!--end::Card-->
     </div>
-
     <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
         <div class="toolbar" id="kt_toolbar">
             <div id="kt_toolbar_container" class="container-fluid d-flex flex-stack">
                 <div data-kt-swapper="true" data-kt-swapper-mode="prepend" data-kt-swapper-parent="{default: '#kt_content_container', 'lg': '#kt_toolbar_container'}" class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
-                    <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">Company Setting</h1>
+                    <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">Firms</h1>
                     <span class="h-20px border-gray-300 border-start mx-4"></span>
                     <ul class="breadcrumb breadcrumb-separatorless fw-bold fs-7 my-1">
                         <li class="breadcrumb-item text-muted">
-                            <a href="" class="text-muted text-hover-primary">Home</a>
+                            <a href="/" class="text-muted text-hover-primary">Home</a>
                         </li>
                         <li class="breadcrumb-item">
                             <span class="bullet bg-gray-300 w-5px h-2px"></span>
                         </li>
-                        <li class="breadcrumb-item text-muted">Setting</li>
+                        <li class="breadcrumb-item text-muted">User</li>
                         <li class="breadcrumb-item">
                             <span class="bullet bg-gray-300 w-5px h-2px"></span>
                         </li>
-                        <li class="breadcrumb-item text-muted"><a href="#" class="text-muted text-hover-primary">Company</a></li>
-                        <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-300 w-5px h-2px"></span>
-                        </li>
-                        {{-- <li class="breadcrumb-item text-dark">Create Document</li> --}}
+                        <li class="breadcrumb-item text-muted">Firms</li>
                     </ul>
+                </div>
+                <div class="d-flex align-items-center gap-2 gap-lg-3">
+                    <a href="{{ route('user.firms.create') }}" class="btn btn-sm btn-primary" >Create</a>
                 </div>
             </div>
         </div>
@@ -84,169 +91,236 @@
                                         </svg>
                                     </span>
                                     <!--end::Svg Icon-->
-                                    <input type="text" class="form-control form-control-solid ps-10 datatable-input" data-col-index='1' name="search" value="" placeholder="name" />
+                                    <input type="text" class="form-control form-control-solid ps-10 datatable-input" data-col-index='1' name="search" value="" placeholder="Country" />
                                 </div>
                                 <!--end::Input group-->
                                 <!--begin:Action-->
                                 <div class="d-flex align-items-center">
                                     <button type="button" id="search" class="btn btn-primary me-5">Search</button>
                                     <button type="button" id="reset" class="btn btn-primary me-5">Reset</button>
-                                    <button id="kt_engage_demos_toggle" class="engage-demos-toggle btn btn-flex h-35px bg-body btn-color-gray-700 btn-active-color-gray-900 shadow-sm fs-6 px-4 rounded-top-0" title="" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-dismiss="click" data-bs-trigger="hover" data-bs-original-title="Check out 22 more demos">
-                                        <span id="kt_engage_demos_label">Demos</span>
+                                    <button id="kt_engage_demos_toggle" class="engage-demos-toggle btn btn-flex h-35px bg-body btn-color-gray-700 btn-active-color-gray-900 shadow-sm fs-6 px-4 rounded-top-0" title="" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-dismiss="click" >
+                                        <span id="kt_engage_demos_label">Advanced Search</span>
                                     </button>
-                                    <a id="kt_horizontal_search_advanced_link_new" class="btn btn-link" data-bs-toggle="collapse" href="#kt_advanced_search_form_new">Advanced Search</a>
                                 </div>
-                                <!--end:Action-->
-                            </div>
-                            <!--end::Compact form-->
-                            <!--begin::Advance form-->
-                            <div class="collapse" id="kt_advanced_search_form_new">
-                                <!--begin::Separator-->
-                                <div class="separator separator-dashed mt-9 mb-6"></div>
-                                <!--end::Separator-->
-                                <!--begin::Row-->
-                                <div class="row g-8 mb-8">
-                                    <!--begin::Col-->
-                                    <div class="col-xxl-4">
-                                        <label class="fs-6 form-label fw-bolder text-dark">Email</label>
-                                        <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='2'  value="" />
-                                    </div>
-                                    <div class="col-xxl-4">
-                                        <label class="fs-6 form-label fw-bolder text-dark">phone</label>
-                                        <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='3'  value="" />
-                                    </div>
-                                    <div class="col-xxl-4">
-                                        <label class="fs-6 form-label fw-bolder text-dark">permission</label>
-                                        <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='3'  value="" />
-                                    </div>
-                                    <!--end::Col-->
+                                <div class="position-relative w-md-300px me-md-2">
+                                    <select class="form-select" id="toogleColum" data-control="select2" data-placeholder="Toggle column" multiple="multiple">
+                                        <option></option>
+                                        <option selected value="0">SNo</option>
+                                        <option selected value="1">Comapany Name</option>
+                                        <option selected value="2">Have Tax</option>
+                                        <option value="3">Taxation Number</option>
+                                        <option value="4">Register on</option>
+                                        <option value="5">About us</option>
+                                        <option value="6">Logo</option>
+                                        <option value="7">Register Address</option>
+                                        <option value="8">Country</option>
+                                        <option value="9">State</option>
+                                        <option value="10">City</option>
+                                        <option value="11">Zipcode</option>
+                                        <option value="12">c-name</option>
+                                        <option value="13">c-title</option>
+                                        <option value="14">c-email</option>
+                                        <option value="15">c-mobile</option>
+                                        <option value="16">c-phone</option>
+                                        <option value="17">Categorie</option>
+                                        <option value="18">Account Number</option>
+                                        <option value="19">Account Name</option>
+                                        <option value="20">Ifsc code</option>
+                                        <option value="21">Bank Name</option>
+                                        <option value="22">Branch</option>
+                                        <option value="23">Bank Status</option>
+                                        <option value="24">Email</option>
+                                        <option value="25">User Name</option>
+                                        <option value="26">Role</option>
+                                        <option value="27">Login Status</option>
+                                        <option value="28">Gallery</option>
+                                        <option value="29">Status</option>
+                                        <option value="30">Action</option>
+                                    </select>
                                 </div>
-                                <!--end::Row-->
                             </div>
-                            <!--end::Advance form-->
                         </div>
-                        <!--end::Card body-->
                     </div>
-                    <!--end::Card-->
                 </form>
                 <div class="row gy-10 gx-xl-10">
                     <div class="card card-docs flex-row-fluid mb-2">
-                        <div>
-                            Toggle column: <a class="toggle-vis" data-column="0">SNo</a> - <a class="toggle-vis" data-column="1">Comapany name</a> - <a class="toggle-vis" data-column="2">Legal name</a> -
-                            <a class="toggle-vis" data-column="3">Trax Number</a> - <a class="toggle-vis" data-column="4">Reg Date</a> - <a class="toggle-vis" data-column="5">Address</a>
-                        </div>
-                        <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_datatable">
+                        <table id="kt_datatable" class="table table-row-bordered gy-5">
                             <thead>
-                                <tr class="text-start text-gray-400 fw-bolder fs-7 text-uppercase gs-0">
-                                    <th class="min-w-200px">Sno</th>
-                                    <th class="min-w-200px">Comapany name</th>
-                                    <th class="min-w-100px">Legal name</th>
-                                    <th class="min-w-70px">Trax Number</th>
-                                    <th class="min-w-70px">Reg Date</th>
-                                    <th class="min-w-70px">Address</th>
+                                <tr class="fw-bold fs-6 text-muted">
+                                    <th>SNo</th>
+                                    <th>Comapany Name</th>
+                                    <th>Have Tax</th>
+                                    <th>Taxation Number</th>
+                                    <th>Register on</th>
+                                    <th>About us</th>
+                                    <th>Logo</th>
+                                    <th>Register Address</th>
+                                    <th>Country</th>
+                                    <th>State</th>
+                                    <th>City</th>
+                                    <th>Zipcode</th>
+                                    <th>c-name</th>
+                                    <th>c-title</th>
+                                    <th>c-email</th>
+                                    <th>c-mobile</th>
+                                    <th>c-phone</th>
+                                    <th>Categorie</th>
+                                    <th>Account Number</th>
+                                    <th>Account Name</th>
+                                    <th>Ifsc code</th>
+                                    <th>Bank Name</th>
+                                    <th>Branch</th>
+                                    <th>Bank Status</th>
+                                    <th>Email</th>
+                                    <th>User Name</th>
+                                    <th>Role</th>
+                                    <th>Login Status</th>
+                                    <th>Gallery</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody class="fw-bold text-gray-600"></tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>SNo</th>
+                                    <th>Comapany Name</th>
+                                    <th>Have Tax</th>
+                                    <th>Taxation Number</th>
+                                    <th>Register on</th>
+                                    <th>About us</th>
+                                    <th>Logo</th>
+                                    <th>Register Address</th>
+                                    <th>Country</th>
+                                    <th>State</th>
+                                    <th>City</th>
+                                    <th>Zipcode</th>
+                                    <th>c-name</th>
+                                    <th>c-title</th>
+                                    <th>c-email</th>
+                                    <th>c-mobile</th>
+                                    <th>c-phone</th>
+                                    <th>Categorie</th>
+                                    <th>Account Number</th>
+                                    <th>Account Name</th>
+                                    <th>Ifsc code</th>
+                                    <th>Bank Name</th>
+                                    <th>Branch</th>
+                                    <th>Bank Status</th>
+                                    <th>Email</th>
+                                    <th>User Name</th>
+                                    <th>Role</th>
+                                    <th>Login Status</th>
+                                    <th>Gallery</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-
 @section('scripts')
-<script>
-    $(document).ready(function () {
-        const SearchSubmit = document.getElementById('search')
-        const resetSubmit = document.getElementById('reset')
-        SearchSubmit.addEventListener('click',search)
-        resetSubmit.addEventListener('click',reset)
+<script type="text/javascript">
+    var table = null;
+        $(document).ready(function () {
+            table = $("#kt_datatable").DataTable({
+                initComplete: function(settings, json) {
+                    const select = ToogleColum.val()
+                    table.columns().every(function (index) {
+                        if(!select.includes(index.toString())){
+                            var column =  table.column(index)
+                            column.visible(false)
+                        }else{
+                            var column =  table.column(index)
+                            column.visible(true)
+                        }
+                    })
+                },
+                responsive: true,
+                buttons: [
+                        'print',
+                        'copyHtml5',
+                        'excelHtml5',
+                        'csvHtml5',
+                        'pdfHtml5',
+                    ],
+                // Pagination settings
+                dom: `<'row'<'col-sm-12'tr>>
+                <'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>`,
+                // read more: https://datatables.net/examples/basic_init/dom.html
 
-        function search(event){
-            event.preventDefault()
-            var params = {}
-            const datatable_input = document.querySelectorAll('.datatable-input')
-            datatable_input.forEach((data) => {
-                var i = data.dataset.colIndex
-                if (params[i]) {
-                    params[i] += '|' + data.value;
-                } else {
-                    params[i] = data.value;
-                }
-            })
-            $.each(params, function(i, val) {
-                table.column(i).search(val ? val : '', false, false);
-            });
-            table.table().draw();
-        }
+                lengthMenu: [5, 10, 25, 100],
 
-        function reset(event){
-            event.preventDefault()
-            const datatable_input = document.querySelectorAll('.datatable-input')
-            datatable_input.forEach((data) => {
-                data.value = ''
-                table.column(data.dataset.colIndex).search('', false, false);
-            })
-            table.table().draw();
-        }
+                pageLength: 10,
+                searchDelay: 500,
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url : "{{route('user.firms.datatable')}}",
+                    type: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        columnsDef : ['id','comapany_name','legal_name','have_tax','taxation_number','register_on','about_us','logo','register_address','country_id','state_id','city_id',
+                        'zipcode','cname','ctitle','cemail','cmobile','cphone','categorie_id','account_number','account_name','ifsc_code','bank_name','branch','bank_status','email',
+                    'user_name','role','login_status','gallery','status']
+                    }
 
-
-
-        var table = $("#kt_datatable").DataTable({
-            responsive: true,
-            buttons: [
-                    'print',
-                    'copyHtml5',
-                    'excelHtml5',
-                    'csvHtml5',
-                    'pdfHtml5',
+                },
+                columns: [
+                    { data: 'DT_RowIndex'},
+                    { data: 'comapany_name' },
+                    { data: 'have_tax' },
+                    { data: 'taxation_number'},
+                    { data: 'register_on'},
+                    { data: 'about_us'},
+                    { data: 'logo'},
+                    { data: 'register_address'},
+                    { data: 'country_id'},
+                    { data: 'state_id'},
+                    { data: 'city_id'},
+                    { data: 'zipcode'},
+                    { data: 'cname'},
+                    { data: 'ctitle'},
+                    { data: 'cemail'},
+                    { data: 'cmobile'},
+                    { data: 'cphone'},
+                    { data: 'categorie_id'},
+                    { data: 'account_number'},
+                    { data: 'account_name'},
+                    { data: 'ifsc_code'},
+                    { data: 'bank_name'},
+                    { data: 'branch'},
+                    { data: 'bank_status'},
+                    { data: 'email'},
+                    { data: 'user_name'},
+                    { data: 'role'},
+                    { data: 'login_status'},
+                    { data: 'gallery'},
+                    { data: 'status'},
+                    { data: 'action'}
                 ],
-            // Pagination settings
-            dom: `<'row'<'col-sm-12'tr>>
-            <'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>`,
-            // read more: https://datatables.net/examples/basic_init/dom.html
-
-            lengthMenu: [5, 10, 25, 100],
-
-            pageLength: 10,
-            searchDelay: 500,
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url : "{{route('user.firms.datatable')}}",
-                type: 'POST',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    columnsDef : ['id','comapany_name','legal_name','taxation_number','register_on','register_address']
-                }
-
-            },
-            columns: [
-                { data: 'DT_RowIndex'},
-                { data: 'comapany_name'},
-                { data: 'legal_name'},
-                { data: 'taxation_number'},
-                { data: 'register_on'},
-                { data: 'register_address'}
-            ],
-
-            drawCallback : function( settings ) { }
+                columnDefs : [
+                    {
+                        targets: -1,
+                        data: null,
+                        orderable: false,
+                        className: 'text-end',
+                        render: function (data, type, row) {
+                            return `
+                                <a href="${data.edit}" class="btn btn-icon btn-primary"><i class="las la-edit fs-2 me-2"></i></a>
+                                <a href="${data.Delete}" text='${data.Delete_text}' delete class="btn btn-icon btn-danger"><i href="${data.Delete}" text='${data.Delete_text}' delete class="las la-trash fs-2 me-2"></i></a>
+                            `;
+                        },
+                    },
+                ],
+                drawCallback : function( settings ) { }
+            });
         });
 
 
-
-        $('a.toggle-vis').on('click', function (e) {
-            e.preventDefault();
-            // Get the column API object
-            var column = table.column($(this).attr('data-column'));
-            // Toggle the visibility
-            column.visible(!column.visible());
-        });
-
-    });
-</script>
-
+    </script>
 @endsection
 </x-base-layout>
 

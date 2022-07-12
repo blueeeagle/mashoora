@@ -18,33 +18,52 @@ class FirmController extends Controller
         return view('firm.index');
     }
     public function datatable(Request $request){
+        $search=[];
+        $columns=$request->columns;
+        foreach($columns as $colum){
+            $search[] = $colum['search']['value'];
+        }
+
         $datas = Firm::orderBy('id','desc')->get();
         return DataTables::of($datas)
                 			->addIndexColumn()
-                            ->addColumn('comapany_name', function(Firm $data) {
-                                return $data->comapany_name;
+                            ->addColumn('have_tax', function(Firm $data){
+                                return ($data->have_tax == 1)?'Yes':'No';
                             })
-                            ->addColumn('legal_name', function(Firm $data) {
-                                return $data->legal_name;
+                            ->addColumn('country_id', function(Firm $data){
+                                $country = $data->country;
+                                return ($country)?$country->country_name : '';
                             })
-                            ->addColumn('taxation_number', function(Firm $data) {
-                                return $data->taxation_number;
+                            ->addColumn('state_id', function(Firm $data){
+                                $state = $data->state;
+                                return ($state)?$state->state_name : '';
                             })
-                            ->addColumn('register_on', function(Firm $data) {
-                                return $data->register_on;
+                            ->addColumn('city_id', function(Firm $data){
+                                $city = $data->city;
+                                return ($city)?$city->city_name : '';
                             })
-                            ->addColumn('register_address',function(Firm $data){
-                                return $data->register_address;
+                            ->addColumn('status', function(Firm $data) {
+                                $status = ($data->status == 1)?'checked':'' ;
+                                $route = \route('user.firms.status',$data->id);
+                                    return "<div class='form-check form-switch form-check-custom form-check-solid'>
+                                            <input class='form-check-input' type='checkbox' status data-url='$route' value='' $status />
+                                        </div>";
                             })
-                            // ->addColumn('action', function(Currency $data) {
-                            //     return '<div class="action-list"><a href="' . route('admin-vendor-edit',$data->id) . '"><i class="fas fa-edit"></i>Edit</a><a href="' . route('admin-vendor-delete',$data->id) . '"  class="delete"><i class="fas fa-trash-alt"></i>Delete</a></div>';
-                            // })
-                            ->rawColumns(['comapany_name','legal_name','taxation_number','register_on','register_address'])
-                            ->toJson();
+                            ->addColumn('action', function(Firm $data){
+                                return ['Delete'=> \route('user.firms.destroy',$data->id),'edit'=> \route('master.city.edit',$data->id)];
+                            })
+                            ->rawColumns(['status','action','about_us','register_address'])
+                            ->toJson(); //--- Returning Json Data To Client Side
     }
-    public function destroy($id, Currency $Currency)
-    {
-        return $Currency->find($id)->delete();
+    public function destroy(Firm $firm){
+        $Firm->delete();
+        $data1['msg'] = 'Data Deleted Successfully.';
+        $data1['status'] = true;
+        return response()->json($data1);
+    }
+
+    public function edit(Firm $firms){
+
     }
 
     public function create(){
@@ -73,6 +92,7 @@ class FirmController extends Controller
     }
 
     public function store(Request $Request){
+
         // dd($Request->all());
         $rules=[
 			'taxation_number' => 'required|unique:companysettings,taxation_number,'.$Request->taxation_number,
@@ -94,7 +114,35 @@ class FirmController extends Controller
             # code...
             $cname[] = $value['cname'];$ctitle[] = $value['ctitle'];$cemail[] = $value['cemail'];$cmobile[] = $value['cmobile'];$cphone[] = $value['cphone'];
         }
+        $days = $Request->kt_docs_repeater_nested_outer[0]['kt_docs_repeater_nested_inner'];
 
+        $sunday = [];
+        $monday = [];
+        $tuesday = [];
+        $wednesday = [];
+        $thursday = [];
+        $friday = [];
+        $saturday = [];
+
+
+        foreach ($days as $key => $value) {
+            # code...
+            if(isset($value['sunday_from'])) $sunday[] = ['sunday_from'=>$value['sunday_from'],'sunday_to'=>$value['sunday_to']];
+            if(isset($value['monday_from'])) $monday[] = ['monday_from'=>$value['monday_from'],'monday_to'=>$value['monday_to']];
+            if(isset($value['tuesday_from'])) $tuesday[] = ['tuesday_from'=>$value['tuesday_from'],'tuesday_to'=>$value['tuesday_to']];
+            if(isset($value['wednesday_from'])) $wednesday[] = ['wednesday_from'=>$value['wednesday_from'],'wednesday_to'=>$value['wednesday_to']];
+            if(isset($value['thursday_from'])) $thursday[] = ['thursday_from'=>$value['thursday_from'],'thursday_to'=>$value['thursday_to']];
+            if(isset($value['friday_from'])) $friday[] = ['friday_from'=>$value['friday_from'],'friday_to'=>$value['friday_to']];
+            if(isset($value['saturday_from'])) $saturday[] = ['saturday_from'=>$value['saturday_from'],'saturday_to'=>$value['saturday_to']];
+        }
+
+        $Request['sunday'] = json_encode($sunday);
+        $Request['monday'] = json_encode($monday);
+        $Request['tuesday'] = json_encode($tuesday);
+        $Request['wednesday'] = json_encode($wednesday);
+        $Request['thursday'] = json_encode($thursday);
+        $Request['friday'] = json_encode($friday);
+        $Request['saturday'] = json_encode($saturday);
 
         $Request['cname'] = \implode(',',$cname);
         $Request['ctitle'] = \implode(',',$ctitle);
@@ -102,17 +150,34 @@ class FirmController extends Controller
         $Request['cmobile'] = \implode(',',$cmobile);
         $Request['cphone'] = \implode(',',$cphone);
 
-
-        $IMGname = $Request->file('logo')->getClientOriginalName();
-        $path = $Request->file('logo')->store('public/uploadFiles/firm');
-        $Request['logo'] = $path;
+        $logo = '';
+        if($Request->has('logo')){
+            $IMGname = $Request->file('logo')->getClientOriginalName();
+            $path = $Request->file('logo')->store('uploadFiles/firm/logo','public_custom');
+            $logo = $path;
+        }
+        $gallery = '';
+        if($Request->has('gallery')){
+            $IMGname = $Request->file('gallery')->getClientOriginalName();
+            $path = $Request->file('gallery')->store('uploadFiles/firm/gallery','public_custom');
+            $gallery = $path;
+        }
         $Request->register_on = date("Y-m-d H:i:s", strtotime($Request->register_on));
         $Request->status = (isset($Request->status)?1:0);
-        $Companysetting = new Firm;
-        $Companysetting->fill($Request->all());
+        $Request->login_status = (isset($Request->login_status)?1:0);
+        $Request->bank_status = (isset($Request->bank_status)?1:0);
 
-        $Companysetting->save();
+        $Firm = new Firm;
+        $Firm->fill($Request->all());
+        $Firm->gallery = $gallery;
+        $Firm->logo = $logo;
+        $Firm->save();
 
-       return response()->json(['msg'=>'Company Addes']);
+       return response()->json(['msg'=>'Firm Addes']);
+    }
+    public function status(Request $request,Firm $firms){
+        $city->status = $request->status;
+        $city->update();
+        return response()->json(['status'=>true,'msg'=>'Status Updated']);
     }
 }

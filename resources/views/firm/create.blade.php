@@ -10,7 +10,7 @@
                 <!--begin::Page title-->
                 <div data-kt-swapper="true" data-kt-swapper-mode="prepend" data-kt-swapper-parent="{default: '#kt_content_container', 'lg': '#kt_toolbar_container'}" class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
                     <!--begin::Title-->
-                    <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">Consultant Category</h1>
+                    <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">Firms</h1>
                     <!--end::Title-->
                     <!--begin::Separator-->
                     <span class="h-20px border-gray-300 border-start mx-4"></span>
@@ -28,7 +28,7 @@
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
-                        <li class="breadcrumb-item text-muted">Master</li>
+                        <li class="breadcrumb-item text-muted">User</li>
                         <!--end::Item-->
                         <!--begin::Item-->
                         <li class="breadcrumb-item">
@@ -36,16 +36,7 @@
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
-                        <li class="breadcrumb-item text-muted"><a href="{{ route('master.documents.index') }}" class="text-muted text-hover-primary">Consultant Category</a></li>
-                        <!--end::Item-->
-                        <!--begin::Item-->
-                        <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-300 w-5px h-2px"></span>
-                        </li>
-                        <!--end::Item-->
-                        <!--begin::Item-->
-                        <li class="breadcrumb-item text-dark">Create consultantcategory Category</li>
-                        <!--end::Item-->
+                        <li class="breadcrumb-item text-muted"><a href="{{ route('user.firms.create') }}" class="text-muted text-hover-primary">Firms</a></li>
                     </ul>
                     <!--end::Breadcrumb-->
                 </div>
@@ -176,7 +167,7 @@
                                     </div>
                                     <div class="fv-row mb-10">
                                         <label class="required form-label fs-6 mb-2" >Zip Code</label>
-                                        <input type="text" name="zipcode" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Zip Code" required />
+                                        <input type="number" name="zipcode" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Zip Code" required />
                                     </div>
                                 </div>
                                 <h4>Contact</h4>
@@ -233,7 +224,7 @@
                                 <div class="rounded border p-10">
                                     <div class="fv-row mb-10">
                                         <label class="required form-label fs-6 mb-2" >Account Number</label>
-                                        <input type="text" name="account_number" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Account Number" required />
+                                        <input type="number" name="account_number" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Account Number" required />
                                     </div>
                                     <div class="fv-row mb-10">
                                         <label class="required form-label fs-6 mb-2" >Account Name</label>
@@ -264,7 +255,7 @@
                                 <div class="rounded border p-10">
                                     <div class="fv-row mb-10">
                                         <label class="required form-label fs-6 mb-2" >Email ID</label>
-                                        <input type="text" name="email" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="email" required />
+                                        <input type="email" name="email" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="email" required />
                                     </div>
                                     <div class="fv-row mb-10">
                                         <label class="required form-label fs-6 mb-2" >User Name</label>
@@ -287,7 +278,7 @@
                                 <div class="rounded border p-10">
                                     <div class="fv-row mb-10">
                                         <label class="required form-label fs-6 mb-2" >Upload Image</label>
-                                        <input type="file" name="gallery" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="email" required />
+                                        <input type="file" name="gallery" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Image" required />
                                     </div>
                                 </div>
                                 <h4>Working Hours</h4>
@@ -678,7 +669,7 @@
                 for(i = 0, j = data.selected.length; i < j; i++) {
                     r.push(data.instance.get_node(data.selected[i]).id);
                 }
-                categorie_id.value = r.join(', ');
+                categorie_id.value = r.join(',');
                 console.log(r);
             })
             .jstree({
@@ -739,7 +730,7 @@
                     })
                 }
                 state.html(option).trigger("change");
-                city.html(null).trigger("change");
+                // city.html(null).trigger("change");
                 if(data.Country){
                     $("input[data-cmobile]").val(data.Country.dialing)
                     $("input[data-cphone]").val(data.Country.dialing)

@@ -1,59 +1,5 @@
 <x-base-layout>
-    <div id="kt_engage_demos" class="bg-body" data-kt-drawer="true" data-kt-drawer-name="explore" data-kt-drawer-activate="true" data-kt-drawer-overlay="true" data-kt-drawer-width="{default:'350px', 'lg': '475px'}" data-kt-drawer-direction="end" data-kt-drawer-toggle="#kt_engage_demos_toggle" data-kt-drawer-close="#kt_engage_demos_close">
-        <!--begin::Card-->
-        <div class="card shadow-none rounded-0 w-100">
-            <!--begin::Header-->
-            <div class="card-header" id="kt_engage_demos_header">
-                <h3 class="card-title fw-bolder text-gray-700">Advance Search</h3>
-                <div class="card-toolbar">
-                    <button type="button" class="btn btn-sm btn-icon btn-active-color-primary h-40px w-40px me-n6" id="kt_engage_demos_close">
-                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
-                        <span class="svg-icon svg-icon-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor" />
-                                <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="currentColor" />
-                            </svg>
-                        </span>
-                        <!--end::Svg Icon-->
-                    </button>
-                </div>
-            </div>
-            <!--end::Header-->
-            <!--begin::Body-->
-            <div class="card-body" id="kt_engage_demos_body">
-                <!--begin::Content-->
-                <div id="kt_explore_scroll" class="scroll-y me-n5 pe-5" data-kt-scroll="true" data-kt-scroll-height="auto" data-kt-scroll-wrappers="#kt_engage_demos_body" data-kt-scroll-dependencies="#kt_engage_demos_header" data-kt-scroll-offset="5px">
-                    <!--begin::Wrapper-->
-                    <div class="fv-row mb-12">
-                        <select class="form-select form-select-solid" data-control="select2" data-placeholder="Search option" data-allow-clear="true" id="filter" multiple="multiple">
-                            <option value="type">Type</option>
-                            <option value="name">Name</option>
-                            <option value="categories_id">Categorie Name</option>
-                            <option value="description">Description</option>
-                            <option value="tags">Tags</option>
-                            <option value="sort_no_list">sort Categorie list</option>
-                            <option value="sort_no_home">sort Home list</option>
-                            <option value="display_in_home">Display in Home</option>
-                            <option value="sort_no_home">sort Home list</option>
-                        </select>
-                    </div>
-                    <div class="row">
-                        <div class="col-xxl-4" data-id-filter="country_code" hidden>
-                            <label class="fs-6 form-label fw-bolder text-dark">Country Code</label>
-                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='2' />
-                        </div>
-                        <div class="col-xxl-4" data-id-filter="dialing" hidden>
-                            <label class="fs-6 form-label fw-bolder text-dark">Dialing</label>
-                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='3' />
-                        </div>
-                    </div>
-                    <div class="rounded py-4 px-6 mb-5" hidden id="search_div">
-                        <button type="button" id="search_two" class="btn btn-primary me-5">Search</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
     <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
         <div class="toolbar" id="kt_toolbar">
             <div id="kt_toolbar_container" class="container-fluid d-flex flex-stack">
@@ -77,6 +23,9 @@
                         </li>
                         <li class="breadcrumb-item text-dark">Create Document</li> --}}
                     </ul>
+                </div>
+                <div class="d-flex align-items-center gap-2 gap-lg-3">
+                    <a href="{{ route('master.documents.create') }}" class="btn btn-sm btn-primary">Create</a>
                 </div>
             </div>
         </div>
@@ -103,9 +52,16 @@
                                 <div class="d-flex align-items-center">
                                     <button type="button" id="search" class="btn btn-primary me-5">Search</button>
                                     <button type="button" id="reset" class="btn btn-primary me-5">Reset</button>
-                                    <button id="kt_engage_demos_toggle" class="engage-demos-toggle btn btn-flex h-35px bg-body btn-color-gray-700 btn-active-color-gray-900 shadow-sm fs-6 px-4 rounded-top-0" title="" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-dismiss="click" >
-                                        <span id="kt_engage_demos_label">Advanced Search</span>
-                                    </button>
+                                </div>
+                                <div class="position-relative w-md-300px me-md-2">
+                                    <select class="form-select" id="toogleColum" data-control="select2" data-placeholder="Toggle column" multiple="multiple">
+                                        <option></option>
+                                        <option selected value="0">SNo</option>
+                                        <option selected value="1">Title</option>
+                                        <option selected value="2">Create Date</option>
+                                        <option selected value="3">Status</option>
+                                        <option selected hidden value="4">Action</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -113,10 +69,6 @@
                 </form>
                 <div class="row gy-10 gx-xl-10">
                     <div class="card card-docs flex-row-fluid mb-2">
-                        <div>
-                            Toggle column: <a class="toggle-vis" data-column="0">SNo</a> - <a class="toggle-vis" data-column="1">title</a> - <a class="toggle-vis" data-column="2">Create at</a> -
-                            <a class="toggle-vis" data-column="3">Status</a> - <a class="toggle-vis" data-column="4">Actions</a>
-                        </div>
                         <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_datatable">
                             <!--begin::Table head-->
                             <thead>
@@ -146,43 +98,9 @@
 
 @section('scripts')
 <script>
+    var table = null
     $(document).ready(function () {
-        const SearchSubmit = document.getElementById('search')
-        const resetSubmit = document.getElementById('reset')
-        SearchSubmit.addEventListener('click',search)
-        resetSubmit.addEventListener('click',reset)
-
-        function search(event){
-            event.preventDefault()
-            var params = {}
-            const datatable_input = document.querySelectorAll('.datatable-input')
-            datatable_input.forEach((data) => {
-                var i = data.dataset.colIndex
-                if (params[i]) {
-                    params[i] += '|' + data.value;
-                } else {
-                    params[i] = data.value;
-                }
-            })
-            $.each(params, function(i, val) {
-                table.column(i).search(val ? val : '', false, false);
-            });
-            table.table().draw();
-        }
-
-        function reset(event){
-            event.preventDefault()
-            const datatable_input = document.querySelectorAll('.datatable-input')
-            datatable_input.forEach((data) => {
-                data.value = ''
-                table.column(data.dataset.colIndex).search('', false, false);
-            })
-            table.table().draw();
-        }
-
-
-
-        var table = $("#kt_datatable").DataTable({
+        table = $("#kt_datatable").DataTable({
             responsive: true,
             buttons: [
                     'print',
@@ -218,20 +136,22 @@
                 { data: 'status'},
                 { data: 'action'}
             ],
-
+            columnDefs : [
+                    {
+                        targets: -1,
+                        data: null,
+                        orderable: false,
+                        className: 'text-end',
+                        render: function (data, type, row) {
+                            return `
+                                <a href="${data.edit}" class="btn btn-icon btn-primary"><i class="las la-edit fs-2 me-2"></i></a>
+                                <a href="${data.Delete}" delete class="btn btn-icon btn-danger"><i href="${data.Delete}" delete class="las la-trash fs-2 me-2"></i></a>
+                            `;
+                        },
+                    },
+                ],
             drawCallback : function( settings ) { }
         });
-
-
-
-        $('a.toggle-vis').on('click', function (e) {
-            e.preventDefault();
-            // Get the column API object
-            var column = table.column($(this).attr('data-column'));
-            // Toggle the visibility
-            column.visible(!column.visible());
-        });
-
     });
 </script>
 

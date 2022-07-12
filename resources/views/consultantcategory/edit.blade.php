@@ -7,7 +7,7 @@
                 <!--begin::Page title-->
                 <div data-kt-swapper="true" data-kt-swapper-mode="prepend" data-kt-swapper-parent="{default: '#kt_content_container', 'lg': '#kt_toolbar_container'}" class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
                     <!--begin::Title-->
-                    <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">Document</h1>
+                    <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">Consultant Category</h1>
                     <!--end::Title-->
                     <!--begin::Separator-->
                     <span class="h-20px border-gray-300 border-start mx-4"></span>
@@ -33,16 +33,7 @@
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
-                        <li class="breadcrumb-item text-muted"><a href="{{ route('master.documents.index') }}" class="text-muted text-hover-primary">Document</a></li>
-                        <!--end::Item-->
-                        <!--begin::Item-->
-                        <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-300 w-5px h-2px"></span>
-                        </li>
-                        <!--end::Item-->
-                        <!--begin::Item-->
-                        <li class="breadcrumb-item text-dark">Create Document</li>
-                        <!--end::Item-->
+                        <li class="breadcrumb-item text-muted"><a href="{{ route('master.consultantcategory.index') }}" class="text-muted text-hover-primary">Consultant Category</a></li>
                     </ul>
                     <!--end::Breadcrumb-->
                 </div>
@@ -59,7 +50,7 @@
                 <div class="card card-flush">
                     <!--begin::Card body-->
                     <div class="card-body pt-0">
-                        <form action="{{ route('master.documents.update',[$Document->id]) }}" method="Post" id="formEdit">
+                        <form action="{{ route('master.consultantcategory.update',[$Document->id]) }}" method="Post" id="formEdit">
                             @csrf
                             <div class="py-5">
                                 <div class="rounded border p-10">
@@ -68,10 +59,10 @@
                                         <label class="required form-label fs-6 mb-2" >Choose Main Category</label>
                                         <!--end::Label-->
                                         <!--begin::Select2-->
-                                        <select class="form-select" name="categorie_id" data-control="select2" data-placeholder="Select an option">
+                                        <select class="form-select" name="categorie_id" id="categorie_id" data-control="select2" data-placeholder="Select an option" required>
                                             <option></option>
                                             @foreach ($Category as $key => $value )
-                                                <option value="{{ $value->id }}" {{ ($Document->categorie_id == $value->id)?'selected':'' }}>{{$value->name }}</option>
+                                                <option url='{{ route('master.category.getchild',$value->id) }}' value="{{ $value->id }}" {{ ($Document->categorie_id == $value->id)?'selected':'' }}>{{$value->name }}</option>
                                             @endforeach
                                         </select>
                                         <!--begin::Select2-->
@@ -81,7 +72,7 @@
                                         <label class="required form-label fs-6 mb-2" >Choose Child Category</label>
                                         <!--end::Label-->
                                         <!--begin::Select2-->
-                                        <select class="form-select" name="subcategorie_id" data-control="select2" data-placeholder="Select an option">
+                                        <select class="form-select" name="subcategorie_id" id="subcategorie_id" data-control="select2" data-placeholder="Select an option" required>
                                             <option></option>
                                             @foreach ($ChildCategory as $key => $value )
                                                 <option value="{{ $value->id }}" {{ ($Document->subcategorie_id == $value->id)?'selected':'' }}>{{$value->name }}</option>
@@ -107,7 +98,7 @@
                                         </div>
                                     </div>
                                     <div class="mb-10">
-                                        <button type="submit" class="btn btn-primary btn-hover-rise me-5">Submit</button>
+                                        <button type="submit" class="btn btn-primary btn-hover-rise me-5">update</button>
                                     </div>
                                 </div>
                             </div>
@@ -121,4 +112,27 @@
         </div>
         <!--end::Post-->
     </div>
+    @section('scripts')
+    <script>
+    window.onload = function() {
+        back = `{{ route('master.consultantcategory.index') }}`
+        var child = $("#subcategorie_id")
+        $("#categorie_id").on('select2:select', function (e) {
+            var data = e.params.data.element.attributes[0].value
+            $.ajax({
+                url:data,
+                method:"POST",
+                data:{"_token": "{{ csrf_token() }}"},
+                success:function(data){
+                    var option = null
+                    data.child.forEach((e)=>{
+                        option += '<option value='+e.id+'>'+e.name+'</option>'
+                    })
+                    child.html(option)
+                }
+            })
+        })
+    }
+    </script>
+    @endsection
 </x-base-layout>

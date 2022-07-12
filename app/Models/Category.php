@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Category extends Model
 {
@@ -17,4 +18,14 @@ class Category extends Model
         }
         return Category::where('parent',$id)->get();
     }
+
+    public function child(){
+        return $this->belongsTo(Category::class, 'categories_id');
+    }
+    public function delete(){
+        // Do some stuff before delete
+        Storage::disk('public_custom')->delete($this->img);
+        return parent::delete();
+    }
 }
+// Storage::disk('public_custom')->delete($category->img);

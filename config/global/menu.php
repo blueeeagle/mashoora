@@ -329,6 +329,39 @@ return array(
                         'path'   => 'user/insurance',
                         'bullet' => '<span class="bullet bullet-dot"></span>',
                     ),
+                    array(
+                        'title'  => 'Customer',
+                        'path'   => 'user/customer',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                )
+            )
+
+        ),
+        //Others
+        array(
+            'title' => 'Others',
+            'icon'       => array(
+                'svg'  => theme()->getSvgIcon("demo1/media/icons/duotune/communication/com006.svg", "svg-icon-2"),
+                'font' => '<i class="bi bi-person fs-2"></i>',
+            ),
+            'classes'    => array('item' => 'menu-accordion'),
+            'attributes' => array(
+                "data-kt-menu-trigger" => "click",
+            ),
+            'sub' => array(
+                'class' => 'menu-sub-accordion menu-active-bg',
+                'items' => array(
+                    array(
+                        'title'  => 'Manage Articles',
+                        'path'   => 'other/articel',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                    array(
+                        'title'  => 'Insurance',
+                        'path'   => 'user/insurance',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
                 )
             )
 

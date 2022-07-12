@@ -20,7 +20,7 @@ License: {{ theme()->getOption('product', 'license') }}
     <link rel="canonical" href="{{ ucfirst(theme()->getOption('meta', 'canonical')) }}"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="shortcut icon" href="{{ asset(theme()->getDemo() . '/' .theme()->getOption('assets', 'favicon')) }}"/>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" id="csrf-token" content="{{ csrf_token() }}">
     <link href="{{ URL::asset(theme()->getDemo().'/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="{{ URL::asset(theme()->getDemo().'/plugins/global/plugins.bundle.css') }}" />
 
@@ -104,82 +104,11 @@ License: {{ theme()->getOption('product', 'license') }}
     {{ theme()->getView('partials/trackers/_ga-tag-manager-for-body') }}
 @endif
 <script src="{{ URL::asset(theme()->getDemo().'/js/jquery.min.js') }}"></script>
+<script src="{{ URL::asset(theme()->getDemo().'/js/myscript.js') }}"></script>
 <script src="{{ URL::asset(theme()->getDemo().'/js/datatables.bundle.js') }}"></script>
 <script src="{{ URL::asset(theme()->getDemo().'/plugins/global/plugins.bundle.js') }}"></script>
 <script src="{{ URL::asset(theme()->getDemo().'/plugins/custom/datatables/datatables.bundle.js') }}"></script>
 
-<script>
-    $('#formCreate').submit(function(e){
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    $.ajax({
-        method:"POST",
-        url:$(this).prop('action'),
-        data:formData,
-        cache: false,
-        processData: false,
-        contentType: false,
-        success:function(data){
-            if(data.msg){
-                e.target.reset();
-                Switealert(data.msg,'success')
-            }else{
-                var Ptag = "";
-                for(var error in data.errors) { Ptag += data.errors[error]+', '; };
-                Switealert(Ptag,'error')
-            }
-            console.log(data);
-            window.scrollTo({top:0,behavior:'smooth'});
-        },
-        error:function(erroe){
-            console.log(erroe);
-            window.scrollTo({top:0,behavior:'smooth'});
-            alert("Something is wrong");
-        }
-    });
-});
-
-$('#formEdit').submit(function(e){
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    $.ajax({
-        method:"POST",
-        url:$(this).prop('action'),
-        data:new FormData(e.target),
-        cache: false,
-        processData: false,
-        contentType: false,
-        success:function(data){
-            if(data.msg){
-                Switealert(data.msg,'success')
-            }else{
-                var Ptag = "";
-                for(var error in data.errors) { Ptag += data.errors[error]+', '; };
-                Switealert(Ptag,'error')
-            }
-            console.log(data);
-            window.scrollTo({top:0,behavior:'smooth'});
-        },
-        error:function(erroe){
-            console.log(erroe);
-            window.scrollTo({top:0,behavior:'smooth'});
-            alert("Something is wrong");
-        }
-    });
-});
-function Switealert(Msg,status){
-    Swal.fire({
-        text: Msg,
-        icon: status,
-        buttonsStyling: false,
-        confirmButtonText: "Ok, got it!",
-        customClass: {
-            confirmButton: 'btn btn-primary'
-        }
-    });
-}
-
-</script>
 @yield('scripts')
 </body>
 {{-- end::Body --}}
