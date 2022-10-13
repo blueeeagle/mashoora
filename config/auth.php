@@ -43,8 +43,17 @@ return [
 
         'api' => [
             'driver' => 'token',
-            'provider' => 'users',
-            'hash' => true,
+            'provider' => 'customers',
+            'hash' => false,
+        ],
+
+        'customer' => [
+            'driver' => 'session',
+            'provider' => 'customers',
+        ],
+        'consultant' => [
+            'driver' => 'session',
+            'provider' => 'consultants',
         ],
     ],
 
@@ -71,6 +80,14 @@ return [
             'model' => App\Models\User::class,
         ],
 
+        'customers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Customer::class,
+        ],
+        'consultants' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Consultant::class,
+        ],
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

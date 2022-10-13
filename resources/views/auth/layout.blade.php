@@ -10,13 +10,18 @@
             <!--begin::Content-->
             <div class="d-flex flex-center flex-column flex-column-fluid p-10 pb-lg-20">
                 <!--begin::Logo-->
-                <a href="{{ $theme->getPageUrl('') }}" class="mb-12">
-                    <img alt="Logo" src="{{ asset(theme()->getMediaUrlPath() . 'logos/logo-1.svg') }}" class="h-45px"/>
-                </a>
+                <!--<a href="{{ $theme->getPageUrl('') }}" class="mb-12">-->
+                <!--    <img alt="Logo" src="{{ asset(theme()->getMediaUrlPath() . 'logos/logo-1.svg') }}" class="h-45px"/>-->
+                <!--</a>-->
                 <!--end::Logo-->
 
                 <!--begin::Wrapper-->
                 <div class="{{ $wrapperClass ?? '' }} bg-body rounded shadow-sm p-10 p-lg-15 mx-auto">
+                    <center>
+                        <a href="{{ $theme->getPageUrl('') }}" class="mb-12">
+                            <img alt="Logo" src="{{asset("/storage/$companeySetting->logo_login_page")}}" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);" class="h-45px"/>
+                        </a>
+                    </center><br>
                     {{ $slot }}
                 </div>
                 <!--end::Wrapper-->

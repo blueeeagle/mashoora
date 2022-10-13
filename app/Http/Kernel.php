@@ -40,7 +40,21 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
+            \Illuminate\Session\Middleware\StartSession::class,
+            // \App\Http\Middleware\VerifyCsrfToken::class,
             'throttle:api',
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \App\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ],
+        'customer' => [
+            \Illuminate\Session\Middleware\StartSession::class,
+            // \App\Http\Middleware\VerifyCsrfToken::class,
+            'throttle:api',
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
@@ -54,7 +68,8 @@ class Kernel extends HttpKernel
      */
     protected $routeMiddleware = [
         'auth'             => \App\Http\Middleware\Authenticate::class,
-        'Permissions'             => \App\Http\Middleware\Permissions::class,
+        'Apiauth'          => \App\Http\Middleware\Apiauthenticate::class,
+        'Permissions'      => \App\Http\Middleware\Permissions::class,
         'auth.basic'       => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'cache.headers'    => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can'              => \Illuminate\Auth\Middleware\Authorize::class,

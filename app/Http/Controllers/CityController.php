@@ -13,6 +13,14 @@ use DataTables;
 
 class CityController extends Controller
 {
+    public function __construct()
+    {
+       
+        $this->middleware('Permissions:City_View',['only'=>['index']]);
+        $this->middleware('Permissions:City_Create',['only'=>['create']]);
+        $this->middleware('Permissions:City_Edit',['only'=>['edit']]);
+        $this->middleware('Permissions:City_delete',['only'=>['destroy']]);
+    }
 
 	public function datatables(Request $request){
         $search=[];
@@ -62,20 +70,22 @@ class CityController extends Controller
 
 	public function store(Request $request){
 		$requestedData=$request->all();
-
+if($request->stateName){
 		$rules=[
 
-			'countryName' => 'required',
-			'stateName' => 'required',
-			'cityName' => "required|unique:cities,city_name,null,null,state_id,$request->stateName,country_id,$request->countryName,city_name,$request->cityName",
+			'cityName' => "unique:cities,city_name,null,null,state_id,$request->stateName,country_id,$request->countryName,city_name,$request->cityName",
 
 		];
+}else{
+    $rules=[
+
+			'cityName' => "unique:cities,city_name,null,null,country_id,$request->countryName,city_name,$request->cityName",
+
+		];
+}
 
 		$customs=[
-			'countryName.required'  => 'Country Name should be filled',
-			'stateName.required'  	=> 'State Name should be filled',
-			'cityName.required'  	=> 'City Name should be filled',
-			'cityName.unique'      	=> 'City Name already taken for this state',
+			'cityName.unique'      	=> 'City Name already taken for this state & Country',
 		];
 
 		$validator = Validator::make($request->all(), $rules,$customs);
@@ -98,15 +108,11 @@ class CityController extends Controller
 
 
 	public function update(Request $request,City $city){
+	    
 		$rules=[
-			'country_id' => 'required',
-			'state_id' => 'required',
-			'city_name' => "required|unique:cities,city_name,$city->id,id,state_id,$request->state_id,country_id,$request->country_id,city_name,$request->city_name",
+			'city_name' => "unique:cities,city_name,$city->id,id,state_id,$request->state_id,country_id,$request->country_id,city_name,$request->city_name",
 		];
 		$customs=[
-			'country_id.required'  	=> 'Country Name should be filled',
-			'state_id.required'  	=> 'State Name should be filled',
-			'city_name.required'  	=> 'City Name should be filled',
 			'city_name.unique'      	=> 'City Name already taken for this state & Country',
 		];
 

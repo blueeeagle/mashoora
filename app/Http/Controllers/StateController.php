@@ -15,6 +15,15 @@ use Illuminate\Support\Collection;
 
 class StateController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('Permissions:State_View',['only'=>['index']]);
+        $this->middleware('Permissions:State_Create',['only'=>['create']]);
+        $this->middleware('Permissions:State_Edit',['only'=>['edit']]);
+        $this->middleware('Permissions:State_delete',['only'=>['destroy']]);
+
+    }
+    
     public function datatables(Request $request){
         $search=[];
         $columns=$request->columns;

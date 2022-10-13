@@ -7,65 +7,95 @@ use App\DataTables\CurrencyDataTable;
 use App\Models\Companysetting;
 use DataTables;
 use App\Models\Country;
+use App\Models\State;
+use App\Models\City;
 use Validator;
 use App\Models\Currency;
+use Illuminate\Support\Facades\Storage;
+use File;
 
 class CompanysettingsController extends Controller
 {
+     public function __construct()
+    {
+        $this->middleware('Permissions:Company_Settings_View',['only'=>['index']]);
+    }
+    
     public function index()
     {
-        return view('companysetting.index');
-    }
-    public function datatable(Request $request){
-        $datas = Companysetting::orderBy('id','desc')->get();
-        return DataTables::of($datas)
-                			->addIndexColumn()
-                            ->addColumn('comapany_name', function(Companysetting $data) {
-                                return $data->comapany_name;
-                            })
-                            ->addColumn('legal_name', function(Companysetting $data) {
-                                return $data->legal_name;
-                            })
-                            ->addColumn('taxation_number', function(Companysetting $data) {
-                                return $data->taxation_number;
-                            })
-                            ->addColumn('register_on', function(Companysetting $data) {
-                                return $data->register_on;
-                            })
-                            ->addColumn('register_address',function(Companysetting $data){
-                                return $data->register_address;
-                            })
-                            // ->addColumn('action', function(Currency $data) {
-                            //     return '<div class="action-list"><a href="' . route('admin-vendor-edit',$data->id) . '"><i class="fas fa-edit"></i>Edit</a><a href="' . route('admin-vendor-delete',$data->id) . '"  class="delete"><i class="fas fa-trash-alt"></i>Delete</a></div>';
-                            // })
-                            ->rawColumns(['comapany_name','legal_name','taxation_number','register_on','register_address'])
-                            ->toJson();
-    }
-    public function destroy($id, Currency $Currency)
-    {
-        return $Currency->find($id)->delete();
-    }
-
-    public function create(){
-        $countrys = Country::where('status',1)->get();
-        return \view('companysetting.create',['countrys'=>$countrys]);
-    }
-
-    public function store(Request $Request){
-        $rules=[
-			'taxation_number' => 'required|unique:companysettings,taxation_number,'.$Request->taxation_number,
-		];
         
-		$customs=[
-			'taxation_number.required'  => 'taxation number Name should be filled',
-			'taxation_number.unique'      	=> 'taxation number Name already taken',
-		];
+        $Companysetting = Companysetting::where('id',1)->first();
+        $countrys = Country::with('currency')->where('status',1)->get();
+        $state = State::where('country_id',$Companysetting->country_id)->where('status',1)->get();
+        $city = City::where('state_id',$Companysetting->state_id)->where('status',1)->get();
+        $currency = Country::with('currency')->where('id',$Companysetting->country_id)->first();
+        $cname = \explode(',',$Companysetting->cname);
+        $ctitle = \explode(',',$Companysetting->ctitle);
+        $cemail = \explode(',',$Companysetting->cemail);
+        $cmobile = \explode(',',$Companysetting->cmobile);
+        $cphone = \explode(',',$Companysetting->cphone);
 
-        $validator = Validator::make($Request->all(), $rules,$customs);
-
-        if ($validator->fails()) {
-          return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
+        // dd($Companysetting->have_tax);
+        $Contact = [];
+        foreach ($cname as $key => $value) {
+            # code...
+            $data = [];
+            $data['cname'] = $cname[$key];
+            $data['ctitle'] = $ctitle[$key];
+            $data['cemail'] = $cemail[$key];
+            $data['cmobile'] = $cmobile[$key];
+            $data['cphone'] = $cphone[$key];
+            $Contact[] = $data;
         }
+
+        return view('companysetting.create',['Companysetting'=>$Companysetting,'countrys'=>$countrys,'state'=>$state,'city'=>$city,'contact'=>$Contact,'currency'=>$currency->currency]);
+    }
+
+    public function store(Request $Request,Companysetting $config){
+
+        $cname = [];$ctitle = [];$cemail = [];$cmobile = [];$cphone = [];
+        foreach ($Request->kt_docs_repeater_basic as $key => $value) {
+            # code...
+            $cname[] = $value['cname'];$ctitle[] = $value['ctitle'];$cemail[] = $value['cemail'];$cmobile[] = $value['cmobile'];$cphone[] = $value['cphone'];
+        }
+        $Country = Country::where('id',$Request->country_id)->first();
+        if($Country){
+            $currencySelect = Currency::where('countryname',$Country->country_name)->first();
+            if($currencySelect) $Request['currencie_id'] = $currencySelect->id;
+        }
+
+        $Request['cname'] = \implode(',',$cname);
+        $Request['ctitle'] = \implode(',',$ctitle);
+        $Request['cemail'] = \implode(',',$cemail);
+        $Request['cmobile'] = \implode(',',$cmobile);
+        $Request['cphone'] = \implode(',',$cphone);
+        $Request->status = (isset($Request->status)?1:0);
+        $config->currencie_id = $Request->currencie_id;
+        $config->time_zone = $Request->time_zone;
+        $config->update($Request->all());
+
+       return response()->json(['msg'=>'Updated']);
+    }
+
+    public function update(Request $Request){
+        $Companysetting = Companysetting::where('id',1)->first();
+        
+//          $rules=[
+// 			'logo_login_page' => 'required:companysettings,logo_login_page,'.$Companysetting->id,
+// 			'logo_header' => 'required:companysettings,logo_header,'.$Companysetting->id,
+// 		];
+
+// 		$customs=[
+// 			'logo_login_page.required' => 'Logo (Login) should be filled',
+// 			'logo_header.required' => 'Logo (Header) should be filled',
+// 		];
+
+//         $validator = Validator::make($Request->all(), $rules,$customs);
+
+//         if ($validator->fails()) {
+//           return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
+//         }
+        
         $cname = [];$ctitle = [];$cemail = [];$cmobile = [];$cphone = [];
         foreach ($Request->kt_docs_repeater_basic as $key => $value) {
             # code...
@@ -83,20 +113,42 @@ class CompanysettingsController extends Controller
         $Request['cmobile'] = \implode(',',$cmobile);
         $Request['cphone'] = \implode(',',$cphone);
 
-        $IMGname = $Request->file('logo_login_page')->getClientOriginalName();
-        $path = $Request->file('logo_login_page')->store('public/uploadFiles/settings');
-        $Request['logo_login_page'] = $path;
-        $IMGname = $Request->file('logo_header')->getClientOriginalName();
-        $path = $Request->file('logo_header')->store('public/uploadFiles/settings');
-        $Request['logo_header'] = $path;
-        $Request->register_on = date("Y-m-d H:i:s", strtotime($Request->register_on));
+        // dd(Storage::disk('public_custom')->exists("/uploadFiles/temp/$Request->logo_login_page"));
+        // if(Storage::disk('public_custom')->exists("/uploadFiles/temp/$Request->logo_login_page")){
+        //     Storage::disk('public_custom')->move("/uploadFiles/temp/$Request->logo_login_page","/uploadFiles/setting/$Request->logo_login_page");
+        // }
+        // if(Storage::disk('public_custom')->exists("/uploadFiles/temp/$Request->logo_header")){
+        //     Storage::disk('public_custom')->move("/uploadFiles/temp/$Request->logo_header","/uploadFiles/setting/$Request->logo_header");
+        // }
+        // $Request['logo_login_page'] =  "/uploadFiles/setting/$Request->logo_login_page";
+        // $Request['logo_header'] =  "/uploadFiles/setting/$Request->logo_header";
+
+
+        if(Storage::disk('public_custom')->exists("/uploadFiles/temp/$Request->logo_login_page") && $Request->logo_login_page){
+            Storage::disk('public_custom')->move("/uploadFiles/temp/$Request->logo_login_page","/uploadFiles/user/$Request->logo_login_page");
+            $Request['logo_login_page'] =  "/uploadFiles/user/$Request->logo_login_page";
+        }else{
+            $Request['logo_login_page'] =  $Companysetting->logo_login_page;
+        }
+        
+        if(Storage::disk('public_custom')->exists("/uploadFiles/temp/$Request->logo_header") && $Request->logo_header){
+            Storage::disk('public_custom')->move("/uploadFiles/temp/$Request->logo_header","/uploadFiles/user/$Request->logo_header");
+            $Request['logo_header'] =  "/uploadFiles/user/$Request->logo_header";
+        }else{
+            $Request['logo_header'] =  $Companysetting->logo_header;
+        }
+        
+          
         $Request->status = (isset($Request->status)?1:0);
-        $Companysetting = new Companysetting;
+
         $Companysetting->fill($Request->all());
         $Companysetting->currencie_id = $Request->currencie_id;
         $Companysetting->time_zone = $Request->time_zone;
-        $Companysetting->save();
+        $Companysetting->logo_login_page = $Request->logo_login_page;
+        $Companysetting->logo_header = $Request->logo_header;
+        $Companysetting->status = $Request->status;
+        $Companysetting->update();
 
-       return response()->json(['msg'=>'Company Addes']);
+       return response()->json(['msg'=>'Company updated']);
     }
 }

@@ -14,7 +14,10 @@ class ConsultantCategoryController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('Permissions:ConsultantCategoryController_view')->only('index');
+        $this->middleware('Permissions:Specialization_View',['only'=>['index']]);
+        $this->middleware('Permissions:Specialization_Create',['only'=>['create']]);
+        $this->middleware('Permissions:Specialization_Edit',['only'=>['edit']]);
+        $this->middleware('Permissions:Specialization_delete',['only'=>['destroy']]);
     }
 
     public function index(){
@@ -30,20 +33,22 @@ class ConsultantCategoryController extends Controller
             $search[] = $colum['search']['value'];
         }
 
-        $datas = Consultantcategory::when($search[1],function($query,$search){  return $query->where('title','LIKE',"%{$search}%"); })
+        $datas = Consultantcategory::with('Category')->with('SubCategory')->when($search[1],function($query,$search){  return $query->where('title','LIKE',"%{$search}%"); })
         ->when($search[2],function($query,$search){  $search = \explode(',',$search);  return $query->whereIn('categorie_id',$search); })
         ->when($search[3],function($query,$search){  $search = \explode(',',$search);  return $query->whereIn('subcategorie_id',$search);  })
         ->orderBy('id','desc')->get();
 
         return DataTables::of($datas)
         ->addIndexColumn()
-        ->addColumn('categorie_id', function(Consultantcategory $data){
-            return $data->Category();
+        ->editColumn('categorie_id', function(Consultantcategory $data){
+            if($data->Category) return $data->Category->name;
+            return '';
         })
-        ->addColumn('subcategorie_id', function(Consultantcategory $data){
-            return $data->SubCategory();
+        ->editColumn('subcategorie_id', function(Consultantcategory $data){
+            if($data->SubCategory) return $data->SubCategory->name;
+            return '';
         })
-        ->addColumn('status', function(Consultantcategory $data) {
+        ->editColumn('status', function(Consultantcategory $data) {
             $status = ($data->status == 1)?'checked':'' ;
             $route = \route('master.consultantcategory.status',$data->id);
             return "<div class='form-check form-switch form-check-custom form-check-solid'>
@@ -51,7 +56,7 @@ class ConsultantCategoryController extends Controller
                 </div>";
         })
         ->addColumn('action', function(Consultantcategory $data){
-            return ['Delete'=> \route('master.consultantcategory.destroy',$data->id),'edit'=> \route('master.consultantcategory.edit',$data->id)];
+            return ['Delete'=> \route('master.specialization.destroy',$data->id),'edit'=> \route('master.specialization.edit',$data->id)];
         })
         ->rawColumns(['status','action'])
         ->toJson();
@@ -62,11 +67,11 @@ class ConsultantCategoryController extends Controller
         $ChildCategory = Category::where('type',1)->get();
         return \view('consultantcategory.create',['Category'=>$Category,'ChildCategory'=>$ChildCategory]);
     }
-    public function edit($Document){
-        $Consultantcategory = Consultantcategory::where('id',$Document)->first();
+
+    public function edit(Consultantcategory $specialization){
         $Category = Category::where('type',0)->get();
-        $ChildCategory = Category::where('type',1)->where('categories_id',$Consultantcategory->subcategorie_id)->get();
-        return \view('consultantcategory.edit',['Document'=>$Consultantcategory,'Category'=>$Category,'ChildCategory'=>$ChildCategory]);
+        $ChildCategory = Category::where('type',1)->where('id',$specialization->subcategorie_id)->get();
+        return \view('consultantcategory.edit',['Document'=>$specialization,'Category'=>$Category,'ChildCategory'=>$ChildCategory]);
     }
     public function store(Request $Request){
 
@@ -121,8 +126,9 @@ class ConsultantCategoryController extends Controller
         $Consultantcategory->update();
         return response()->json(['status'=>true,'msg'=>'Status Updated']);
     }
-    public function destroy(Consultantcategory $Consultantcategory){
-        $Consultantcategory->delete();
+    public function destroy(Consultantcategory $specialization){
+       
+        $specialization->delete();
         $data1['msg'] = 'Data Deleted Successfully.';
         $data1['status'] = true;
         return response()->json($data1);

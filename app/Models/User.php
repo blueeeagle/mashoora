@@ -90,4 +90,11 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(UserInfo::class);
     }
+    
+    public function checkPermission($data)
+    {
+     
+        $permission = explode(',',$this->permission);
+        return in_array($data,$permission);
+    }
 }

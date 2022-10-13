@@ -11,6 +11,14 @@ use Validator;
 
 class DocumentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('Permissions:Document_View',['only'=>['index']]);
+        $this->middleware('Permissions:Document_Create',['only'=>['create']]);
+        $this->middleware('Permissions:Document_Edit',['only'=>['edit']]);
+        $this->middleware('Permissions:Document_delete',['only'=>['destroy']]);
+    }
+    
     public function index(){
         return view('document.index');
     }
@@ -29,6 +37,10 @@ class DocumentController extends Controller
 
         return DataTables::of($datas)
         ->addIndexColumn()
+        ->editColumn('created_at', function(Document $data){
+            $date=date_create($data->created_at);
+            return  date_format($date,"Y-m-d");
+        })
         ->addColumn('status', function(Document $data) {
             $status = ($data->status == 1)?'checked':'' ;
             $route = \route('master.documents.status',$data->id);

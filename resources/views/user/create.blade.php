@@ -1,50 +1,34 @@
 <x-base-layout>
-    <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+    <div class="d-flex flex-column flex-column-fluid">
         <!--begin::Toolbar-->
-        <div class="toolbar" id="kt_toolbar">
+        <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
             <!--begin::Container-->
-            <div id="kt_toolbar_container" class="container-fluid d-flex flex-stack">
+            <div id="kt_app_toolbar_container" class="app-container container-xxl d-flex flex-stack">
                 <!--begin::Page title-->
-                <div data-kt-swapper="true" data-kt-swapper-mode="prepend" data-kt-swapper-parent="{default: '#kt_content_container', 'lg': '#kt_toolbar_container'}" class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
+                <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
                     <!--begin::Title-->
-                    <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">Admin User</h1>
+                    <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">Create Admin</h1>
                     <!--end::Title-->
-                    <!--begin::Separator-->
-                    <span class="h-20px border-gray-300 border-start mx-4"></span>
-                    <!--end::Separator-->
                     <!--begin::Breadcrumb-->
-                    <ul class="breadcrumb breadcrumb-separatorless fw-bold fs-7 my-1">
+                    <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
                         <!--begin::Item-->
                         <li class="breadcrumb-item text-muted">
-                            <a href="" class="text-muted text-hover-primary">Home</a>
+                            <a href="#" class="text-muted text-hover-primary">Home</a>
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
                         <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-300 w-5px h-2px"></span>
+                            <span class="bullet bg-gray-400 w-5px h-2px"></span>
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
                         <li class="breadcrumb-item text-muted">Admin</li>
                         <!--end::Item-->
-                        <!--begin::Item-->
-                        <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-300 w-5px h-2px"></span>
-                        </li>
-                        <!--end::Item-->
-                        <!--begin::Item-->
-                        <li class="breadcrumb-item text-muted"><a href="{{ route('admin.user.index') }}" class="text-muted text-hover-primary">Admin User</a></li>
-                        <!--end::Item-->
-                        <!--begin::Item-->
-                        <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-300 w-5px h-2px"></span>
-                        </li>
-                        <!--end::Item-->
-                        <!--begin::Item-->
-                        <li class="breadcrumb-item text-dark">Create User</li>
-                        <!--end::Item-->
                     </ul>
                     <!--end::Breadcrumb-->
+                </div>
+                <div class="d-flex align-items-center gap-2 gap-lg-3">
+                    <a href="{{ route('admin.user.index') }}" class="btn btn-sm btn-secondary" ><i class="fas fa-arrow-left "></i></a>
                 </div>
                 <!--end::Page title-->
             </div>
@@ -62,168 +46,260 @@
                         <form action="{{ route('admin.user.store') }}" method="post" id="formCreate">
                             @csrf
                             <div class="py-5">
-                                <div class="rounded border p-10">
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >First Name</label>
-                                        <input type="text" name="first_name" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="First Name" required />
+                                
+                                <div class="form-group row">
+                                    <div class="col-md-6">
+                                        <label class="required form-label fs-6 mb-4" >First Name</label>
+                                        <input type="text" name="first_name" class="form-control mb-4 " placeholder="First Name" required />
                                     </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >Last Name</label>
-                                        <input type="text" name="last_name" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Last Name" required />
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >Email Id / Username</label>
-                                        <input type="text" name="email" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Email" required />
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >Profile Picture</label>
-                                        <div class="image-input image-input-empty" data-kt-image-input="true" style="background-color: aliceblue;">
-                                            <!--begin::Image preview wrapper-->
-                                            <div class="image-input-wrapper w-125px h-125px"></div>
-                                            <!--end::Image preview wrapper-->
+                                    <div class="col-md-6">
+                                        <label class="required form-label fs-6 mb-4" >Last Name</label> 
+                                        <input type="text" name="last_name" class="form-control mb-4 " placeholder="Last Name" required />
 
-                                            <!--begin::Edit button-->
-                                            <label class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
-                                            data-kt-image-input-action="change"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-dismiss="click"
-                                            title="Change avatar">
-                                                <i class="bi bi-pencil-fill fs-7"></i>
-
-                                                <!--begin::Inputs-->
-                                                <input type="file" name="picture" accept=".png, .jpg, .jpeg" />
-                                                <input type="hidden" name="avatar_remove" />
-                                                <!--end::Inputs-->
-                                            </label>
-                                            <!--end::Edit button-->
-
-                                            <!--begin::Cancel button-->
-                                            <span class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
-                                            data-kt-image-input-action="cancel"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-dismiss="click"
-                                            title="Cancel avatar">
-                                                <i class="bi bi-x fs-2"></i>
-                                            </span>
-                                            <!--end::Cancel button-->
-
-                                            <!--begin::Remove button-->
-                                            <span class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
-                                            data-kt-image-input-action="remove"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-dismiss="click"
-                                            title="Remove avatar">
-                                                <i class="bi bi-x fs-2"></i>
-                                            </span>
-                                            <!--end::Remove button-->
-                                        </div>
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >Country</label>
-                                        <select class="form-select" id="country_id" name="country_id" data-control="select2" data-placeholder="Select an Country" required>
-                                            <option></option>
-                                            @foreach($countrys as $country)
-                                                <option value="{{$country->id}}">{{$country->country_name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >State</label>
-                                        <select class="form-select" name="state_id" id="state_id" data-control="select2" data-placeholder="Select an State" required>
-                                            <option></option>
-                                        </select>
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >City</label>
-                                        <select class="form-select" name="city_id" id="city_id" data-control="select2" data-placeholder="Select an City" required>
-                                            <option></option>
-                                        </select>
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >Zip Code</label>
-                                        <input type="text" name="zipcode" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Zip Code" required />
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >Mobile no</label>
-                                        <input type="text" name="phone" id="phone" class="form-control mb-2 mb-md-0" placeholder="phone" required/>
                                     </div>
                                 </div>
+
+                              
+                                <div class="form-group row">
+                                    <div class="col-md-6">
+                                        <label class="required form-label fs-6 mb-4" >Email Id / Username</label>
+                                        <input type="text" name="email" class="form-control mb-4 " placeholder="Email" required />
+
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="required form-label fs-6 mb-4" >Profile Picture </label>
+                                        <div class="col-md-6">
+                                            @include('components.imagecrop',['name'=>'picture','width'=>600,'height'=>600])
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h4>Address</h4>
+                                <div class="form-group row">
+                                        @include('components.addressComponent',['register_address'=>'','phone'=>'','page'=>'create','countrys'=>$countrys,'state'=>$state,'city'=>$city])
+                                </div>
+                                <br/>
+                                
                                 <div class="rounded border p-10">
+
                                     <div class="fv-row mb-10">
                                         <div class="table-responsive">
                                             <table class="table table-striped">
                                                 <thead>
+
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <th></th>
-                                                        <th><input class="form-check-input" type="checkbox" /> Create</th>
-                                                        <th><input class="form-check-input" type="checkbox" /> Edit </th>
-                                                        <th><input class="form-check-input" type="checkbox" /> View </th>
-                                                        <th><input class="form-check-input" type="checkbox" /> Delete </th>
-                                                        <th><input class="form-check-input" type="checkbox" /> Download </th>
+                                                        <th><input class="form-check-input" id="create_check" type="checkbox"  /> Create</th>
+                                                        <th><input class="form-check-input" id="edit_check" type="checkbox" /> Edit </th>
+                                                        <th><input class="form-check-input" id="view_check" type="checkbox" /> View </th>
+                                                        <th><input class="form-check-input" id="delete_check" type="checkbox" /> Delete </th>
+                                                        <th><input class="form-check-input" id="download_check" type="checkbox" /> Download </th>
                                                     </tr>
+
                                                 </thead>
                                                 <tbody>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
-                                                        <td><input class="form-check-input" type="checkbox" /> Currency</td>
+                                                        <td><input class="form-check-input" id="admin" data-check name="permession[]" value="Admin" type="checkbox" /> Admin</td>
+                                                        <td ><input class="form-check-input" data-head data-create name="permession[]" type="checkbox" value="Admin_Create" /></td>
+                                                        <td ><input class="form-check-input" data-head data-edit ame="permession[]" type="checkbox" value="Admin_Edit" /></td>
+                                                        <td ><input class="form-check-input" data-head data-view ame="permession[]" type="checkbox" value="Admin_View" /></td>
+                                                        <td ><input class="form-check-input" data-head data-delete ame="permession[]" type="checkbox" value="Admin_delete" /></td>
+                                                        <td><input class="form-check-input"  data-head data-download ame="permession[]"  type="checkbox" value="Admin_download" /></td>
+                                                    </tr>
+                                                    <tr class="fw-bolder fs-6 text-gray-800">
+                                                        <td><input class="form-check-input" id="Currency" name="permession[]" value="Currency" type="checkbox" /> Currency</td>
+                                                        <td colspan="2"></td>
                                                         <td></td>
+                                                        <td><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Currency_View" /></td>
+                                                        <td><input class="form-check-input" data-head data-download name="permession[]" type="checkbox" value="Currency_download" /></td>
+                                                    </tr>
+                                                    <tr class="fw-bolder fs-6 text-gray-800">
+                                                        <td><input class="form-check-input" id="Country" name="permession[]" value="Country" type="checkbox" /> Country</td>
+                                                        <td colspan="2"></td>
+                                                        <td><input class="form-check-input" data-head data-view name="permession[]" value="Country_View" type="checkbox" /></td>
                                                         <td></td>
+                                                        <td><input class="form-check-input" data-head data-download name="permession[]" value="Country_Download" type="checkbox" /></td>
+                                                    </tr>
+                                                    <tr class="fw-bolder fs-6 text-gray-800">
+                                                        <td><input class="form-check-input" id="State" name="permession[]" value="State" type="checkbox" /> State</td>
+                                                        <td ><input class="form-check-input" data-head  data-admin data-create name="permession[]" type="checkbox" value="State_Create" /></td>
+                                                        <td ><input class="form-check-input" data-head data-admin data-edit name="permession[]" type="checkbox" value="State_Edit" /></td>
+                                                        <td ><input class="form-check-input" data-head data-admin data-view name="permession[]" type="checkbox" value="State_View" /></td>
+                                                        <td ><input class="form-check-input" data-head  data-admin data-delete name="permession[]" type="checkbox" value="State_delete" /></td>
+                                                        <td><input class="form-check-input"  data-head data-admin data-download name="permession[]" type="checkbox" value="State_download" /></td>
+                                                    </tr>
+                                                    <tr class="fw-bolder fs-6 text-gray-800">
+                                                        <td><input class="form-check-input" id="City" name="permession[]" value="City" type="checkbox" /> City</td>
+                                                        <td ><input class="form-check-input"data-head  data-create name="permession[]" type="checkbox" value="City_Create"/></td>
+                                                        <td ><input class="form-check-input"data-head  data-edit name="permession[]" type="checkbox" value="City_Edit"/></td>
+                                                        <td ><input class="form-check-input"data-head  data-view name="permession[]" type="checkbox" value="City_View" /></td>
+                                                        <td ><input class="form-check-input"data-head  data-delete name="permession[]" type="checkbox" value="City_delete" /></td>
+                                                        <td><input class="form-check-input" data-head data-download name="permession[]" type="checkbox" value="City_download" /></td>
+                                                    </tr>
+                                                    <tr class="fw-bolder fs-6 text-gray-800">
+                                                        <td><input class="form-check-input" id="Document" name="permession[]" value="Document" type="checkbox" /> Document</td>
+                                                        <td ><input class="form-check-input" data-head data-create name="permession[]" type="checkbox" value="Document_Create" /></td>
+                                                        <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Document_Edit" /></td>
+                                                        <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Document_View"  /></td>
+                                                        <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Document_delete"  /></td>
+                                                        <td><input class="form-check-input" data-head data-download name="permession[]" type="checkbox" value="Document_download"  /></td>
+                                                    </tr>
+                                                    <tr class="fw-bolder fs-6 text-gray-800">
+                                                        <td><input class="form-check-input" id="Language" name="permession[]" value="Language" type="checkbox" /> Language</td>
+                                                        <td ><input class="form-check-input" data-head data-create name="permession[]" type="checkbox" value="Language_Create" /></td>
+                                                        <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Language_Edit" /></td>
+                                                        <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Language_View"  /></td>
+                                                        <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Language_delete"  /></td>
+                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Language_download"  /></td>
+                                                    </tr>
+                                                    <tr class="fw-bolder fs-6 text-gray-800">
+                                                        <td><input class="form-check-input" id="Tax" name="permession[]" value="Tax" type="checkbox" /> Tax</td>
+                                                        <td ><input class="form-check-input" data-head data-create name="permession[]" type="checkbox" value="Tax_Create" /></td>
+                                                        <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Tax_Edit" /></td>
+                                                        <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Tax_View"  /></td>
+                                                        <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Tax_delete"  /></td>
+                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Tax_download"  /></td>
+                                                    </tr>
+                                                    <tr class="fw-bolder fs-6 text-gray-800">
+                                                        <td><input class="form-check-input" id="Category"  name="permession[]" value="Category" type="checkbox" /> Category</td>
+                                                        <td ><input class="form-check-input" data-head data-create name="permession[]" type="checkbox" value="Categoty_Create" /></td>
+                                                        <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Categoty_Edit" /></td>
+                                                        <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Categoty_View"  /></td>
+                                                        <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Categoty_delete"  /></td>
+                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Categoty_download"  /></td>
+                                                    </tr>
+                                                    <tr class="fw-bolder fs-6 text-gray-800">
+                                                        <td><input class="form-check-input" id="Specialization" name="permession[]" value="Specialization" type="checkbox" /> Specialization</td>
+                                                        <td ><input class="form-check-input" data-head data-create name="permession[]" type="checkbox" value="Specialization_Create" /></td>
+                                                        <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Specialization_Edit" /></td>
+                                                        <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Specialization_View"  /></td>
+                                                        <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Specialization_delete"  /></td>
+                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Specialization_download"  /></td>
+                                                    </tr>
+                                                    <tr class="fw-bolder fs-6 text-gray-800">
+                                                        <td><input class="form-check-input" id="Company_Settings" name="permession[]" value="Company_Settings" type="checkbox" /> Company Settings</td>
+                                                        <td colspan="2"></td>
+                                                        <td><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Company_Settings_View" /></td>
                                                         <td></td>
-                                                        <td></td>
-                                                        <td><input class="form-check-input" type="checkbox" value="Currency_download" /></td>
+                                                        <td><input class="form-check-input" data-head data-download name="permession[]" type="checkbox" value="Company_Settings_download" /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
-                                                        <td><input class="form-check-input" type="checkbox" /> Country</td>
-                                                        <td colspan="4"></td>
-                                                        <td><input class="form-check-input" type="checkbox" /></td>
+                                                        <td><input class="form-check-input" id="Firm" name="permession[]" value="Firm" type="checkbox" /> Firm</td>
+                                                        <td ><input class="form-check-input" data-head data-create name="permession[]" type="checkbox" value="Firm_Create" /></td>
+                                                        <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Firm_Edit" /></td>
+                                                        <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Firm_View"  /></td>
+                                                        <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Firm_delete"  /></td>
+                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Firm_download"  /></td>
+                                                    </tr> 
+                                                    <tr class="fw-bolder fs-6 text-gray-800">
+                                                        <td><input class="form-check-input" id="Insurance" name="permession[]" value="Insurance" type="checkbox" /> Insurance</td>
+                                                        <td ><input class="form-check-input" data-head data-create name="permession[]" type="checkbox" value="Insurance_Create" /></td>
+                                                        <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Insurance_Edit" /></td>
+                                                        <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Insurance_View"  /></td>
+                                                        <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Insurance_delete"  /></td>
+                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Insurance_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
-                                                        <td><input class="form-check-input" type="checkbox" /> State</td>
-                                                        <td ><input class="form-check-input" name="permession[]" type="checkbox" value="State_Create" /></td>
-                                                        <td ><input class="form-check-input" name="permession[]" type="checkbox" value="State_Edit" /></td>
-                                                        <td ><input class="form-check-input" name="permession[]" type="checkbox" value="State_View" /></td>
-                                                        <td ><input class="form-check-input" name="permession[]" type="checkbox" value="State_delete" /></td>
-                                                        <td><input class="form-check-input" name="permession[]" type="checkbox" value="State_download" /></td>
+                                                        <td><input class="form-check-input" id="Customer" name="permession[]"  value="Customer" type="checkbox" /> Customer</td>
+                                                        <td ><input class="form-check-input" data-head data-create name="permession[]" type="checkbox" value="Customer_Create" /></td>
+                                                        <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Customer_Edit" /></td>
+                                                        <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Customer_View"  /></td>
+                                                        <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Customer_delete"  /></td>
+                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Customer_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
-                                                        <td><input class="form-check-input" type="checkbox" /> City</td>
-                                                        <td ><input class="form-check-input" name="permession[]" type="checkbox" value="City_Create"/></td>
-                                                        <td ><input class="form-check-input" name="permession[]" type="checkbox" value="City_Edit"/></td>
-                                                        <td ><input class="form-check-input" name="permession[]" type="checkbox" value="City_View" /></td>
-                                                        <td ><input class="form-check-input" name="permession[]" type="checkbox" value="City_delete" /></td>
-                                                        <td><input class="form-check-input" name="permession[]" type="checkbox" value="City_download" /></td>
+                                                        <td><input class="form-check-input" id="Article" name="permession[]" value="Article" type="checkbox" /> Article</td>
+                                                        <td ><input class="form-check-input" data-head data-create name="permession[]" type="checkbox" value="Article_Create" /></td>
+                                                        <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Article_Edit" /></td>
+                                                        <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Article_View"  /></td>
+                                                        <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Article_delete"  /></td>
+                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Article_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
-                                                        <td><input class="form-check-input" type="checkbox" /> Document</td>
-                                                        <td ><input class="form-check-input" name="permession[]" type="checkbox" value="Document_Create" /></td>
-                                                        <td ><input class="form-check-input" name="permession[]" type="checkbox" value="Document_Edit" /></td>
-                                                        <td ><input class="form-check-input" name="permession[]" type="checkbox" value="Document_View"  /></td>
-                                                        <td ><input class="form-check-input" name="permession[]" type="checkbox" value="Document_delete"  /></td>
-                                                        <td><input class="form-check-input" name="permession[]" type="checkbox" value="Document_download"  /></td>
+                                                        <td><input class="form-check-input" id="Video" name="permession[]" value="Video" type="checkbox" /> Video</td>
+                                                        <td ><input class="form-check-input" data-head data-create name="permession[]" type="checkbox" value="Video_Create" /></td>
+                                                        <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Video_Edit" /></td>
+                                                        <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Video_View"  /></td>
+                                                        <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Video_delete"  /></td>
+                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Video_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
-                                                        <td><input class="form-check-input" type="checkbox" /> Categoty</td>
-                                                        <td ><input class="form-check-input" name="permession[]" type="checkbox" value="Categoty_Create" /></td>
-                                                        <td ><input class="form-check-input" name="permession[]" type="checkbox" value="Categoty_Edit" /></td>
-                                                        <td ><input class="form-check-input" name="permession[]" type="checkbox" value="Categoty_View"  /></td>
-                                                        <td ><input class="form-check-input" name="permession[]" type="checkbox" value="Categoty_delete"  /></td>
-                                                        <td><input class="form-check-input" name="permession[]" type="checkbox" value="Categoty_download"  /></td>
+                                                        <td><input class="form-check-input" id="Offer" name="permession[]" value="Offer" type="checkbox" /> Offer</td>
+                                                        <td ><input class="form-check-input" data-head  data-create name="permession[]" type="checkbox" value="Offer_Create" /></td>
+                                                        <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Offer_Edit" /></td>
+                                                        <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Offer_View"  /></td>
+                                                        <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Offer_delete"  /></td>
+                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Offer_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
-                                                        <td><input class="form-check-input" type="checkbox" /> Consultant Category</td>
-                                                        <td ><input class="form-check-input" name="permession[]" type="checkbox" value="Consultant_Create" /></td>
-                                                        <td ><input class="form-check-input" name="permession[]" type="checkbox" value="Consultant_Edit" /></td>
-                                                        <td ><input class="form-check-input" name="permession[]" type="checkbox" value="Consultant_View"  /></td>
-                                                        <td ><input class="form-check-input" name="permession[]" type="checkbox" value="Consultant_delete"  /></td>
-                                                        <td><input class="form-check-input" name="permession[]" type="checkbox" value="Consultant_download"  /></td>
+                                                        <td><input class="form-check-input" id="Discount" name="permession[]" value="Discount" type="checkbox" /> Discount</td>
+                                                        <td ><input class="form-check-input" data-head data-create name="permession[]" type="checkbox" value="Discount_Create" /></td>
+                                                        <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Discount_Edit" /></td>
+                                                        <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Discount_View"  /></td>
+                                                        <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Discount_delete"  /></td>
+                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Discount_download"  /></td>
                                                     </tr>
+                                                    <tr class="fw-bolder fs-6 text-gray-800">
+                                                        <td><input class="form-check-input" id="Communication" name="permession[]" value="Communication" type="checkbox" /> Communication</td>
+                                                        <td colspan="2"><input class="form-check-input" data-head data-create name="permession[]" type="checkbox" value="Communication_Create" /></td>
+                                                        <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Communication_View"  /></td>
+                                                        <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Communication_delete"  /></td>
+                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Communication_download"  /></td>
+                                                    </tr>
+                                                    <tr class="fw-bolder fs-6 text-gray-800">
+                                                        <td><input class="form-check-input" id="Consultant" name="permession[]" value="Consultant" type="checkbox" /> Consultant</td>
+                                                        <td ><input class="form-check-input" data-head data-create name="permession[]" type="checkbox" value="Consultant_Create" /></td>
+                                                        <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Consultant_Edit" /></td>
+                                                        <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Consultant_View"  /></td>
+                                                        <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Consultant_delete"  /></td>
+                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Consultant_download"  /></td>
+                                                    </tr>
+                                                    <tr class="fw-bolder fs-6 text-gray-800">
+                                                        <td><input class="form-check-input" id="Schedule" name="permession[]" value="Schedule" type="checkbox" /> Schedule</td>
+                                                        <td ><input class="form-check-input" data-head data-create name="permession[]" type="checkbox" value="Schedule_Create" /></td>
+                                                        <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Schedule_Edit" /></td>
+                                                        <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Schedule_View"  /></td>
+                                                        <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Schedule_delete"  /></td>
+                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Schedule_download"  /></td>
+                                                    </tr>
+                                                    <tr class="fw-bolder fs-6 text-gray-800">
+                                                        <td><input class="form-check-input" id="Config" name="permession[]" value="Config" type="checkbox" /> Config</td>
+                                                        <td ><input class="form-check-input" data-head data-create name="permession[]" type="checkbox" value="Config_Create" /></td>
+                                                        <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Config_Edit" /></td>
+                                                        <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Config_View"  /></td>
+                                                        <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Config_delete"  /></td>
+                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Config_download"  /></td>
+                                                    </tr>
+                                                    <tr class="fw-bolder fs-6 text-gray-800">
+                                                        <td><input class="form-check-input" id="Consultant_Approval" name="permession[]" value="Consultant_Approval" type="checkbox" /> Consultant Approval</td>
+                                                        <td ><input class="form-check-input" data-head data-create name="permession[]" type="checkbox" value="Consultant_Approval_Create" /></td>
+                                                        <td ></td>
+                                                        <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Consultant_Approval_View"  /></td>
+                                                        <td ></td>
+                                                        <td><input class="form-check-input" data-head data-download name="permession[]" type="checkbox" value="Consultant_Approval_download"  /></td>
+                                                    </tr>
+                                                    <tr class="fw-bolder fs-6 text-gray-800">
+                                                        <td><input class="form-check-input" id="firm_approval" name="permession[]" value="Firm_Approval" type="checkbox" /> Firm Approval</td>
+                                                        <td ><input class="form-check-input" data-head data-create name="permession[]" type="checkbox" value="Firm_Approval_Create" /></td>
+                                                        <td ></td>
+                                                        <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Firm_Approval_View"  /></td>
+                                                        <td ></td>
+                                                        <td><input class="form-check-input" data-head data-download name="permession[]" type="checkbox"  value="Firm_Approval_download"  /></td>
+                                                    </tr>
+
                                                 </tbody>
                                             </table>
                                         </div>
                                     </div>
-                                    <div class="mb-10">
-                                        <button type="submit" class="btn btn-primary btn-hover-rise me-5">Submit</button>
-                                    </div>
                                 </div>
+                                <br>
+                                <div class="form-group row" style="float:right" >
+                                    <div class="col-md-6">
+                                        <button type="button" class="btn btn-secondary btn-hover-rise me-5 ">Reset</button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button type="submit" class="btn btn-primary btn-hover-rise me-5">Save</button>
+                                    </div>
                                 </div>
                             </div>
                         </form>
@@ -237,48 +313,243 @@
         <!--end::Post-->
     </div>
     @section('scripts')
-    <script>
-        var state = $("#state_id")
-        var city = $("#city_id")
+    <script src='{{ URL::asset(theme()->getDemo().'/plugins/custom/tinymce/tinymce.bundle.js')}}'></script>
 
-        $("#country_id").on('select2:select', function (e) {
-        var data = e.params.data;
-        $.ajax({
-            url:"{{route('master.country.getState')}}",
-            method:"POST",
-            data:{id:data.id,"_token": "{{ csrf_token() }}",},
-            success:function(data){
-                var option = null
-                if(data.states.length != null){
-                    data.states.forEach((e)=>{
-                        option += '<option value='+e.id+'>'+e.state_name+'</option>';
-                    })
-                }
-                state.html(option).trigger("change");
-                city.html(null).trigger("change");
-                if(data.Country){
-                    $("#phone").val(data.Country.dialing)
-                }
+    <script>       
+        $('[data-head]').click(function() {
+            if ($(this).is(':checked')) {
+                // debugger;
+                this.parentElement.parentElement.firstElementChild.firstChild.checked=true
             }
-        })
-    });
-    $("#state_id").on('select2:select', function (e) {
-        var data = e.params.data;
-        $.ajax({
-            url:"{{route('master.country.getCity')}}",
-            method:"POST",
-            data:{id:data.id,"_token": "{{ csrf_token() }}",},
-            success:function(data){
-                var option = null
-                if(data.length != null){
-                    data.forEach((e)=>{
-                        option += '<option value='+e.id+'>'+e.city_name+'</option>';
-                    })
+            else {
+             
+                var s = this.parentElement.parentElement.children;
+                var len = s.length;
+                var is_check = [];
+                for (let index = 0; index < len; index++) {
+                    // const element = s[index];
+                    // console.log(element);
+                    var t = String(s[index].firstChild.checked==true);
+                    is_check.push(t);
                 }
-                city.html(option).trigger("change");
+                console.log(is_check);
+                var is_true =  is_check.filter((element, index) => element =='true');
+                if(is_true.length < 2){
+                    this.parentElement.parentElement.firstElementChild.firstChild.checked=false;
+                }
+            };
+        });
+   
+        $('#create_check').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('[data-create]'), function(index, data){ data.checked = true })
+            } else {
+                $.each($('[data-create]'), function(index, data){ data.checked = false })
             }
-        })
-    });
+        });
+
+        $('#edit_check').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('[data-edit]'), function(index, data){ data.checked = true })
+            } else {
+                $.each($('[data-edit]'), function(index, data){ data.checked = false })
+            }
+        });
+
+        $('#view_check').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('[data-view]'), function(index, data){ data.checked = true })
+            } else {
+                $.each($('[data-view]'), function(index, data){ data.checked = false })
+            }
+        });
+
+        $('#delete_check').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('[data-delete]'), function(index, data){ data.checked = true })
+            } else {
+                $.each($('[data-delete]'), function(index, data){ data.checked = false })
+            }
+        });
+
+        $('#download_check').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('[data-download]'), function(index, data){ data.checked = true })
+            } else {
+                $.each($('[data-download]'), function(index, data){ data.checked = false })
+            }
+        });
+
+        $('#admin').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('#admin').parent().parent().find('input'), function(index, data){ data.checked = true})
+            } else {
+                $.each($('#admin').parent().parent().find('input'), function(index, data){ data.checked = false})
+            }
+        });
+
+        $('#Currency').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('#Currency').parent().parent().find('input'), function(index, data){ data.checked = true})
+            } else {
+                $.each($('#Currency').parent().parent().find('input'), function(index, data){ data.checked = false})
+            }
+        });
+        $('#Country').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('#Country').parent().parent().find('input'), function(index, data){ data.checked = true})
+            } else {
+                $.each($('#Country').parent().parent().find('input'), function(index, data){ data.checked = false})
+            }
+        });
+        $('#City').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('#City').parent().parent().find('input'), function(index, data){ data.checked = true})
+            } else {
+                $.each($('#City').parent().parent().find('input'), function(index, data){ data.checked = false})
+            }
+        });
+        $('#State').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('#State').parent().parent().find('input'), function(index, data){ data.checked = true})
+            } else {
+                $.each($('#State').parent().parent().find('input'), function(index, data){ data.checked = false})
+            }
+        });
+        $('#Document').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('#Document').parent().parent().find('input'), function(index, data){ data.checked = true})
+            } else {
+                $.each($('#Document').parent().parent().find('input'), function(index, data){ data.checked = false})
+            }
+        });
+        $('#Language').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('#Language').parent().parent().find('input'), function(index, data){ data.checked = true})
+            } else {
+                $.each($('#Language').parent().parent().find('input'), function(index, data){ data.checked = false})
+            }
+        });
+        $('#Tax').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('#Tax').parent().parent().find('input'), function(index, data){ data.checked = true})
+            } else {
+                $.each($('#Tax').parent().parent().find('input'), function(index, data){ data.checked = false})
+            }
+        });
+        $('#Category').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('#Category').parent().parent().find('input'), function(index, data){ data.checked = true})
+            } else {
+                $.each($('#Category').parent().parent().find('input'), function(index, data){ data.checked = false})
+            }
+        });
+        $('#Specialization').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('#Specialization').parent().parent().find('input'), function(index, data){ data.checked = true})
+            } else {
+                $.each($('#Specialization').parent().parent().find('input'), function(index, data){ data.checked = false})
+            }
+        });
+        $('#Company_Settings').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('#Company_Settings').parent().parent().find('input'), function(index, data){ data.checked = true})
+            } else {
+                $.each($('#Company_Settings').parent().parent().find('input'), function(index, data){ data.checked = false})
+            }
+        });
+        $('#Firm').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('#Firm').parent().parent().find('input'), function(index, data){ data.checked = true})
+            } else {
+                $.each($('#Firm').parent().parent().find('input'), function(index, data){ data.checked = false})
+            }
+        });
+        $('#Insurance').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('#Insurance').parent().parent().find('input'), function(index, data){ data.checked = true})
+            } else {
+                $.each($('#Insurance').parent().parent().find('input'), function(index, data){ data.checked = false})
+            }
+        });
+        $('#Customer').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('#Customer').parent().parent().find('input'), function(index, data){ data.checked = true})
+            } else {
+                $.each($('#Customer').parent().parent().find('input'), function(index, data){ data.checked = false})
+            }
+        });
+        $('#Article').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('#Article').parent().parent().find('input'), function(index, data){ data.checked = true})
+            } else {
+                $.each($('#Article').parent().parent().find('input'), function(index, data){ data.checked = false})
+            }
+        });
+        $('#Video').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('#Video').parent().parent().find('input'), function(index, data){ data.checked = true})
+            } else {
+                $.each($('#Video').parent().parent().find('input'), function(index, data){ data.checked = false})
+            }
+        });
+        $('#Discount').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('#Discount').parent().parent().find('input'), function(index, data){ data.checked = true})
+            } else {
+                $.each($('#Discount').parent().parent().find('input'), function(index, data){ data.checked = false})
+            }
+        });
+        $('#Offer').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('#Offer').parent().parent().find('input'), function(index, data){ data.checked = true})
+            } else {
+                $.each($('#Offer').parent().parent().find('input'), function(index, data){ data.checked = false})
+            }
+        });
+        $('#Communication').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('#Communication').parent().parent().find('input'), function(index, data){ data.checked = true})
+            } else {
+                $.each($('#Communication').parent().parent().find('input'), function(index, data){ data.checked = false})
+            }
+        });
+        $('#Consultant').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('#Consultant').parent().parent().find('input'), function(index, data){ data.checked = true})
+            } else {
+                $.each($('#Consultant').parent().parent().find('input'), function(index, data){ data.checked = false})
+            }
+        });
+        $('#Schedule').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('#Schedule').parent().parent().find('input'), function(index, data){ data.checked = true})
+            } else {
+                $.each($('#Schedule').parent().parent().find('input'), function(index, data){ data.checked = false})
+            }
+        });
+        $('#Config').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('#Config').parent().parent().find('input'), function(index, data){ data.checked = true})
+            } else {
+                $.each($('#Config').parent().parent().find('input'), function(index, data){ data.checked = false})
+            }
+        });
+        $('#Consultant_Approval').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('#Consultant_Approval').parent().parent().find('input'), function(index, data){ data.checked = true})
+            } else {
+                $.each($('#Consultant_Approval').parent().parent().find('input'), function(index, data){ data.checked = false})
+            }
+        });
+        $('#firm_approval').click(function() {
+            if ($(this).is(':checked')) {
+                $.each($('#firm_approval').parent().parent().find('input'), function(index, data){ data.checked = true})
+            } else {
+                $.each($('#firm_approval').parent().parent().find('input'), function(index, data){ data.checked = false})
+            }
+        });      
+
     </script>
     @endsection
 

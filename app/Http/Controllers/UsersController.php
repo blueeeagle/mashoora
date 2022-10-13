@@ -5,10 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Country;
+use App\Models\State;
+use App\Models\City;
 use Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use DataTables;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 
 class UsersController extends Controller
 {
@@ -17,6 +21,16 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+     
+    public function __construct()
+    {
+        $this->middleware('Permissions:Admin_View',['only'=>['index']]);
+        $this->middleware('Permissions:Admin_Create',['only'=>['create']]);
+        $this->middleware('Permissions:Admin_Edit',['only'=>['edit']]);
+        $this->middleware('Permissions:Admin_delete',['only'=>['destroy']]);
+
+    }
+    
     public function index()
     {
         // $config = theme()->getOption('page');
@@ -25,6 +39,7 @@ class UsersController extends Controller
     }
 
     public function datatable(Request $request){
+
         $search=[];
         $columns=$request->columns;
         foreach($columns as $colum){
@@ -41,28 +56,34 @@ class UsersController extends Controller
         ->when($search[3],function($query,$search){
             return $query->where('phone','LIKE',"%{$search}%");
         })
-        ->when($search[4],function($query,$search){
-            return $query->where('permission','LIKE',"%{$search}%");
-        })
         ->get();
+
         return DataTables::of($datas)
                 			->addIndexColumn()
                             ->addColumn('name', function(User $data) {
                                 return $data->first_name.' '.$data->last_name;
                             })
-                            ->addColumn('email', function(User $data) {
-                                return $data->email;
+                            ->addColumn('status', function(User $data) {
+
+                                $status = ($data->status == 1)?'checked':'' ;
+                                $statusName = ($data->status ==1)?'Active':'InActive';
+                                $route = \route('admin.user.status',$data->id);
+                                    return "<div class='form-check form-switch form-check-custom form-check-solid'>
+                                            <input class='form-check-input' type='checkbox' status data-url='$route' value='' $status />
+                                            <p>$statusName</P>
+                                        </div>";
                             })
-                            ->addColumn('phone', function(User $data) {
-                                return $data->phone;
-                            })
-                            ->addColumn('permission', function(User $data) {
-                                return "hi";
+                            ->editColumn('picture', function(User $data){
+                                if(!$data->picture) return '';
+                                    $exists = Storage::disk('public_custom')->exists($data->picture);
+                                    if($exists) return asset("storage/$data->picture");;
+                                return "";
                             })
                             ->addColumn('action', function(User $data) {
-                                return '<div class="action-list"><a href=""><i class="fas fa-edit"></i>Edit</a></div>';
+
+                                return ['Delete'=> \route('admin.user.destroy',$data->id),'edit'=> \route('admin.user.edit',$data->id)];
                             })
-                            ->rawColumns(['name','email','phone','permission','action'])
+                            ->rawColumns(['name','action','status','picture'])
                             ->toJson();
     }
     /**
@@ -72,8 +93,11 @@ class UsersController extends Controller
      */
     public function create()
     {
-        $countrys = Country::where('status',1)->get();
-        return \view('user.create',['countrys'=>$countrys]);
+       $countrys = Country::where('status',1)->get();
+        $state = State::where('status','1')->get();
+        $city = City::where('status','1')->get();
+
+        return \view('user.create',['countrys'=>$countrys,'state'=>$state,'city'=>$city]);
     }
 
     /**
@@ -85,21 +109,22 @@ class UsersController extends Controller
      */
     public function store(Request $Request)
     {
+        // dd($Request);
+        $rules=[ 'email' => 'required|unique:users,email,'.$Request->email ];
 
-        // $rules=[
-		// 	'email ' => 'required|unique:users,email,'.$Request->email,
-		// ];
+		$customs=[ 'email.unique'  => 'Email already taken' ];
 
-		// $customs=[
-		// 	'email.required'  => 'Email should be filled',
-		// 	'email.unique'  => 'Email already taken',
-		// ];
+        $validator = Validator::make($Request->all(), $rules,$customs);
 
-        // $validator = Validator::make($Request->all(), $rules,$customs);
+        if ($validator->fails()) {
+          return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
+        }
 
-        // if ($validator->fails()) {
-        //   return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
-        // }
+        if(Storage::disk('public_custom')->exists("/uploadFiles/temp/$Request->picture")){
+            Storage::disk('public_custom')->move("/uploadFiles/temp/$Request->picture","/uploadFiles/user/$Request->picture");
+            $Request['picture'] =  "/uploadFiles/user/$Request->picture";
+        }
+
         $user = new User;
         $user->email = $Request->email;
         $user->first_name = $Request->first_name;
@@ -108,6 +133,12 @@ class UsersController extends Controller
         $user->api_token = Str::random(60);
         $user->remember_token = Str::random(60);
         $user->phone = $Request->phone;
+        $user->country_id = $Request->country_id;
+        $user->state_id = $Request->state_id;
+        $user->city_id = $Request->city_id;
+        $user->zipcode = $Request->zipcode;
+        $user->picture = $Request->picture;
+        $user->register_address = $Request->register_address;
         $user->permission = ($Request->permession == null)?'':\implode(',',$Request->permession);
         $user->save();
 
@@ -135,11 +166,13 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $user)
     {
-        $config = theme()->getOption('page', 'edit');
-
-        return User::find($id);
+        // dd($user);
+        $countrys = Country::where('status',1)->get();
+        $state = State::where('country_id',$user->country_id)->where('status',1)->get();
+        $city = City::where('country_id',$user->country_id)->when($user->state_id, function($query,$search){ return $query->where('state_id',$search); })->where('status',1)->get();
+        return \view('user.edit',['user'=>$user,'countrys'=>$countrys,'state'=>$state,'city'=>$city]);
     }
 
     /**
@@ -150,9 +183,41 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
+    public function update(Request $Request, User $user){
+        // dd($Request);
+        $rules=[ 'email ' => "unique:users,email,$user->id,id" ];
+
+		$customs=[ 'email.unique'  => 'Email already taken' ];
+
+        $validator = Validator::make($Request->all(),$rules,$customs);
+
+        if ($validator->fails()) {
+          return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
+        }
+
+        if(Storage::disk('public_custom')->exists("/uploadFiles/temp/$Request->picture") && $Request->picture){
+            Storage::disk('public_custom')->move("/uploadFiles/temp/$Request->picture","/uploadFiles/user/$Request->picture");
+            $Request['picture'] =  "/uploadFiles/user/$Request->picture";
+        }else{
+            $Request['picture'] =  $user->picture;
+        }
+        //  dd($Request->picture);
+        $user->email = $Request->email;
+        $user->first_name = $Request->first_name;
+        $user->last_name = $Request->last_name;
+        $user->password = Hash::make('1234');
+        $user->api_token = Str::random(60);
+        $user->remember_token = Str::random(60);
+        $user->phone = $Request->phone;
+        $user->country_id = $Request->country_id;
+        $user->state_id = $Request->state_id;
+        $user->city_id = $Request->city_id;
+        $user->zipcode = $Request->zipcode;
+        $user->picture = $Request->picture;
+        $user->register_address = $Request->register_address;
+        $user->permission = ($Request->permession == null)?'':\implode(',',$Request->permession);
+        $user->update();
+        return response()->json(['msg'=>'Update']);
     }
 
     /**
@@ -162,8 +227,16 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
+        $user->delete();
+        $data1['msg'] = 'Data Deleted Successfully.';
+        $data1['status'] = true;
+        return response()->json($data1);
+    }
+    public function status(Request $request,User $user){
+        $user->status = $request->status;
+        $user->update();
+        return response()->json(['status'=>true,'msg'=>'Status Updated']);
     }
 }

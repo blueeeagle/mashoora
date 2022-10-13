@@ -7,7 +7,7 @@
                 <!--begin::Page title-->
                 <div data-kt-swapper="true" data-kt-swapper-mode="prepend" data-kt-swapper-parent="{default: '#kt_content_container', 'lg': '#kt_toolbar_container'}" class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
                     <!--begin::Title-->
-                    <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">Consultant Category</h1>
+                    <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">Specialization</h1>
                     <!--end::Title-->
                     <!--begin::Separator-->
                     <span class="h-20px border-gray-300 border-start mx-4"></span>
@@ -33,7 +33,15 @@
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
-                        <li class="breadcrumb-item text-muted"><a href="{{ route('master.consultantcategory.index') }}" class="text-muted text-hover-primary">Consultant Category</a></li>
+                        <li class="breadcrumb-item text-muted"><a href="{{ route('master.specialization.index') }}" class="text-muted text-hover-primary">Specialization</a></li>
+                        
+                        <li class="breadcrumb-item">
+                            <span class="bullet bg-gray-300 w-5px h-2px"></span>
+                        </li>
+                        <!--end::Item-->
+                        <!--begin::Item-->
+                        <li class="breadcrumb-item text-muted">Edit Specialization</li>
+                        
                     </ul>
                     <!--end::Breadcrumb-->
                 </div>
@@ -49,12 +57,13 @@
                 <!--begin::Products-->
                 <div class="card card-flush">
                     <!--begin::Card body-->
-                    <div class="card-body pt-0">
+                    <div class="card-body rounded border pt-0">
                         <form action="{{ route('master.consultantcategory.update',[$Document->id]) }}" method="Post" id="formEdit">
                             @csrf
                             <div class="py-5">
-                                <div class="rounded border p-10">
-                                    <div class="fv-row mb-10">
+                                <div class="p-10">
+                                    <div class="form-group row">
+                                    <div class="fv-row mb-10 col-md-6">
                                         <!--begin::Label-->
                                         <label class="required form-label fs-6 mb-2" >Choose Main Category</label>
                                         <!--end::Label-->
@@ -67,7 +76,7 @@
                                         </select>
                                         <!--begin::Select2-->
                                     </div>
-                                    <div class="fv-row mb-10">
+                                    <div class="fv-row mb-10 col-md-6" id="selectdiv" {{ isset($Document->subcategorie_id)?'':'hidden' }}>
                                         <!--begin::Label-->
                                         <label class="required form-label fs-6 mb-2" >Choose Child Category</label>
                                         <!--end::Label-->
@@ -80,7 +89,10 @@
                                         </select>
                                         <!--begin::Select2-->
                                     </div>
-                                    <div class="fv-row mb-10">
+                                    </div>
+                                     <div class="form-group row">
+                                    <div class="fv-row mb-10 col-md-6">
+                                        <label class="required form-label fs-6 mb-2" >Title</label>
                                         <input type="text" name="title" class="form-control" value="{{ $Document->title }}" placeholder="Title" required/>
                                     </div>
                                     <div class="fv-row mb-10">
@@ -97,6 +109,8 @@
                                             <!--end::Label-->
                                         </div>
                                     </div>
+                                    </div>
+                                       <div class="form-group row" style="float:right;">
                                     <div class="mb-10">
                                         <button type="submit" class="btn btn-primary btn-hover-rise me-5">update</button>
                                     </div>
@@ -115,8 +129,9 @@
     @section('scripts')
     <script>
     window.onload = function() {
-        back = `{{ route('master.consultantcategory.index') }}`
+        back = `{{ route('master.specialization.index') }}`
         var child = $("#subcategorie_id")
+        var selectdiv = document.getElementById('selectdiv');
         $("#categorie_id").on('select2:select', function (e) {
             var data = e.params.data.element.attributes[0].value
             $.ajax({
@@ -125,10 +140,18 @@
                 data:{"_token": "{{ csrf_token() }}"},
                 success:function(data){
                     var option = null
-                    data.child.forEach((e)=>{
-                        option += '<option value='+e.id+'>'+e.name+'</option>'
-                    })
-                    child.html(option)
+                    if(data.child.length >0){
+                        data.child.forEach((e)=>{
+                            option += '<option value='+e.id+'>'+e.name+'</option>'
+                        })
+                        child.html(option)
+                        selectdiv.removeAttribute('hidden');
+                    }
+                    else{
+                        selectdiv.setAttribute('hidden',true);
+                        subcategorie_id.removeAttribute('required');
+                        document.getElementById('subcategorie_id').value = "";
+                    }
                 }
             })
         })

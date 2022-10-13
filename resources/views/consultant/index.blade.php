@@ -98,16 +98,59 @@
                                         <span id="kt_engage_demos_label">Advanced Search</span>
                                     </button>
                                 </div>
+                                <div class="position-relative w-md-300px me-md-2">
+                                    <select class="form-select" id="toogleColum" data-control="select2" data-placeholder="Toggle column" multiple="multiple">
+                                        <option></option>
+                                        <option selected value="0">Sno</option>
+                                        <option selected value="1">Phone No</option>
+                                        <option selected value="2">Name</option>
+                                        <option value="3">Email</option>
+                                        <option value="4">Bio Data</option>
+                                        <option value="5">Date of Biroption</option>
+                                        <option value="6">Expriance</option>
+                                        <option value="7">landline</option>
+                                        <option value="8">Language</option>
+                                        <option value="9">Address</option>
+                                        <option value="10">Country</option>
+                                        <option value="11">State</option>
+                                        <option value="12">City</option>
+                                        <option value="13">Zip Code</option>
+                                        <option value="14">Firm Type</option>
+                                        <option value="15">specialized</option>
+                                        <option value="16">Category</option>
+                                        <option value="17">preferre Slot</option>
+                                        <option value="18">Video</option>
+                                        <option value="19">video Amount</option>
+                                        <option value="20">voice</option>
+                                        <option value="21">voice amount</option>
+                                        <option value="22">Text</option>
+                                        <option value="23">Text amount</option>
+                                        <option value="24">Direct</option>
+                                        <option value="25">Direct Amount</option>
+                                        <option value="26">Account name</option>
+                                        <option value="27">Account number</option>
+                                        <option value="28">Bank name</option>
+                                        <option value="29">Branch</option>
+                                        <option value="30">IFCS code</option>
+                                        <option value="31">Bank status</option>
+                                        <option value="32">proof</option>
+                                        <option value="33">Insurance</option>
+                                        <option value="34">Commission Consultant Type</option>
+                                        <option value="35">Commission Consultant Amount</option>
+                                        <option value="36">Commission Offers Type</option>
+                                        <option value="37">Commission Offers Amount</option>
+                                        <option value="38">Commission Payout Type</option>
+                                        <option selected value="39">Commission Payout Amount</option>
+                                        <option selected value="40">status</option>
+                                        <option selected value="41">Action</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </form>
                 <div class="row gy-10 gx-xl-10">
                     <div class="card card-docs flex-row-fluid mb-2">
-                        <div>
-                            Toggle column: <a class="toggle-vis" data-column="0">SNo</a> - <a class="toggle-vis" data-column="1">Country Name</a> - <a class="toggle-vis" data-column="2">Code</a> -
-                            <a class="toggle-vis" data-column="3">Dialing</a>
-                        </div>
                         <table id="kt_datatable" class="table table-row-bordered gy-5">
                             <thead>
                                 <tr class="fw-bold fs-6 text-muted">
@@ -151,6 +194,8 @@
                                     <th>Commission Offers Amount</th>
                                     <th>Commission Payout Type</th>
                                     <th>Commission Payout Amount</th>
+                                    <th>status</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tfoot>
@@ -195,6 +240,8 @@
                                     <th>Commission Offers Amount</th>
                                     <th>Commission Payout Type</th>
                                     <th>Commission Payout Amount</th>
+                                    <th>status</th>
+                                    <th>Action</th>
                                 </tr>
                             </tfoot>
                         </table>
@@ -206,43 +253,21 @@
 
     @section('scripts')
     <script>
+        var table = null
         $(document).ready(function () {
-            const SearchSubmit = document.getElementById('search')
-            const SearchSubmit_two = document.getElementById('search_two')
-            const resetSubmit = document.getElementById('reset')
-            SearchSubmit.addEventListener('click',search)
-            SearchSubmit_two.addEventListener('click',search)
-            resetSubmit.addEventListener('click',reset)
-
-            function search(event){
-                event.preventDefault()
-                var params = {}
-                const datatable_input = document.querySelectorAll('.datatable-input')
-                datatable_input.forEach((data) => {
-                    var i = data.dataset.colIndex
-                    if (params[i]) {
-                        params[i] += '|' + data.value;
-                    } else {
-                        params[i] = data.value;
-                    }
-                })
-                $.each(params, function(i, val) {
-                    table.column(i).search(val ? val : '', false, false);
-                });
-                table.table().draw();
-            }
-
-            function reset(event){
-                event.preventDefault()
-                const datatable_input = document.querySelectorAll('.datatable-input')
-                datatable_input.forEach((data) => {
-                    data.value = ''
-                    table.column(data.dataset.colIndex).search('', false, false);
-                })
-                table.table().draw();
-            }
-
-            var table = $("#kt_datatable").DataTable({
+            table = $("#kt_datatable").DataTable({
+                initComplete: function(settings, json) {
+                    const select = ToogleColum.val()
+                    table.columns().every(function (index) {
+                        if(!select.includes(index.toString())){
+                            var column =  table.column(index)
+                            column.visible(false)
+                        }else{
+                            var column =  table.column(index)
+                            column.visible(true)
+                        }
+                    })
+                },
                 responsive: true,
                 scrollX: true,
                 buttons: [
@@ -309,6 +334,7 @@
                             'com_off_amount' ,
                             'com_pay_type' ,
                             'com_pay_amount',
+                            'status'
                         ]
                     }
 
@@ -354,34 +380,24 @@
                     { data : 'com_off_amount' },
                     { data : 'com_pay_type' },
                     { data : 'com_pay_amount' },
+                    { data: 'status'},
+                    { data: 'action'}
                 ],
-
+                columnDefs : [
+                    {
+                        targets: -1,
+                        data: null,
+                        orderable: false,
+                        className: 'text-end',
+                        render: function (data, type, row) {
+                            return `
+                                <a href="${data.view}" class="btn btn-icon btn-primary"><i class="las la-eye fs-2 me-2"></i></a>
+                                <a href="${data.Delete}" delete class="btn btn-icon btn-danger"><i href="${data.Delete}" delete class="las la-trash fs-2 me-2"></i></a>
+                            `;
+                        },
+                    },
+                ],
                 drawCallback : function( settings ) { }
-            });
-
-            $('a.toggle-vis').on('click', function (e) {
-                e.preventDefault();
-                // Get the column API object
-                var column = table.column($(this).attr('data-column'));
-                // Toggle the visibility
-                column.visible(!column.visible());
-            });
-
-            $('#filter').on('change', function (e) {
-                const selected = $('#filter').val()
-                const length = selected.length
-                if(length > 0){
-                    document.getElementById('search_div').removeAttribute('hidden')
-                }else{
-                    document.getElementById('search_div').setAttribute('hidden',true)
-                }
-                document.querySelectorAll('[data-id-filter').forEach((a) =>{
-                    if(selected.indexOf(a.getAttribute('data-id-filter')) !== -1)  {
-                        a.removeAttribute('hidden')
-                    }else{
-                        a.setAttribute('hidden',true)
-                    }
-                })
             });
         });
     </script>

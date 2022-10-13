@@ -9,7 +9,12 @@ use DataTables;
 
 class CurrencyController extends Controller
 {
-    //
+    
+    public function __construct()
+    {
+        $this->middleware('Permissions:Currency_View',['only'=>['index']]);
+    }
+    
     public function index()
     {
         return view('currency.index');
@@ -36,12 +41,41 @@ class CurrencyController extends Controller
         })
         ->get();
         return DataTables::of($datas)
-                			->addIndexColumn()
-                            ->toJson();
+			->addIndexColumn()
+			->addColumn('action', function(Currency $data){
+                return ['edit'=> \route('master.currency.edit',$data->id)];
+            })
+            ->addColumn('status', function(Currency $data) {
+                $status = ($data->status == 1)?'checked':'' ;
+                $route = \route('master.currency.status',$data->id);
+                return "<div class='form-check form-switch form-check-custom form-check-solid'>
+                        <input class='form-check-input' type='checkbox' status data-url='$route' value='' $status />
+                    </div>";
+            })
+            ->rawColumns(['status','action'])
+            ->toJson();
     }
+    
+    public function edit(Currency $currency ){
+        return \view('currency.edit',['currency'=>$currency]);
+    }
+    
+    public function update(Request $Request,Currency $currency){
+        dd($Request);
+      
+        $currency->update($Request->all());
+        return response()->json(['msg'=>'Updated Successfully']);
+    }
+
 
     public function destroy($id, Currency $Currency)
     {
         return $Currency->find($id)->delete();
+    }
+    
+    public function status(Request $request,Currency $Currency){
+        $Currency->status = $request->status;
+        $Currency->update();
+        return response()->json(['status'=>true,'msg'=>'Status Updated']);
     }
 }

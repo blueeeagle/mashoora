@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Core\Adapters\Theme;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use App\Models\Companysetting;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,7 +32,9 @@ class AppServiceProvider extends ServiceProvider
 
         // Share theme adapter class
         View::share('theme', $theme);
-
+        view()->composer('*', function ($view) {
+            $view->with('companeySetting',Companysetting::with('country')->where('id',1)->first());
+        });
         // Set demo globally
         $theme->setDemo(request()->input('demo', 'demo1'));
         // $theme->setDemo('demo2');

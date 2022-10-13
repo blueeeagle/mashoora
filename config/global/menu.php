@@ -274,8 +274,18 @@ return array(
                         'bullet' => '<span class="bullet bullet-dot"></span>',
                     ),
                     array(
-                        'title'  => 'Consultant Category',
-                        'path'   => 'master/consultantcategory/index',
+                        'title'  => 'Specialization',
+                        'path'   => 'master/specialization/index',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                    array(
+                        'title'  => 'Languages',
+                        'path'   => 'master/language',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                    array(
+                        'title'  => 'Tax',
+                        'path'   => 'master/tax',
                         'bullet' => '<span class="bullet bullet-dot"></span>',
                     ),
                 )
@@ -358,8 +368,123 @@ return array(
                         'bullet' => '<span class="bullet bullet-dot"></span>',
                     ),
                     array(
-                        'title'  => 'Insurance',
-                        'path'   => 'user/insurance',
+                        'title'  => 'Manage Video',
+                        'path'   => 'other/video',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                    array(
+                        'title'  => 'Manage Offer',
+                        'path'   => 'other/offer',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                    array(
+                        'title'  => 'Manage Discount',
+                        'path'   => 'other/discount',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                    array(
+                        'title'  => 'Manage Communication',
+                        'path'   => 'other/communication',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                )
+            )
+
+        ),
+        //Consultants
+        array(
+            'title' => 'Consultants',
+            'icon'       => array(
+                'svg'  => theme()->getSvgIcon("demo1/media/icons/duotune/communication/com006.svg", "svg-icon-2"),
+                'font' => '<i class="bi bi-person fs-2"></i>',
+            ),
+            'classes'    => array('item' => 'menu-accordion'),
+            'attributes' => array(
+                "data-kt-menu-trigger" => "click",
+            ),
+            'sub' => array(
+                'class' => 'menu-sub-accordion menu-active-bg',
+                'items' => array(
+                    array(
+                        'title'  => 'Consultants',
+                        'path'   => 'consultant/consultant',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                )
+            )
+
+        ),
+        //Activities
+        array(
+            'title' => 'Activities',
+            'icon'       => array(
+                'svg'  => theme()->getSvgIcon("demo1/media/icons/duotune/communication/com006.svg", "svg-icon-2"),
+                'font' => '<i class="bi bi-person fs-2"></i>',
+            ),
+            'classes'    => array('item' => 'menu-accordion'),
+            'attributes' => array(
+                "data-kt-menu-trigger" => "click",
+            ),
+            'sub' => array(
+                'class' => 'menu-sub-accordion menu-active-bg',
+                'items' => array(
+                    array(
+                        'title'  => 'Schedule',
+                        'path'   => 'activities/schedules',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                    array(
+                        'title'  => 'Calendar',
+                        'path'   => 'activities/calendar',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                    array(
+                        'title'  => 'Config',
+                        'path'   => 'activities/config',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                    array(
+                        'title'  => 'Offer History',
+                        'path'   => 'history/offer',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                    array(
+                        'title'  => 'Promo Purchase History',
+                        'path'   => 'history/purchase',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                    array(
+                        'title'  => 'Appointment History',
+                        'path'   => 'history/appointment',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                
+                )
+            )
+
+        ),
+        //Approval
+        array(
+            'title' => 'Approval',
+            'icon'       => array(
+                'svg'  => theme()->getSvgIcon("demo1/media/icons/duotune/communication/com006.svg", "svg-icon-2"),
+                'font' => '<i class="bi bi-person fs-2"></i>',
+            ),
+            'classes'    => array('item' => 'menu-accordion'),
+            'attributes' => array(
+                "data-kt-menu-trigger" => "click",
+            ),
+            'sub' => array(
+                'class' => 'menu-sub-accordion menu-active-bg',
+                'items' => array(
+                    array(
+                        'title'  => 'Consultant Profile Approval',
+                        'path'   => 'approval/consultant',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                    array(
+                        'title'  => 'Firm Approvals',
+                        'path'   => 'approval/firm',
                         'bullet' => '<span class="bullet bullet-dot"></span>',
                     ),
                 )

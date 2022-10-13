@@ -26,18 +26,125 @@
                     <!--begin::Wrapper-->
                     <div class="fv-row mb-12">
                         <select class="form-select form-select-solid" data-control="select2" data-placeholder="Search option" data-allow-clear="true" id="filter" multiple="multiple">
-                            <option value="state_name">State Name</option>
-                            <option value="city_name">city Name</option>
+                            <option value='have_tax' >Have Tax</option>
+                            <option value='taxation_number'>Taxation Number</option>
+                            {{-- <option value='register_on'>Register on</option> --}}
+                            <option value='about_us'>About us</option>
+                            <option value='register_address'>Register Address</option>
+                            <option value='country_id'>Country</option>
+                            <option value='state_id'>State</option>
+                            <option value='city_id'>City</option>
+                            <option value='zipcode'>Zipcode</option>
+                            <option value='cname'>c-name</option>
+                            <option value='ctitle'>c-title</option>
+                            <option value='cemail'>c-email</option>
+                            <option value='cmobile'>c-mobile</option>
+                            <option value='cphone'>c-phone</option>
+                            <option value='categorie_id'>Categorie</option>
+                            <option value='account_number'>Account Number</option>
+                            <option value='account_name'>Account Name</option>
+                            <option value='ifsc_code'>Ifsc code</option>
+                            <option value='bank_name'>Bank Name</option>
+                            <option value='branch'>Branch</option>
+                            {{-- <option value='bank_status'>Bank Status</option> --}}
+                            <option value='email'>Email</option>
+                            <option value='user_name'>User Name</option>
+                            {{-- <option value='role'>Role</option> --}}
+                            {{-- <option value='login_status'>Login Status</option> --}}
                         </select>
                     </div>
                     <div class="row">
-                        <div class="col-xxl-4" data-id-filter="state_name" hidden>
-                            <label class="fs-6 form-label fw-bolder text-dark">State Name</label>
+                        <div class="col-xxl-4" data-id-filter="have_tax" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">Have Tax</label>
                             <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='2' />
                         </div>
-                        <div class="col-xxl-4" data-id-filter="city_name" hidden>
-                            <label class="fs-6 form-label fw-bolder text-dark">city Name</label>
+                        <div class="col-xxl-4" data-id-filter="taxation_number" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">Taxation Number</label>
                             <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='3' />
+                        </div>
+                        {{-- <div class="col-xxl-4" data-id-filter="register_on" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">Register on</label>
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='4' />
+                        </div> --}}
+                        <div class="col-xxl-4" data-id-filter="about_us" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">About us</label>
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='5' />
+                        </div>
+                        <div class="col-xxl-4" data-id-filter="register_address" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">Register Address</label>
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='7' />
+                        </div>
+                        <div class="col-xxl-4" data-id-filter="country_id" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">Country</label>
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='8' />
+                        </div>
+                        <div class="col-xxl-4" data-id-filter="state_id" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">State</label>
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='9' />
+                        </div>
+                        <div class="col-xxl-4" data-id-filter="city_id" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">city</label>
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='10' />
+                        </div>
+                        <div class="col-xxl-4" data-id-filter="zipcode" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">zipcode</label>
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='11' />
+                        </div>
+                        <div class="col-xxl-4" data-id-filter="cname" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">c-name</label>
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='12' />
+                        </div>
+                        <div class="col-xxl-4" data-id-filter="ctitle" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">c-title</label>
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='13' />
+                        </div>
+                        <div class="col-xxl-4" data-id-filter="cemail" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">c-email</label>
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='14' />
+                        </div>
+                        <div class="col-xxl-4" data-id-filter="cmobile" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">c-mobile</label>
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='15' />
+                        </div>
+                        <div class="col-xxl-4" data-id-filter="cphone" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">c-phone</label>
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='16' />
+                        </div>
+                        <div class="col-xxl-4" data-id-filter="categorie_id" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">Categorie</label>
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='17' />
+                        </div>
+                        <div class="col-xxl-4" data-id-filter="account_number" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">Account Number</label>
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='18' />
+                        </div>
+                        <div class="col-xxl-4" data-id-filter="account_name" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">Account Name</label>
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='19' />
+                        </div>
+                        <div class="col-xxl-4" data-id-filter="ifsc_code" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">Ifsc code</label>
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='20' />
+                        </div>
+                        <div class="col-xxl-4" data-id-filter="bank_name" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">Bank Name</label>
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='21' />
+                        </div>
+                        <div class="col-xxl-4" data-id-filter="branch" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">Branch</label>
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='22' />
+                        </div>
+                        {{-- <div class="col-xxl-4" data-id-filter="bank_status" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">Bank Status</label>
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='23' />
+                        </div> --}}
+                        <div class="col-xxl-4" data-id-filter="email" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">Email</label>
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='24' />
+                        </div>
+                        <div class="col-xxl-4" data-id-filter="user_name" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">User Name</label>
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='25' />
                         </div>
                     </div>
                     <div class="rounded py-4 px-6 mb-5" hidden id="search_div">
@@ -91,7 +198,7 @@
                                         </svg>
                                     </span>
                                     <!--end::Svg Icon-->
-                                    <input type="text" class="form-control form-control-solid ps-10 datatable-input" data-col-index='1' name="search" value="" placeholder="Country" />
+                                    <input type="text" class="form-control form-control-solid ps-10 datatable-input" data-col-index='1' placeholder="Company Name" />
                                 </div>
                                 <!--end::Input group-->
                                 <!--begin:Action-->
@@ -106,7 +213,7 @@
                                     <select class="form-select" id="toogleColum" data-control="select2" data-placeholder="Toggle column" multiple="multiple">
                                         <option></option>
                                         <option selected value="0">SNo</option>
-                                        <option selected value="1">Comapany Name</option>
+                                        <option selected value="1">Company Name</option>
                                         <option selected value="2">Have Tax</option>
                                         <option value="3">Taxation Number</option>
                                         <option value="4">Register on</option>
@@ -134,8 +241,8 @@
                                         <option value="26">Role</option>
                                         <option value="27">Login Status</option>
                                         <option value="28">Gallery</option>
-                                        <option value="29">Status</option>
-                                        <option value="30">Action</option>
+                                        <option selected value="29">Status</option>
+                                        <option selected value="30">Action</option>
                                     </select>
                                 </div>
                             </div>
@@ -148,7 +255,7 @@
                             <thead>
                                 <tr class="fw-bold fs-6 text-muted">
                                     <th>SNo</th>
-                                    <th>Comapany Name</th>
+                                    <th>Company Name</th>
                                     <th>Have Tax</th>
                                     <th>Taxation Number</th>
                                     <th>Register on</th>
@@ -183,7 +290,7 @@
                             <tfoot>
                                 <tr>
                                     <th>SNo</th>
-                                    <th>Comapany Name</th>
+                                    <th>Company Name</th>
                                     <th>Have Tax</th>
                                     <th>Taxation Number</th>
                                     <th>Register on</th>
@@ -269,37 +376,37 @@
 
                 },
                 columns: [
-                    { data: 'DT_RowIndex'},
+                    { data: 'DT_RowIndex'},//0
                     { data: 'comapany_name' },
                     { data: 'have_tax' },
                     { data: 'taxation_number'},
                     { data: 'register_on'},
-                    { data: 'about_us'},
+                    { data: 'about_us'},//5
                     { data: 'logo'},
                     { data: 'register_address'},
                     { data: 'country_id'},
                     { data: 'state_id'},
-                    { data: 'city_id'},
+                    { data: 'city_id'},//10
                     { data: 'zipcode'},
                     { data: 'cname'},
                     { data: 'ctitle'},
                     { data: 'cemail'},
-                    { data: 'cmobile'},
+                    { data: 'cmobile'},//15
                     { data: 'cphone'},
                     { data: 'categorie_id'},
                     { data: 'account_number'},
                     { data: 'account_name'},
-                    { data: 'ifsc_code'},
+                    { data: 'ifsc_code'},//20
                     { data: 'bank_name'},
                     { data: 'branch'},
                     { data: 'bank_status'},
                     { data: 'email'},
-                    { data: 'user_name'},
+                    { data: 'user_name'},//25
                     { data: 'role'},
                     { data: 'login_status'},
                     { data: 'gallery'},
                     { data: 'status'},
-                    { data: 'action'}
+                    { data: 'action'}//30
                 ],
                 columnDefs : [
                     {
@@ -310,7 +417,7 @@
                         render: function (data, type, row) {
                             return `
                                 <a href="${data.edit}" class="btn btn-icon btn-primary"><i class="las la-edit fs-2 me-2"></i></a>
-                                <a href="${data.Delete}" text='${data.Delete_text}' delete class="btn btn-icon btn-danger"><i href="${data.Delete}" text='${data.Delete_text}' delete class="las la-trash fs-2 me-2"></i></a>
+                                <a href="${data.Delete}"  delete class="btn btn-icon btn-danger"><i href="${data.Delete}" delete class="las la-trash fs-2 me-2"></i></a>
                             `;
                         },
                     },

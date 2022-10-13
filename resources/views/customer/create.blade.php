@@ -41,7 +41,7 @@
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
-                        <li class="breadcrumb-item text-dark">Create Articel</li>
+                        <li class="breadcrumb-item text-dark">Create Customer</li>
                         <!--end::Item-->
                     </ul>
                     <!--end::Breadcrumb-->
@@ -65,8 +65,19 @@
                                 <h4>Mobile</h4>
                                 <div class="rounded border p-10">
                                     <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >Mobile</label>
-                                        <input type="text" name="phone_no" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Mobile" required />
+                                        <div class="col-10">
+                                            <div class="input-group">
+                                                {{-- <label class="input-group-text">Country Code</label> --}}
+                                                <select class="form-select w-0" name="country_code" id="country_code" style="max-width:10%;">
+                                                    <option>--</option>
+                                                    @foreach($countrys as $data)
+                                                        <option value="{{$data->id}}" data-has_state='{{ $data->has_state }}'>{{$data->country_code}}</option>
+                                                    @endforeach
+                                                </select>
+                                                <input type="text" name="phone_no" id="phone_no" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Mobile No" required />
+                                            </div>
+
+                                        </div>
                                     </div>
                                 </div>
                                 <h4>Personal</h4>
@@ -96,40 +107,13 @@
                                     </div>
                                     <div class="mb-10 fv-row">
                                         <label class="required form-label fs-6 mb-2" >Email</label>
-                                        <input class="form-control form-control-solid" name="Email" id="Email"  placeholder="Email" type="email" required/>
+                                        <input class="form-control form-control-solid" name="email" id="Email"  placeholder="Email" type="email" required/>
                                     </div>
                                 </div>
                                 <h4>Address</h4>
                                 <div class="rounded border p-10">
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >Registered Address</label>
-                                        <textarea id="register_address" name="register_address" class="form-control"></textarea>
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >Country</label>
-                                        <select class="form-select" id="country_id" name="country_id" data-control="select2" data-placeholder="Select an Country" required>
-                                            <option></option>
-                                            @foreach($countrys as $country)
-                                                <option value="{{$country->id}}">{{$country->country_name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >State</label>
-                                        <select class="form-select" name="state_id" id="state_id" data-control="select2" data-placeholder="Select an State" required>
-                                            <option></option>
-                                        </select>
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >City</label>
-                                        <select class="form-select" name="city_id" id="city_id" data-control="select2" data-placeholder="Select an City" required>
-                                            <option></option>
-                                        </select>
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >Zip Code</label>
-                                        <input type="text" name="zipcode" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Zip Code" required />
-                                    </div>
+                                    @include('components.addressComponent',['register_address'=>'','page'=>'create','countrys'=>$countrys])
+
                                     <div class="fv-row mb-10">
                                         {{-- <label class="required fw-bold fs-6 mb-5"></label> --}}
                                         <div class="form-check form-check-custom form-check-solid mb-5">
@@ -160,13 +144,14 @@
         <!--end::Post-->
     </div>
     @section('scripts')
+     <script src='{{ URL::asset(theme()->getDemo().'/plugins/custom/cropper/cropper.bundle.js')}}'></script>
+    <script src='{{ URL::asset(theme()->getDemo().'/plugins/custom/formrepeater/formrepeater.bundle.js')}}'></script>
+    <script src='{{ URL::asset(theme()->getDemo().'/plugins/custom/tinymce/tinymce.bundle.js')}}'></script>
     <script>
+         back = "{{ route('user.customer.index') }}"
         const yesterday = new Date();
         var BasicDetails = null
         yesterday.setDate(yesterday.getDate() - 1);
-
-        var state = $("#state_id")
-        var city = $("#city_id")
 
         $("#dob").val(formatDate(yesterday))
         $("#dob").daterangepicker({
@@ -174,49 +159,12 @@
                 showDropdowns: true,
                 minYear: 1901,
                 maxYear: parseInt(moment().format("YYYY"),10),
-                maxDate : formatDate(yesterday)
+                maxDate : formatDate(yesterday),
+                locale: {
+                        format: '{{ strtoupper($companeySetting->date_format) }}'
+                    }
             }, function(start, end, label) {}
         )
-
-        $("#country_id").on('select2:select', function (e) {
-            var data = e.params.data;
-            $.ajax({
-                url:"{{route('master.country.getState')}}",
-                method:"POST",
-                data:{id:data.id,"_token": "{{ csrf_token() }}",},
-                success:function(data){
-                    var option = null
-                    if(data.states.length != null){
-                        data.states.forEach((e)=>{
-                            option += '<option value='+e.id+'>'+e.state_name+'</option>';
-                        })
-                    }
-                    state.html(option).trigger("change");
-                    city.html(null).trigger("change");
-                    if(data.Country){
-                        $("input[data-cmobile]").val(data.Country.dialing)
-                        $("input[data-cphone]").val(data.Country.dialing)
-                    }
-                }
-            })
-        });
-        $("#state_id").on('select2:select', function (e) {
-            var data = e.params.data;
-            $.ajax({
-                url:"{{route('master.country.getCity')}}",
-                method:"POST",
-                data:{id:data.id,"_token": "{{ csrf_token() }}",},
-                success:function(data){
-                    var option = null
-                    if(data.length != null){
-                        data.forEach((e)=>{
-                            option += '<option value='+e.id+'>'+e.city_name+'</option>';
-                        })
-                    }
-                    city.html(option).trigger("change");
-                }
-            })
-        });
 
         function formatDate(date) {
             return [
@@ -228,6 +176,49 @@
         function padTo2Digits(num) {
             return num.toString().padStart(2, '0');
         }
+        
+        var state = $("#state_id")
+        var city = $("#city_id")
+        var country_id = $("#country_id")
+        var stateDiv = $('#stateDiv')
+        var phone_no = $('#phone_no')
+        $("#country_code").change(function (e) {
+           
+            var id = e.currentTarget.options[e.currentTarget.options.selectedIndex].value;
+            let has_state =  e.currentTarget.options[e.currentTarget.options.selectedIndex].dataset.has_state;
+            if(has_state != "0"){
+                stateDiv.show(500)
+                state.attr('required');
+            }else{
+                stateDiv.hide(500)
+                state.removeAttr('required');
+            }
+            $.ajax({
+                url:"{{route('master.country.getState')}}",
+                method:"POST",
+                data:{id:id,"_token": "{{ csrf_token() }}",},
+                success:function(data){
+                    
+                    var option = `<option selected></option>`
+                    var option1 = `<option selected></option>`
+                    if(data.states.length != null){
+                        data.states.forEach((e)=>{
+                            option += '<option value='+e.id+'>'+e.state_name+'</option>';
+                        })
+                    }
+                    if(data.city.length != null){
+                        data.city.forEach((e)=>{
+                            option1 += '<option value='+e.id+'>'+e.city_name+'</option>';
+                        })
+                    }
+                    country_id.val(id).trigger("change");
+                    state.html(option).val('').trigger("change");
+                    city.html(option1).val('').trigger("change");
+                    phone_no.val(data.Country.dialing)
+                }
+            })
+            
+        });
 
     </script>
     @endsection

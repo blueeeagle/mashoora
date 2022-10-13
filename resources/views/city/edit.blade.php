@@ -1,30 +1,38 @@
 <x-base-layout>
-    <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+    <div class="d-flex flex-column flex-column-fluid">
         <!--begin::Toolbar-->
-        <div class="toolbar" id="kt_toolbar">
-            <div id="kt_toolbar_container" class="container-fluid d-flex flex-stack">
-                <div data-kt-swapper="true" data-kt-swapper-mode="prepend" data-kt-swapper-parent="{default: '#kt_content_container', 'lg': '#kt_toolbar_container'}" class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
-                    <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">City</h1>
-                    <span class="h-20px border-gray-300 border-start mx-4"></span>
-                    <ul class="breadcrumb breadcrumb-separatorless fw-bold fs-7 my-1">
+        <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
+            <!--begin::Container-->
+            <div id="kt_app_toolbar_container" class="app-container container-xxl d-flex flex-stack">
+                <!--begin::Page title-->
+                <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+                    <!--begin::Title-->
+                    <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">Edit City</h1>
+                    <!--end::Title-->
+                    <!--begin::Breadcrumb-->
+                    <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
+                        <!--begin::Item-->
                         <li class="breadcrumb-item text-muted">
-                            <a href="" class="text-muted text-hover-primary">Home</a>
+                            <a href="#" class="text-muted text-hover-primary">Home</a>
                         </li>
+                        <!--end::Item-->
+                        <!--begin::Item-->
                         <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-300 w-5px h-2px"></span>
+                            <span class="bullet bg-gray-400 w-5px h-2px"></span>
                         </li>
+                        <!--end::Item-->
+                        <!--begin::Item-->
                         <li class="breadcrumb-item text-muted">Master</li>
-                        <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-300 w-5px h-2px"></span>
-                        </li>
-                        <li class="breadcrumb-item text-muted"><a href="{{ route('master.city.index') }}" class="text-muted text-hover-primary">City</a></li>
-                        <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-300 w-5px h-2px"></span>
-                        </li>
-                        <li class="breadcrumb-item text-dark">Edit City</li>
+                        <!--end::Item-->
                     </ul>
+                    <!--end::Breadcrumb-->
                 </div>
+                <div class="d-flex align-items-center gap-2 gap-lg-3">
+                    <a href="{{ route('master.city.index') }}" class="btn btn-sm btn-secondary" ><i class="fas fa-arrow-left "></i></a>
+                </div>
+                <!--end::Page title-->
             </div>
+            <!--end::Container-->
         </div>
         <div class="post d-flex flex-column-fluid" id="kt_post">
             <div id="kt_content_container" class="container-xxl">
@@ -33,31 +41,48 @@
                         <form action="{{ route('master.city.update',$city->id) }}" method="POST" id="formEdit">
                             @csrf
                             <div class="py-5">
-                                <div class="rounded border p-10">
-                                    <div class="mb-10">
+                                <div class="form-group row">
+                                    <div class="col-md-6">
                                         <label for="" class="form-label">Country<span class="text-danger">*</span></label>
-                                        <select class="form-select" name="country_id" id="country_id" data-control="select2" data-placeholder="Select an option">
+                                        <select class="form-select mb-4" name="country_id" id="country_id" data-control="select2" data-placeholder="Select an option">
                                             <option></option>
                                             @foreach($countrys as $country)
-                                                <option {{ ($city->country_id ==  $country->id)?'selected':'' }} value="{{$country->id}}">{{$country->country_name}}</option>
+                                                <option {{ ($city->country_id ==  $country->id)?'selected':'' }} data-has_state='{{ $country->has_state }}'  value="{{$country->id}}">{{$country->country_name}}</option>
+                                                @php
+                                                    if($city->country_id == $country->id){
+                                                        $stateDiv = ($country->has_state)?true : false;
+                                                    }
+                                                @endphp
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="mb-10">
+                                    <div class="col-md-6" id="stateDiv" style="{{ (!$stateDiv)?'display:none':'' }}">
                                         <label for="" class="form-label">State<span class="text-danger">*</span></label>
                                         <select class="form-select" name="state_id" id="state_id" data-control="select2" data-placeholder="Select an option">
                                             <option></option>
-                                            @foreach($state as $country)
-                                                <option {{ ($city->state_id ==  $country->id)?'selected':'' }} value="{{$country->id}}">{{$country->state_name}}</option>
-                                            @endforeach
+                                            @if ($stateDiv)
+                                                @foreach($state as $country)
+                                                    <option {{ ($city->state_id ==  $country->id)?'selected':'' }} value="{{$country->id}}">{{$country->state_name}}</option>
+                                                @endforeach
+                                            @endif
                                         </select>
                                     </div>
-                                    <div class="mb-10">
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-md-6">
+                                    
                                         <label for="" class="form-label">City name<span class="text-danger">*</span></label>
                                         <input type="text" value="{{ $city->city_name }}" name="city_name" class="form-control " placeholder="City name"/>
                                     </div>
-                                    <div class="mb-10">
-                                        <button type="submit" class="btn btn-primary">Update</button>
+                                </div>
+                                 
+                                <div class="form-group row" style="float:right" >
+                                    <div class="col-md-6">
+                                        <button type="button" class="btn btn-secondary btn-hover-rise ">Reset</button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button type="submit" class="btn btn-primary btn-hover-rise">Save</button>
                                     </div>
                                 </div>
                             </div>
@@ -69,23 +94,41 @@
     </div>
     @section('scripts')
     <script>
+    back = '{{ route('master.city.index') }}'
         $(document).ready(function () {
 
         var state = $("#state_id")
+        var city = $("#city_id")
+        var stateDiv = $('#stateDiv')
         $("#country_id").on('select2:select', function (e) {
                 var data = e.params.data;
+                let has_state =  e.params.data.element.dataset.has_state
+            if(has_state != "0"){
+                stateDiv.show(500)
+                state.attr('required');
+            }else{
+                stateDiv.hide(500)
+                state.removeAttr('required');
+            }
                 $.ajax({
                     url:"{{route('master.country.getState')}}",
                     method:"POST",
                     data:{id:data.id,"_token": "{{ csrf_token() }}",},
                     success:function(data){
-                        var option = null
-                        if(data.states.length != null){
-                            data.states.forEach((e)=>{
-                                option += '<option value='+e.id+'>'+e.state_name+'</option>';
-                            })
-                        }
-                        state.html(option).trigger("change");
+                        var option = `<option selected></option>`
+                    var option1 = `<option selected></option>`
+                    if(data.states.length != null){
+                        data.states.forEach((e)=>{
+                            option += '<option value='+e.id+'>'+e.state_name+'</option>';
+                        })
+                    }
+                    if(data.city.length != null){
+                        data.city.forEach((e)=>{
+                            option1 += '<option value='+e.id+'>'+e.city_name+'</option>';
+                        })
+                    }
+                    state.html(option).val('').trigger("change");
+                    city.html(option1).val('').trigger("change");
                     }
                 })
             })

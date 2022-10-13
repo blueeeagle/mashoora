@@ -1,50 +1,34 @@
 <x-base-layout>
-    <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+    <div class="d-flex flex-column flex-column-fluid">
         <!--begin::Toolbar-->
-        <div class="toolbar" id="kt_toolbar">
+        <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
             <!--begin::Container-->
-            <div id="kt_toolbar_container" class="container-fluid d-flex flex-stack">
+            <div id="kt_app_toolbar_container" class="app-container container-xxl d-flex flex-stack">
                 <!--begin::Page title-->
-                <div data-kt-swapper="true" data-kt-swapper-mode="prepend" data-kt-swapper-parent="{default: '#kt_content_container', 'lg': '#kt_toolbar_container'}" class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
+                <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
                     <!--begin::Title-->
-                    <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">Category</h1>
+                    <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">Edit Category</h1>
                     <!--end::Title-->
-                    <!--begin::Separator-->
-                    <span class="h-20px border-gray-300 border-start mx-4"></span>
-                    <!--end::Separator-->
                     <!--begin::Breadcrumb-->
-                    <ul class="breadcrumb breadcrumb-separatorless fw-bold fs-7 my-1">
+                    <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
                         <!--begin::Item-->
                         <li class="breadcrumb-item text-muted">
-                            <a href="" class="text-muted text-hover-primary">Home</a>
+                            <a href="/metronic8/demo1/../demo1/index.html" class="text-muted text-hover-primary">Home</a>
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
                         <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-300 w-5px h-2px"></span>
+                            <span class="bullet bg-gray-400 w-5px h-2px"></span>
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
-                        <li class="breadcrumb-item text-muted">Master</li>
-                        <!--end::Item-->
-                        <!--begin::Item-->
-                        <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-300 w-5px h-2px"></span>
-                        </li>
-                        <!--end::Item-->
-                        <!--begin::Item-->
-                        <li class="breadcrumb-item text-muted"><a href="{{ route('master.category.index') }}" class="text-muted text-hover-primary">Category</a></li>
-                        <!--end::Item-->
-                        <!--begin::Item-->
-                        <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-300 w-5px h-2px"></span>
-                        </li>
-                        <!--end::Item-->
-                        <!--begin::Item-->
-                        <li class="breadcrumb-item text-dark">Create Category</li>
+                        <li class="breadcrumb-item text-muted">Category</li>
                         <!--end::Item-->
                     </ul>
                     <!--end::Breadcrumb-->
+                </div>
+                <div class="d-flex align-items-center gap-2 gap-lg-3">
+                    <a href="{{ route('master.category.index') }}" class="btn btn-sm btn-secondary" ><i class="fas fa-arrow-left "></i></a>
                 </div>
                 <!--end::Page title-->
             </div>
@@ -61,180 +45,127 @@
                     <div class="card-body pt-0">
                         <form action="{{ route('master.category.update',[$Category->id]) }}" method="post" id="formEdit">
                             @csrf
+
                             <div class="py-5">
-                                <div class="rounded border p-10">
-                                    <div class="fv-row mb-10">
-                                        <label class="required fw-bold fs-6 mb-3">Choose</label>
-                                        <div class="d-flex flex-column fv-row">
-                                            <!--begin::Radio-->
-                                            <div class="form-check form-check-custom form-check-solid mb-5">
-                                                <!--begin::Input-->
-                                                <input class="form-check-input me-3" name="type" type="radio" value="0" {{ ($Category->type == 0)?'checked':'' }} id="kt_docs_formvalidation_radio_option_1" />
-                                                <!--end::Input-->
-
-                                                <!--begin::Label-->
-                                                <label class="form-check-label" for="kt_docs_formvalidation_radio_option_1">
-                                                    <div class="fw-bolder text-gray-800">Parent</div>
-                                                </label>
-                                                <!--end::Label-->
-                                            </div>
-                                            <!--end::Radio-->
-                                            <!--begin::Radio-->
-                                            <div class="form-check form-check-custom form-check-solid mb-5">
-                                                <!--begin::Input-->
-                                                <input class="form-check-input me-3" name="type" type="radio" value="1" {{ ($Category->type == 1)?'checked':'' }} id="kt_docs_formvalidation_radio_option_2" />
-                                                <!--end::Input-->
-
-                                                <!--begin::Label-->
-                                                <label class="form-check-label" for="kt_docs_formvalidation_radio_option_2">
-                                                    <div class="fw-bolder text-gray-800">Sub Category</div>
-                                                </label>
-                                                <!--end::Label-->
-                                            </div>
-                                            <!--end::Radio-->
+                                
+                                    <div class="form-group row">
+                                        <div class="col-md-2">
+                                            <label class="required fw-bold fs-6 mb-4">Choose</label>
                                         </div>
-                                        <!--end::Input row-->
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <!--begin::Label-->
-                                        <label class="required fw-bold fs-6 mb-2">Category Name</label>
-                                        <!--end::Label-->
-
-                                        <!--begin::Input-->
-                                        <input type="text" name="name" value="{{ $Category->name }}" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Category Name" required />
-                                        <!--end::Input-->
-                                    </div>
-                                    <div class="fv-row mb-10" id="selecter">
-                                        <!--begin::Label-->
-                                        <label class="required form-label fs-6 mb-2" >Choose Parent</label>
-                                        <!--end::Label-->
-                                        <!--begin::Select2-->
-                                        <select class="form-select" name="categories_id" id="categories_id" data-control="select2" data-placeholder="Select an option">
-                                            <option></option>
-                                            @foreach ($Parent as $key => $value )
-                                                <option value="{{ $value->id }}" {{ ($Category->categories_id == $value->id)?'selected':'' }}>{{$value->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        <!--begin::Select2-->
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <!--begin::Label-->
-                                        <label class="required fw-bold fs-6 mb-2">Short Description</label>
-                                        <!--end::Label-->
-
-                                        <!--begin::Input-->
-                                        <textarea name="description" class="form-control form-control-solid">{{ $Category->description }}</textarea>
-                                        <!--end::Input-->
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <!--begin::Label-->
-                                        <label class="required fw-bold fs-6 mb-2">Tags</label>
-                                        <!--end::Label-->
-                                        <!--begin::Input-->
-                                        @php
-                                            $data = [];
-                                            $arrayss = json_decode($Category->tags);
-                                            foreach ( $arrayss as $key => $value) {
-                                                # code...
-                                                $data[] = $value->value;
-                                            }
-                                        @endphp
-                                        <input class="form-control" name="tags" value="{{ implode(',',$data) }}" id="tags" />
-                                        <!--end::Input-->
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <!--begin::Image input-->
-                                        <div class="image-input" data-kt-image-input="true" style="background-color: aliceblue;">
-                                            <!--begin::Image preview wrapper-->
-                                            <div class="image-input-wrapper w-125px h-125px" style="background-image: url('{{ asset("storage/$Category->img") }}')"></div>
-                                            <!--end::Image preview wrapper-->
-
-                                            <!--begin::Edit button-->
-                                            <label class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
-                                            data-kt-image-input-action="change"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-dismiss="click"
-                                            title="Change avatar">
-                                                <i class="bi bi-pencil-fill fs-7"></i>
-
-                                                <!--begin::Inputs-->
-                                                <input type="file" name="img" accept=".png, .jpg, .jpeg" />
-                                                <input type="hidden" name="avatar_remove" />
-                                                <!--end::Inputs-->
+                                        <div class="col-md-10">
+                                            <input class="form-check-input me-3" name="type" type="radio" value="0" {{ ($Category->type == 0)?'checked':'' }} id="kt_docs_formvalidation_radio_option_1" /> <label class="form-check-label" for="kt_docs_formvalidation_radio_option_1">
+                                                <div class="fw-bolder text-gray-800">Parent</div>
                                             </label>
-                                            <!--end::Edit button-->
+                                            <input class="form-check-input me-3" name="type" type="radio"  value="1" {{ ($Category->type == 1)?'checked':'' }} id="kt_docs_formvalidation_radio_option_2" />
+                                            <label class="form-check-label" for="kt_docs_formvalidation_radio_option_2">
+                                                <div class="fw-bolder text-gray-800">Sub Category</div>
+                                            </label>
 
-                                            <!--begin::Cancel button-->
-                                            <span class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
-                                            data-kt-image-input-action="cancel"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-dismiss="click"
-                                            title="Cancel avatar">
-                                                <i class="bi bi-x fs-2"></i>
-                                            </span>
-                                            <!--end::Cancel button-->
-
-                                            <!--begin::Remove button-->
-                                            <span class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
-                                            data-kt-image-input-action="remove"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-dismiss="click"
-                                            title="Remove avatar">
-                                                <i class="bi bi-x fs-2"></i>
-                                            </span>
-                                            <!--end::Remove button-->
                                         </div>
-                                        <!--end::Image input-->
                                     </div>
-                                    <div class="fv-row mb-10">
-                                        <!--begin::Label-->
-                                        <label class="required fw-bold fs-6 mb-2">Sort No</label>
-                                        <!--end::Label-->
-                                        <!--begin::Input-->
-                                        <input type="text" name="sort_no_list" value="{{ $Category->sort_no_list }}" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="for Category list" required />
-                                        <!--end::Input-->
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <!--begin::Label-->
-                                        <label class="required fw-bold fs-6 mb-2">Sort No</label>
-                                        <!--end::Label-->
-                                        <!--begin::Input-->
-                                        <input type="text" name="sort_no_home" value="{{ $Category->sort_no_home }}"  class="form-control form-control-solid mb-3 mb-lg-0" placeholder="for Home list" required />
-                                        <!--end::Input-->
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        {{-- <label class="required fw-bold fs-6 mb-5"></label> --}}
-                                        <div class="form-check form-check-custom form-check-solid mb-5">
-                                            <!--begin::Input-->
-                                            <input class="form-check-input me-3" name="display_in_home" {{ ($Category->display_in_home == 1 )?'checked':'' }} type="checkbox" value="1" id="display_in_home" />
-                                            <!--end::Input-->
 
-                                            <!--begin::Label-->
-                                            <label class="form-check-label" for="display_in_home">
-                                                <div class="fw-bolder text-gray-800">Display in home</div>
-                                            </label>
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            <label class="required fw-bold fs-6 mb-4">Category Name</label>
+                                            <input type="text" name="name"  value="{{ $Category->name }}" class="form-control mb-4" placeholder="Category Name" required />
+                                        </div>
+
+                                        <div class="col-md-6" id="selecter" hidden>
+                                            <label class="required form-label fs-6 mb-4" >Choose Parent</label>
                                             <!--end::Label-->
+                                            <!--begin::Select2-->
+                                            <select class="form-select mb-4" name="categories_id" id="categories_id" data-control="select2" data-placeholder="Select an option">
+                                                <option></option>
+                                                @foreach ($Parent as $key => $value )
+                                                    <option value="{{ $value->id }}" data-value={{ $value->document_id}} {{ ($Category->categories_id == $value->id)?'selected':'' }}>{{$value->name }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
-                                    <div class="fv-row mb-10">
-                                        {{-- <label class="required fw-bold fs-6 mb-5"></label> --}}
-                                        <div class="form-check form-check-custom form-check-solid mb-5">
-                                            <!--begin::Input-->
-                                            <input class="form-check-input me-3" name="status" {{ ($Category->status == 1)?'checked':''}} type="checkbox" value="1" id="status" />
-                                            <!--end::Input-->
 
-                                            <!--begin::Label-->
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            <label class="required fw-bold fs-6 mb-4">Document</label>
+                                            <select class="form-select" name="document_id[]" id="document_id" data-control="select2" multiple data-placeholder="Select an option">
+                                                <option value=""></option>
+                                                @foreach ($documents as $key => $value )
+                                                    <option value="{{ $value->id }}" {{ (in_array($value->id,explode(',',$Category->document_id))) ? 'selected':''}} >{{$value->title }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="required fw-bold fs-6 mb-4">Short Description</label>
+                                            <textarea name="description" class="form-control form-control-solid" maxlength="256" placeholder="256 Characters Alone">{{ $Category->description }}</textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            @php
+                                                $data = [];
+                                                if($Category->tags !=''){
+                                                $arrayss = json_decode($Category->tags);
+                                                foreach ( $arrayss as $key => $value) {
+                                                    # code...
+                                                    $data[] = $value->value;
+                                                }
+                                                }
+                                            @endphp
+                                            <label class="fw-bold fs-6 mb-4">Tags</label>
+                                            <input class="form-control mb-4" name="tags" value="{{ implode(',',$data) }}" id="tags" placeholder="e.g. Plain relief, Tooth Ace"/>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="required fw-bold fs-6 mb-4">Menu Image/Icon</label>
+                                            <span>Image must be less than 5MB</span>
+                                            <div class="col-md-6">
+                                                @include('components.imagecrop',['name'=>'img','imgsrc'=>$Category->img])
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            <label class="required fw-bold fs-6 mb-4">Sort No</label>
+                                            <input type="text" name="sort_no_list" class="form-control form-control-solid mb-4 " value="{{ $Category->sort_no_list }}"  placeholder="for Category list" required />
+                                        </div>
+                                   
+                                        <div class="col-md-6">
+                                            <input class="form-check-input mb-3" name="display_in_home" type="checkbox" value="1" id="display_in_home"  onclick="showDisInHome(this)" {{($Category->display_in_home == 1 )?'checked':'' }} /><label class="form-check-label" for="display_in_home">
+                                                <div class="fw-bolder text-gray-800">  &nbsp; Display in home</div>
+                                            </label>
+                                            <div  id="display_sort" {{( ($Category->display_in_home ==1) ? '':'hidden')}}>
+                                                <input type="text" id="sort_no_home" name="sort_no_home" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="for Home list" />
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            <input class="form-check-input me-3 " name="status" type="checkbox" value="1" id="status" {{ ($Category->status == 1)?'checked':''}} />
+                                            
                                             <label class="form-check-label" for="status">
                                                 <div class="fw-bolder text-gray-800">Status</div>
                                             </label>
-                                            <!--end::Label-->
                                         </div>
                                     </div>
-                                    <div class="mb-10">
-                                        <button type="submit" class="btn btn-primary btn-hover-rise me-5">Update</button>
-                                    </div>
-                                </div>
                             </div>
+                        
+                            <div class="form-group row" style="float:right" >
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-secondary btn-hover-rise me-5 ">Reset</button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-primary btn-hover-rise me-5">Update</button>
+                                </div>
+                                
+                            </div>
+                            
+
+                            
                         </form>
                     </div>
                     <!--end::Card body-->
@@ -252,6 +183,8 @@
             new Tagify(document.getElementById('tags'))
             const selecter = document.getElementById('selecter')
             const categories_id = document.getElementById('categories_id')
+            const display_sort = document.getElementById('display_sort')
+
             var RadioButton = document.getElementById('formEdit').elements['type'];
             RadioButton.forEach(element => {
                 element.addEventListener('click',showhideParent)
@@ -259,16 +192,68 @@
             });
             function showhideParent(event){
                 if(event.target.value == 1){
+
+
                     selecter.removeAttribute('hidden')
                     categories_id.setAttribute('required',true)
 
                 }else{
                     selecter.setAttribute('hidden',true)
-                    categories_id.value = ''
+                    categories_id.value = '';
                     categories_id.removeAttribute('required')
                 }
             }
+
+            function showDisInHome(checkbox) {
+                if(checkbox.checked){
+                    display_sort.removeAttribute('hidden');
+                    $('#sort_no_home').prop('required','true');
+                }
+                else{
+                    display_sort.setAttribute('hidden',true);
+                    $('#sort_no_home').removeAttr('required');
+                    $('#sort_no_home').val('');
+                }
+            }
         }
+        function showDisInHome(checkbox) {
+            if(checkbox.checked){
+                display_sort.removeAttribute('hidden');
+                $('#sort_no_home').prop('required','true');
+            }
+            else{
+                display_sort.setAttribute('hidden',true);
+                $('#sort_no_home').removeAttr('required');
+                $('#sort_no_home').val('');
+            }
+        }
+
+        $("#categories_id").on('select2:select', function (e) {
+            var data = e.currentTarget.options[e.currentTarget.options.selectedIndex].dataset.value
+            var document_id = data.split(','); 
+            var Ddata= [];
+            var option= null;
+            const Documents = @json($documents);
+        
+            document_id.forEach((id) => {   // loop for category based document
+                check = Documents.filter(function (ele) {
+                   
+                    return id == ele.id;
+                });
+                Ddata.push(check);
+            });
+
+            Ddata = Ddata.flat(1);
+
+            if(Ddata.length != null){
+                Ddata.forEach((e)=>{
+                    option += '<option value='+e.id+'>'+e.title+'</option>';
+                })
+            }
+            $('#document_id').html(option).trigger("change");
+            
+        })
+
     </script>
     @endsection
 </x-base-layout>

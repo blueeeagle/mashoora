@@ -1,110 +1,108 @@
-<?php
-    // List items
-    $listRows = array(
-        array(
-            'icon' => 'icons/duotune/maps/map004.svg',
-            'title' => 'Sales',
-            'description' => '100 Regions',
-            'stats' => '$2,5b',
-            'arrow' => 'up'
-        ),
-        array(
-            'icon' => 'icons/duotune/general/gen024.svg',
-            'title' => 'Revenue',
-            'description' => 'Quarter 2/3',
-            'stats' => '$1,7b',
-            'arrow' => 'down'
-        ),
-        array(
-            'icon' => 'icons/duotune/electronics/elc005.svg',
-            'title' => 'Growth',
-            'description' => '80% Rate',
-            'stats' => '$8,8m',
-            'arrow' => 'up'
-        ),
-        array(
-            'icon' => 'icons/duotune/general/gen005.svg',
-            'title' => 'Dispute',
-            'description' => '3090 Refunds',
-            'stats' => '$270m',
-            'arrow' => 'down'
-        )
-    );
 
-    $color = $color ?? 'primary';
-?>
-
-<!--begin::List Widget 1-->
+<!--begin::List Widget 3-->
 <div class="card {{ $class }}">
-    <!--begin::Body-->
-    <div class="card-body p-0">
-        <!--begin::Header-->
-        <div class="px-9 pt-7 card-rounded h-275px w-100 bg-{{ $color }}">
-            <!--begin::Heading-->
-            <div class="d-flex flex-stack">
-                <h3 class="m-0 text-white fw-bolder fs-3">Sales Summary</h3>
+    <!--begin::Header-->
 
-                <div class="ms-1">
-                    <!--begin::Menu-->
-                    <button type="button" class="btn btn-sm btn-icon btn-color-white btn-active-white btn-active-color-{{ $color }} border-0 me-n3" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
-                        {!! theme()->getSvgIcon("icons/duotune/general/gen024.svg", "svg-icon-2") !!}
-                    </button>
-                    {{ theme()->getView('partials/menus/_menu-3') }}
-                    <!--end::Menu-->
+ 
+    <div class="card-body pt-2">
+        <ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bolder">
+            <li class="nav-item mt-2">
+                {{-- <a  class=" ms-0 me-10 py-5" href="#" ><b>APPROVALS </b></a>  --}}
+            </li>
+            <li class="nav-item mt-2">
+                <a class="nav-link  text-active-info  ms-0 me-10 py-5 active" data-bs-toggle="tab" href="#App_1" >FIRM APPROVALS</a> 
+            </li>
+            <li class="nav-item mt-2">
+                <a class="nav-link text-active-danger  ms-0 me-10 py-5 " data-bs-toggle="tab" href="#App_2" >PAYOUT APPROVALS</a> 
+            </li>
+            <li class="nav-item mt-2">
+                <a class="nav-link  text-active-success ms-0 me-10 py-5 " data-bs-toggle="tab" href="#App_3" >PAYIN APPROVALS</a> 
+            </li>
+            <li class="nav-item mt-2">
+                <a class="nav-link  text-active-warning ms-0 me-10 py-5 " data-bs-toggle="tab" href="#App_4" >PROFILE APPROVALS</a> 
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            {{-- Tab 1 --}}
+           
+            <div class="tab-pane fade show active" id="App_1" role="tabpanel">
+                <div class="post d-flex flex-column-fluid" id="kt_post">
+                    <div id="kt_content_container" class="container-xxl">
+                        
+                        <div class="row gy-10 gx-xl-10">
+                            <div class="card card-docs flex-row-fluid mb-2">
+                                <table id="kt_datatable9" class="table table-row-bordered gy-5">
+                                    <thead>
+                                        <tr class="fw-bold fs-6 text-muted">
+                                            <th>Date & Time</th>
+                                            <th>Firm Name</th>
+                                            <th>Email ID</th>
+                                            <th>Category</th>
+                                            <th>status</th>
+                                            <th>Date & Time Stamp</th>
+                                            <th>Option</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Date & Time</th>
+                                            <th>Firm Name</th>
+                                            <th>Email ID</th>
+                                            <th>Category</th>
+                                            <th>status</th>
+                                            <th>Date & Time Stamp</th>
+                                            <th>Option</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <!--end::Heading-->
 
-            <!--begin::Balance-->
-            <div class="d-flex text-center flex-column text-white pt-8">
-                <span class="fw-bold fs-7">You Balance</span>
-                <span class="fw-bolder fs-2x pt-1">$37,562.00</span>
+            <div class="tab-pane fade show" id="App_2" role="tabpanel">
+                
+                
             </div>
-            <!--end::Balance-->
-        </div>
-        <!--end::Header-->
-
-        <!--begin::Items-->
-        <div class="shadow-sm card-rounded mx-9 mb-9 px-6 py-9 position-relative z-index-1 bg-white" style="margin-top: -100px">
-            @foreach($listRows as $row)
-                <!--begin::Item-->
-                <div class="d-flex align-items-center {{ util()->putIf(next($listRows), 'mb-6') }}">
-                    <!--begin::Symbol-->
-                    <div class="symbol symbol-45px w-40px me-5">
-                        <span class="symbol-label bg-lighten">
-                            {!! theme()->getSvgIcon($row['icon'], "svg-icon-1") !!}
-                        </span>
-                    </div>
-                    <!--end::Symbol-->
-
-                    <!--begin::Description-->
-                    <div class="d-flex align-items-center flex-wrap w-100">
-                        <!--begin::Title-->
-                        <div class="mb-1 pe-3 flex-grow-1">
-                            <a href="#" class="fs-5 text-gray-800 text-hover-primary fw-bolder">{{ $row['title'] }}</a>
-                            <div class="text-gray-400 fw-bold fs-7">{{ $row['description'] }}</div>
+            <div class="tab-pane fade show" id="App_3" role="tabpanel">
+            </div>
+            <div class="tab-pane fade show" id="App_4" role="tabpanel"><div class="post d-flex flex-column-fluid" id="kt_post">
+                <div id="kt_content_container" class="container-xxl">
+                    
+                    <div class="row gy-10 gx-xl-10">
+                        <div class="card card-docs flex-row-fluid mb-2">
+                            <table id="kt_datatable10" class="table table-row-bordered gy-5">
+                                <thead>
+                                    <tr class="fw-bold fs-6 text-muted">
+                                        <th>Date & Time</th>
+                                        <th>Consultant Name</th>
+                                        <th>Email ID</th>
+                                        <th>Category</th>
+                                        <th>status</th>
+                                        <th>Date & Time Stamp</th>
+                                        <th>Option</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>Date & Time</th>
+                                        <th>Consultant Name</th>
+                                        <th>Email ID</th>
+                                        <th>Category</th>
+                                        <th>status</th>
+                                        <th>Date & Time Stamp</th>
+                                        <th>Option</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
                         </div>
-                        <!--end::Title-->
-
-                        <!--begin::Label-->
-                        <div class="d-flex align-items-center">
-                            <div class="fw-bolder fs-5 text-gray-800 pe-1">{{ $row['stats'] }}</div>
-
-                            @if($row['arrow'] === 'up')
-                                {!! theme()->getSvgIcon("icons/duotune/arrows/arr066.svg", "svg-icon-5 svg-icon-success ms-1") !!}
-                            @else
-                                {!! theme()->getSvgIcon("icons/duotune/arrows/arr065.svg", "svg-icon-5 svg-icon-danger ms-1") !!}
-                            @endif
-                        </div>
-                        <!--end::Label-->
                     </div>
-                    <!--end::Description-->
                 </div>
-                <!--end::Item-->
-            @endforeach
+            </div>
         </div>
-        <!--end::Items-->
     </div>
     <!--end::Body-->
 </div>
-<!--end::List Widget 1-->
+<!--end:List Widget 3-->

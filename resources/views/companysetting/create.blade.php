@@ -1,51 +1,33 @@
 <x-base-layout>
-    <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+    <div class="d-flex flex-column flex-column-fluid">
         <!--begin::Toolbar-->
-        <div class="toolbar" id="kt_toolbar">
+        <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
             <!--begin::Container-->
-            <div id="kt_toolbar_container" class="container-fluid d-flex flex-stack">
+            <div id="kt_app_toolbar_container" class="app-container container-xxl d-flex flex-stack">
                 <!--begin::Page title-->
-                <div data-kt-swapper="true" data-kt-swapper-mode="prepend" data-kt-swapper-parent="{default: '#kt_content_container', 'lg': '#kt_toolbar_container'}" class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
+                <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
                     <!--begin::Title-->
-                    <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">Consultant Category</h1>
+                    <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">Company Setting</h1>
                     <!--end::Title-->
-                    <!--begin::Separator-->
-                    <span class="h-20px border-gray-300 border-start mx-4"></span>
-                    <!--end::Separator-->
                     <!--begin::Breadcrumb-->
-                    <ul class="breadcrumb breadcrumb-separatorless fw-bold fs-7 my-1">
+                    <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
                         <!--begin::Item-->
                         <li class="breadcrumb-item text-muted">
-                            <a href="" class="text-muted text-hover-primary">Home</a>
+                            <a href="#" class="text-muted text-hover-primary">Home</a>
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
                         <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-300 w-5px h-2px"></span>
+                            <span class="bullet bg-gray-400 w-5px h-2px"></span>
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
-                        <li class="breadcrumb-item text-muted">Master</li>
-                        <!--end::Item-->
-                        <!--begin::Item-->
-                        <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-300 w-5px h-2px"></span>
-                        </li>
-                        <!--end::Item-->
-                        <!--begin::Item-->
-                        <li class="breadcrumb-item text-muted"><a href="{{ route('master.documents.index') }}" class="text-muted text-hover-primary">Consultant Category</a></li>
-                        <!--end::Item-->
-                        <!--begin::Item-->
-                        <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-300 w-5px h-2px"></span>
-                        </li>
-                        <!--end::Item-->
-                        <!--begin::Item-->
-                        <li class="breadcrumb-item text-dark">Create consultantcategory Category</li>
+                        <li class="breadcrumb-item text-muted">Setting</li>
                         <!--end::Item-->
                     </ul>
                     <!--end::Breadcrumb-->
                 </div>
+                
                 <!--end::Page title-->
             </div>
             <!--end::Container-->
@@ -59,255 +41,168 @@
                 <div class="card card-flush">
                     <!--begin::Card body-->
                     <div class="card-body pt-0">
-                        <form action="{{ route('setting.companysettings.store') }}" method="post" id="formCreate">
+                        <form action="{{ route('setting.companysettings.update',1) }}" method="post" id="formEdit">
                             @csrf
                             <div class="py-5">
-                                <h4>About</h4>
+                                <hr>
+                                <h4 class="com-head">About</h4>
+                                 <hr>
                                 <div class="rounded border p-10">
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >Company Name</label>
-                                        <input type="text" name="comapany_name" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Company Name" required />
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >Legal Name</label>
-                                        <input type="text" name="legal_name" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Legal Name" required />
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >Do you have tax?</label>
-                                        <div class="form-check form-check-custom form-check-solid mb-5">
-                                            <input class="form-check-input me-3" name="have_tax" type="radio" value="1" checked id="have_tax_Yes" />
-                                            <label class="form-check-label" for="have_tax_Yes">
-                                                <div class="fw-bolder text-gray-800">Yes</div>
-                                            </label>
+
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            <label class="required form-label fs-6 mb-4" >Company Name</label>
+                                            <input type="text" name="comapany_name" value="{{ $Companysetting->comapany_name }}" class="form-control form-control-solid mb-4" placeholder="Company Name" required />
                                         </div>
-                                        <div class="form-check form-check-custom form-check-solid mb-5">
-                                            <input class="form-check-input me-3" name="have_tax" type="radio" value="0" id="have_tax_no" />
-                                            <label class="form-check-label" for="have_tax_no">
-                                                <div class="fw-bolder text-gray-800">No</div>
-                                            </label>
+                                        <div class="col-md-6">
+                                            <label class="required form-label fs-6 mb-4" >Legal Name</label>
+                                            <input type="text" name="legal_name" value="{{ $Companysetting->legal_name }}" class="form-control form-control-solid mb-4" placeholder="Legal Name" required />    
                                         </div>
                                     </div>
-                                    <div class="fv-row mb-10" id="taxation_number_div">
-                                        <label class="required form-label fs-6 mb-2" >Taxation Number</label>
-                                        <input type="number" name="taxation_number" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Taxation Number" required />
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >Company Registered On</label>
-                                        <input class="form-control form-control-solid" name="register_on" placeholder="Pick date rage" id="kt_daterangepicker_3" required/>
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >About Us</label>
-                                        <textarea id="about_us" name="about_us" class="tox-target"></textarea>
-                                    </div>
-                                </div>
-                                <h4>Address</h4>
-                                <div class="rounded border p-10">
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >Registered Address</label>
-                                        <textarea id="register_address" name="register_address" class="tox-target"></textarea>
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >Country</label>
-                                        <select class="form-select" id="country_id" name="country_id" data-control="select2" data-placeholder="Select an Country" required>
-                                            <option></option>
-                                            @foreach($countrys as $country)
-                                                <option value="{{$country->id}}">{{$country->country_name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >State</label>
-                                        <select class="form-select" name="state_id" id="state_id" data-control="select2" data-placeholder="Select an State" required>
-                                            <option></option>
-                                        </select>
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >City</label>
-                                        <select class="form-select" name="city_id" id="city_id" data-control="select2" data-placeholder="Select an City" required>
-                                            <option></option>
-                                        </select>
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >Zip Code</label>
-                                        <input type="text" name="zipcode" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Zip Code" required />
-                                    </div>
-                                </div>
-                                <h4>Setting</h4>
-                                <div class="rounded border p-10">
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >Base Currency</label>
-                                        <div class="input-group  mb-5">
-                                            <span class="input-group-text" id="inputGroup-sizing-default">Small</span>
-                                            <input type="text" style="text-align: center" class="form-control" id="inputGroup-sizing-default_text" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" readonly/>
-                                        </div>
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >Time Zone</label>
-                                        <input type="text" name="zipcode" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="time_zone" required />
-                                        <span>Get time Zone <a href="https://www.w3schools.com/php/php_ref_timezones.asp" target="_blank">CLick Here!</a></span>
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >Date Format</label>
-                                        <input type="text" name="date_format" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Eg: Y-M:m-D:d" required />
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >Reschedule Cut off Time</label>
-                                        <input type="text" name="reschedule_cut_off_time" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Eg: H:i:s:a" required />
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >Discard Cut off Time</label>
-                                        <input type="text" name="discard_cut_off_time" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Eg: H:i:s:a" required />
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >Logo (For Login Page)</label>
-                                        <div class="image-input image-input-empty" data-kt-image-input="true" style="background-color: aliceblue;">
-                                            <!--begin::Image preview wrapper-->
-                                            <div class="image-input-wrapper w-125px h-125px"></div>
-                                            <!--end::Image preview wrapper-->
 
-                                            <!--begin::Edit button-->
-                                            <label class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
-                                            data-kt-image-input-action="change"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-dismiss="click"
-                                            title="Change avatar">
-                                                <i class="bi bi-pencil-fill fs-7"></i>
-
-                                                <!--begin::Inputs-->
-                                                <input type="file" name="logo_login_page" accept=".png, .jpg, .jpeg" />
-                                                <input type="hidden" name="avatar_remove" />
-                                                <!--end::Inputs-->
-                                            </label>
-                                            <!--end::Edit button-->
-
-                                            <!--begin::Cancel button-->
-                                            <span class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
-                                            data-kt-image-input-action="cancel"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-dismiss="click"
-                                            title="Cancel avatar">
-                                                <i class="bi bi-x fs-2"></i>
-                                            </span>
-                                            <!--end::Cancel button-->
-
-                                            <!--begin::Remove button-->
-                                            <span class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
-                                            data-kt-image-input-action="remove"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-dismiss="click"
-                                            title="Remove avatar">
-                                                <i class="bi bi-x fs-2"></i>
-                                            </span>
-                                            <!--end::Remove button-->
-                                        </div>
-                                    </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >Logo (For Header)</label>
-                                        <div class="image-input image-input-empty" data-kt-image-input="true" style="background-color: aliceblue;">
-                                            <!--begin::Image preview wrapper-->
-                                            <div class="image-input-wrapper w-125px h-125px"></div>
-                                            <!--end::Image preview wrapper-->
-
-                                            <!--begin::Edit button-->
-                                            <label class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
-                                            data-kt-image-input-action="change"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-dismiss="click"
-                                            title="Change avatar">
-                                                <i class="bi bi-pencil-fill fs-7"></i>
-
-                                                <!--begin::Inputs-->
-                                                <input type="file" name="logo_header" accept=".png, .jpg, .jpeg" />
-                                                <input type="hidden" name="avatar_remove" />
-                                                <!--end::Inputs-->
-                                            </label>
-                                            <!--end::Edit button-->
-
-                                            <!--begin::Cancel button-->
-                                            <span class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
-                                            data-kt-image-input-action="cancel"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-dismiss="click"
-                                            title="Cancel avatar">
-                                                <i class="bi bi-x fs-2"></i>
-                                            </span>
-                                            <!--end::Cancel button-->
-
-                                            <!--begin::Remove button-->
-                                            <span class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
-                                            data-kt-image-input-action="remove"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-dismiss="click"
-                                            title="Remove avatar">
-                                                <i class="bi bi-x fs-2"></i>
-                                            </span>
-                                            <!--end::Remove button-->
-                                        </div>
-                                    </div>
-                                </div>
-                                <h4>Contact</h4>
-                                <div class="rounded border p-10">
-                                    <div class="fv-row mb-10">
-                                        <div id="kt_docs_repeater_basic">
-                                            <div class="form-group">
-                                                <div data-repeater-list="kt_docs_repeater_basic">
-                                                    <div data-repeater-item>
-                                                        <div class="form-group row">
-                                                            <div class="col-md-3">
-                                                                <label class="required form-label">Name:</label>
-                                                                <input type="text" name="cname" data-cname class="form-control mb-2 mb-md-0" placeholder="name" required/>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <label class=" required form-label">Title</label>
-                                                                <input type="text" name="ctitle" data-ctitle class="form-control mb-2 mb-md-0" placeholder="Title" required/>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <label class="required form-label">Email</label>
-                                                                <input type="email" name="cemail" data-cemail class="form-control mb-2 mb-md-0" placeholder="Email" required/>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <label class="required form-label">Mobile</label>
-                                                                <input type="tel" name="cmobile" data-cmobile class="form-control mb-2 mb-md-0" placeholder="Mobile" required/>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <label class="required form-label">Phone</label>
-                                                                <input type="tel" name="cphone" data-cphone class="form-control mb-2 mb-md-0" placeholder="Phone" required/>
-                                                            </div>
-
-                                                            <div class="col-md-4">
-                                                                <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                                    <i class="la la-trash-o"></i>Delete
-                                                                </a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            <label class="required form-label fs-6 mb-4" >Do you have tax?</label>
+                                            
+                                            <div class="col-md-4">
+                                                <input class="form-check-input mb-4" name="have_tax" type="radio" value="1" id="have_tax_Yes" {{ ($Companysetting->have_tax == 1)? 'checked':'' }}/> 
+                                                <label class="form-check-label" for="have_tax_Yes">
+                                                    <div class="fw-bolder text-gray-800">Yes</div>
+                                                </label>
+                                                &nbsp;
+                                                <input class="form-check-input mb-4" name="have_tax" type="radio" value="0" id="have_tax_no" {{ ($Companysetting->have_tax == 0)? 'checked':'' }} />
+                                                <label class="form-check-label" for="have_tax_no">
+                                                    <div class="fw-bolder text-gray-800">No</div>
+                                                </label>
                                             </div>
-                                            <div class="form-group mt-5">
-                                                <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
-                                                    <i class="la la-plus"></i>Add
-                                                </a>
+                                            
+                                        </div>
+                                        <div class="col-md-6" id="taxation_number_div" {{ ($Companysetting->have_tax != 1)? "hidden":''}}>
+                                            <label class="required form-label fs-6 mb-4" >Taxation Number</label>
+                                            <input type="number" name="taxation_number" id="taxation_number" value="{{ $Companysetting->taxation_number }}" class="form-control form-control-solid mb-4" placeholder="Taxation Number" {{ ($Companysetting->have_tax_Yes == 1)?"required":''}}  />
+                                        </div>
+                                    </div>
+                                    
+
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            <label class="required form-label fs-6 mb-4" >Company Registered On</label>
+                                            <input class="form-control form-control-solid mb-4" value="{{ $Companysetting->register_on }}" name="register_on" placeholder="Pick date rage" id="kt_daterangepicker_3" required/>
+                                        </div>
+                                    </div>
+                                   
+                                    <div class="form-group row">
+                                        <label class="required form-label fs-6 mb-4" >About Us</label>
+                                        <textarea id="about_us" name="about_us" class="tox-target" maxlength="256">{{ $Companysetting->about_us }}</textarea>
+                                    </div>
+                                </div>
+ <hr>
+                                <h4 class="com-head">Address</h4>
+                                <hr>
+                                <div class="rounded border p-10">
+                                    @include('components.addressComponent',['country_id'=>$Companysetting->country_id,'state_id'=>$Companysetting->state_id,
+                                    'city_id'=>$Companysetting->city_id,'zipcode'=>$Companysetting->zipcode,'register_address'=>$Companysetting->register_address,'page'=>'Edit','countrys'=>$countrys,'state'=>$state,'city'=>$city])
+                                </div>
+                                 <hr>
+                                <h4 class="com-head">Setting</h4>
+                                 <hr>
+                                <div class="rounded border p-10">
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            <label class="required form-label fs-6 mb-4" >Base Currency</label>
+                                            <div class="input-group input-group-solid mb-4">
+                                                <span class="input-group-text base_curency mb-4" id="base_curency">{{$currency->countrycode}}</span>
+                                                <input type="text" style="text-align: left;" value="{{$currency->countryname}}" class="form-control form-control-solid mb-4" id="inputGroup-sizing-default_text" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" readonly/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="required form-label fs-6 mb-4" >Time Zone</label>
+                                            <select name="time_zone" class="form-select mb-4" id="time_zone" required>
+                                                <option>Select Option</option>
+                                                <option value="1" {{ ($Companysetting->time_zone == '1')?'selected':'' }}>Africa</option>
+                                                <option value="2" {{ ($Companysetting->time_zone == '2')?'selected':'' }}>America</option>
+                                                <option value="3" {{ ($Companysetting->time_zone == '3')?'selected':'' }}>Antarctica</option>
+                                                <option value="4" {{ ($Companysetting->time_zone == '4')?'selected':'' }}>Arctic</option>
+                                                <option value="5" {{ ($Companysetting->time_zone == '5')?'selected':'' }}>Asia</option>
+                                                <option value="6" {{ ($Companysetting->time_zone == '6')?'selected':'' }}>Atlantic</option>
+                                                <option value="7" {{ ($Companysetting->time_zone == '7')?'selected':'' }}>Australia</option>
+                                                <option value="8" {{ ($Companysetting->time_zone == '8')?'selected':'' }}>Europe</option>
+                                                <option value="9" {{ ($Companysetting->time_zone == '9')?'selected':'' }}>Indian</option>
+                                                <option value="10" {{ ($Companysetting->time_zone == '10')?'selected':'' }}>Pacific</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            <label class="required form-label fs-6 mb-4" >Date Format</label>
+                                            <select class="form-select mb-4" name="date_format" id="date_format" data-control="select2" data-placeholder="Eg: Y-M:m-D:d" required>
+                                                <option></option>
+                                                <option {{ ($Companysetting->date_format == 'mm/dd/yyyy')?'selected':'' }} value="mm/dd/yyyy">02/21/2018</option>
+                                                <option {{ ($Companysetting->date_format == 'mm/dd/yy')?'selected':'' }} value="mm/dd/yy">02/21/18</option>
+                                                <option {{ ($Companysetting->date_format == 'dd/mm/yyyy')?'selected':'' }} value="dd/mm/yyyy">21/02/2018</option>
+                                                <option {{ ($Companysetting->date_format == 'dd/mm/yy')?'selected':'' }} value="dd/mm/yy">21/02/18</option>
+                                                <option {{ ($Companysetting->date_format == 'dd-mm-yyyy')?'selected':'' }} value="dd-mm-yyyy">21-02-2018</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="required form-label fs-6 mb-4" >Reschedule Cut off Time</label>
+                                            <input type="time" name="reschedule_cut_off_time" value="{{ $Companysetting->reschedule_cut_off_time }}"  class="without form-control form-control-solid mb-4" required />    
+                                        </div>
+                                        
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            <label class="required form-label fs-6 mb-4" >Discard Cut off Time</label>
+                                            <input type="time" name="discard_cut_off_time" value="{{ $Companysetting->discard_cut_off_time }}" class="without form-control form-control-solid mb-4" placeholder="Eg: H:i:s:a" required />
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label class="required form-label fs-6 mb-4" >Logo (For Login Page)</label>
+                                            <div class="col-md-3">
+                                                @include('components.imagecrop',['name'=>'logo_login_page','imgsrc'=>$Companysetting->logo_login_page])
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label class="required form-label fs-6 mb-4" >Logo (For Header)</label>
+                                            <div class="col-md-3">
+                                                @include('components.imagecrop',['name'=>'logo_header','imgsrc'=>$Companysetting->logo_header])
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="fv-row mb-10">
-                                        {{-- <label class="required fw-bold fs-6 mb-5"></label> --}}
-                                        <div class="form-check form-check-custom form-check-solid mb-5">
-                                            <!--begin::Input-->
-                                            <input class="form-check-input me-3" name="status" type="checkbox" value="1" id="status" />
-                                            <!--end::Input-->
 
-                                            <!--begin::Label-->
-                                            <label class="form-check-label" for="status">
-                                                <div class="fw-bolder text-gray-800">Status</div>
-                                            </label>
-                                            <!--end::Label-->
-                                        </div>
-                                    </div>
+                                    <div class="form-group row">
+                                        @include('components.contact')
+                                    </div>                                    
+                                </div>
 
-                                    <div class="mb-10">
-                                        <button type="submit" class="btn btn-primary btn-hover-rise me-5">Submit</button>
+                                <br>
+                                <div class="form-group row">
+                                    <div class="col-md-6">
+                                    <div class="form-check form-check-custom form-check-solid mb-5">
+                                        <!--begin::Input-->
+                                        <input class="form-check-input me-3" name="status" type="checkbox" {{ ($Companysetting->status == 1)? 'checked' : '' }} value="1" id="status" />
+                                        <!--end::Input-->
+
+                                        <!--begin::Label-->
+                                        <label class="form-check-label" for="status">
+                                            <div class="fw-bolder text-gray-800">Status</div>
+                                        </label>
+                                        <!--end::Label-->
                                     </div>
+                                    </div>
+                                </div>
+                                
+                                <br>
+                                <div class="form-group row" style="float:right" >
+                                    <div class="col-md-6">
+                                        <button type="button" class="btn btn-secondary btn-hover-rise me-5 ">Reset</button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button type="submit" class="btn btn-primary btn-hover-rise me-5">Save</button>
+                                    </div>
+                                    
                                 </div>
                             </div>
                         </form>
@@ -321,23 +216,35 @@
         <!--end::Post-->
     </div>
     @section('scripts')
+    <script>
+        $(document).ready(function () {
+             back = "{{ route('setting.companysettings.index') }}"
+        })
+    </script> 
+    <style>
+        .without::-webkit-datetime-edit-ampm-field {
+           display: none;
+
+         }
+
+   </style>
+
     <script src='{{ URL::asset(theme()->getDemo().'/plugins/custom/cropper/cropper.bundle.js')}}'></script>
     <script src='{{ URL::asset(theme()->getDemo().'/plugins/custom/formrepeater/formrepeater.bundle.js')}}'></script>
     <script src='{{ URL::asset(theme()->getDemo().'/plugins/custom/tinymce/tinymce.bundle.js')}}'></script>
     <script>
+    var objectB = new Object();
+    var objectA = new Object();
     const have_tax_Yes = document.querySelectorAll('[name="have_tax"]')
     const taxation_number_div = document.getElementById('taxation_number_div')
-    var state = $("#state_id")
-    var city = $("#city_id")
-
-
-
+    const taxation_number = document.getElementById('taxation_number')
 
     have_tax_Yes.forEach(element => {
         element.addEventListener('change',have_tax_Yes_fun)
     })
-
-
+    
+    
+   
     $("#kt_daterangepicker_3").daterangepicker({
             singleDatePicker: true,
             showDropdowns: true,
@@ -350,26 +257,26 @@
     );
 
         var options = {selector: "#about_us"};
-        var options2 = {selector: "#register_address"};
 
         if (KTApp.isDarkMode()) {
             options["skin"] = "oxide-dark";
             options["content_css"] = "dark";
-            options2["skin"] = "oxide-dark";
-            options2["content_css"] = "dark";
         }
 
         tinymce.init(options);
-        tinymce.init(options2);
 
 
     function have_tax_Yes_fun(event){
         if(event.target.value == 1){
             taxation_number_div.removeAttribute('hidden')
             taxation_number_div.setAttribute('required',true)
+            taxation_number.setAttribute('required',true)
+            
         }else{
             taxation_number_div.setAttribute('hidden',true)
             taxation_number_div.removeAttribute('required')
+            taxation_number.removeAttribute('required')
+            taxation_number.value ='';
         }
     }
 
@@ -380,7 +287,7 @@
             method:"POST",
             data:{id:data.id,"_token": "{{ csrf_token() }}",},
             success:function(data){
-                var option = null
+                var option = `<option>Select State</option>`
                 if(data.states.length != null){
                     data.states.forEach((e)=>{
                         option += '<option value='+e.id+'>'+e.state_name+'</option>';
@@ -416,21 +323,23 @@
             }
         })
     });
-    $('#kt_docs_repeater_basic').repeater({
-        initEmpty: false,
+    // const Contact = $('#kt_docs_repeater_basic');
+    // var pincoed = '+91'
+    // Contact.repeater({
+    //     initEmpty: false,
+    //     defaultValues: {
+    //         'cphone':pincoed
+    //     },
 
-        defaultValues: {
-            'text-input': 'foo'
-        },
+    //     show: function () {
+    //         $(this).slideDown();
+    //     },
 
-        show: function () {
-            $(this).slideDown();
-        },
-
-        hide: function (deleteElement) {
-            $(this).slideUp(deleteElement);
-        }
-    });
+    //     hide: function (deleteElement) {
+    //         $(this).slideUp(deleteElement);
+    //     }
+    // });
+    // Contact.setList(@json($contact))
     </script>
     @endsection
 </x-base-layout>

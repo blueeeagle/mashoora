@@ -14,7 +14,7 @@ License: {{ theme()->getOption('product', 'license') }}
 {{-- begin::Head --}}
 <head>
     <meta charset="utf-8"/>
-    <title>{{ ucfirst(theme()->getOption('meta', 'title')) }} | Keenthemes</title>
+    <title>Mashoora</title>
     <meta name="description" content="{{ ucfirst(theme()->getOption('meta', 'description')) }}"/>
     <meta name="keywords" content="{{ theme()->getOption('meta', 'keywords') }}"/>
     <link rel="canonical" href="{{ ucfirst(theme()->getOption('meta', 'canonical')) }}"/>
@@ -23,7 +23,7 @@ License: {{ theme()->getOption('product', 'license') }}
     <meta name="csrf-token" id="csrf-token" content="{{ csrf_token() }}">
     <link href="{{ URL::asset(theme()->getDemo().'/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="{{ URL::asset(theme()->getDemo().'/plugins/global/plugins.bundle.css') }}" />
-
+    <link rel="stylesheet" href="{{ URL::asset(theme()->getDemo().'/css/croppie.css') }}" />
     {{-- begin::Fonts --}}
     {{ theme()->includeFonts() }}
     {{-- end::Fonts --}}
@@ -108,7 +108,11 @@ License: {{ theme()->getOption('product', 'license') }}
 <script src="{{ URL::asset(theme()->getDemo().'/js/datatables.bundle.js') }}"></script>
 <script src="{{ URL::asset(theme()->getDemo().'/plugins/global/plugins.bundle.js') }}"></script>
 <script src="{{ URL::asset(theme()->getDemo().'/plugins/custom/datatables/datatables.bundle.js') }}"></script>
-
+<script src="{{ URL::asset(theme()->getDemo().'/js/croppie.js') }}"></script>
+<script>
+    const csrf = `{{ csrf_token() }}`
+    const baseURl = `{{ url('') }}`
+</script>
 @yield('scripts')
 </body>
 {{-- end::Body --}}
