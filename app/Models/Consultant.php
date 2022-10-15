@@ -50,7 +50,7 @@ class Consultant extends Authenticatable
     public function offer()
     {
         $date = today()->format('m/d/Y');
-        return $this->hasMany(Offer::class)->where('consultant_id',$this->id)->where('has_validity','!=',1)->orWhere('has_validity',1)->where('from_date','<',$date)->where('to_date','>',$date);
+        return $this->hasMany(Offer::class)->where('consultant_id',$this->id)->where('status',1)->where('has_validity','!=',1)->orWhere('has_validity',1)->where('from_date','<',$date)->where('to_date','>',$date);
     }
     
     public function getSubtextAttribute()

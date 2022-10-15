@@ -114,6 +114,11 @@ class DiscountController extends Controller
 
           return ['Delete'=> \route('other.discount.destroy',$data->id),'edit'=> \route('other.discount.edit',$data->id)];
       })
+      ->editColumn('image', function(Discount $data){
+        $exists = Storage::disk('public_custom')->exists($data->image);
+        if($exists) return asset("storage/$data->image");
+        return "";
+      })
       ->rawColumns(['consultantId','categoryID','specializationID','status','action'])
       ->toJson();
   }

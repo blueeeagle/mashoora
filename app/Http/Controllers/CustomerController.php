@@ -25,7 +25,7 @@ class CustomerController extends Controller
     }
     
     public function datatableDashboard(Request $request){
-        $datas = Customer::orderBy('id','desc')->get();
+        $datas = Customer::orderBy('id','desc')->limit(10)->get();
         return DataTables::of($datas)
         ->addIndexColumn()
         ->addColumn('action', function(Customer $data){

@@ -58,13 +58,13 @@
                 <!--begin::Products-->
                 <div class="card card-flush">
                     <!--begin::Card body-->
-                    <div class="card-body pt-0">
+                    <div class="card-body rounded border pt-0">
                         <form action="{{ route('other.communication.store') }}" method="post" id="formCreate">
                             @csrf
                             <div class="py-5">
-                                <div class="rounded border p-10">
-                                   
-                                    <div class="fv-row mb-10">
+                                <div class="p-10">
+                                   <div class="form-group row">
+                                    <div class="fv-row mb-10 col-md-6">
                                         <label for="" class="form-label">Communication Mode<span class="text-danger">*</span></label>
                                         <select class="form-select" name="communication_mode" id="communication_mode" data-control="select2" data-placeholder="Select an option">
                                             <option></option>
@@ -75,7 +75,7 @@
                                         </select>
                                     </div>
 
-                                    <div class="fv-row mb-10">
+                                    <div class="fv-row mb-10 col-md-6">
                                         <label for="" class="form-label">Send To<span class="text-danger">*</span></label>
                                         <select class="form-select" name="send_to" id="send_to" onchange="sendTo(this)" data-control="select2" data-placeholder="Select an option">
                                             <option></option>
@@ -85,20 +85,20 @@
                                         </select>
                                     </div>
 
-                                    <div class="mb-0">
+                                    <div class="mb-0 col-md-6">
                                         <label class="form-label">Send On</label>
                                         <input class="form-control form-control-solid" name="send_on" placeholder="Select Date & Time" id="kt_daterangepicker_3"/>
                                     </div>
 
-                                    <div class="fv-row mb-10">
+                                    <div class="fv-row mb-10 col-md-6">
                                         <label class="form-label fs-6 mb-2" >Subject<span class="text-danger">*</span></label>
                                         <input type="text" name="subject" class="form-control" placeholder="Subject"/>
                                     </div>
-                                    <div class="fv-row mb-10">
+                                    <div class="fv-row mb-10 col-md-6">
                                         <label class="form-label fs-6 mb-2" >Body<span class="text-danger">*</span></label>
                                         <textarea name="body" class="form-control" placeholder="Body"></textarea>
                                     </div>
-
+                                    </div>
                                     <!--<div class="position-relative w-md-400px me-md-2">-->
                                         <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
                                     <!--    <span class="svg-icon svg-icon-3 svg-icon-gray-500 position-absolute top-50 translate-middle ms-6">-->
@@ -131,9 +131,10 @@
                                             </table>
                                         </div>
                                     </div>
-
+                                    <div class="form-group row" style="float:right;">
                                     <div class="mb-10">
                                         <button type="submit" class="btn btn-primary btn-hover-rise me-5">Save</button>
+                                    </div>
                                     </div>
                                 </div>
                             </div>

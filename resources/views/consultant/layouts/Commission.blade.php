@@ -6,9 +6,13 @@
             <!--begin::Title-->
             <h2 class="fw-bolder text-dark">Commission</h2>
         </div>
+         
+   
         <h4>Commission For Consultant Fee</h4>
-        <div class="mb-10 fv-row">
+     
+          <div class="mb-10 fv-row">
             <label class="required form-label fs-6 mb-2" >Flat or Percentage</label>
+            <div class="row">
             <div class="form-check form-check-custom form-check-solid mb-5">
                 <input class="form-check-input me-3" name="com_con_type" onchange="CourencyFlatconveter(document.querySelector('input[name=com_con_type]:checked').value)" type="radio" value="0" checked id="com_con_flat" />
                 <label class="form-check-label" for="com_con_flat">
@@ -20,6 +24,7 @@
                 <label class="form-check-label" for="com_con_per">
                     <div class="fw-bolder text-gray-800">Percentage</div>
                 </label>
+            </div>
             </div>
             <label class="required form-label fs-6 mb-2" >Commission Amount</label>
             <div class="input-group mb-5">
@@ -60,6 +65,8 @@
                    </div>
             </div>
         </div>
+       
+      
         <h4>Commission For Offers</h4>
         <div class="mb-10 fv-row">
             <label class="required form-label fs-6 mb-2" >Flat or Percentage</label>
@@ -82,6 +89,8 @@
                 <span class="input-group-text" id="inputGroup-sizing-default basecurrency">Base Amount -- {{ $companeySetting->country->currency->currencycode }}</span>
             </div>
         </div>
+       
+       
         <h4>Payout Settings</h4>
         <div class="mb-10 fv-row">
             <label class="required form-label fs-6 mb-2" >Flat or Percentage</label>
@@ -104,6 +113,8 @@
                 <span class="input-group-text" id="inputGroup-sizing-default basecurrency">Base Amount -- {{ $companeySetting->country->currency->currencycode }}</span>
             </div>
         </div>
+        
+        
     </div>
     <!--end::Wrapper-->
 </div>

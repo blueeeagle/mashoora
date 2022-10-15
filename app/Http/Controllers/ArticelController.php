@@ -63,11 +63,11 @@ class ArticelController extends Controller
         })
         ->editColumn('image', function(Article $data){
                                 $exists = Storage::disk('public_custom')->exists($data->image);
-                                if($exists) return "<img width = 120 height = 150 src='".asset("storage/$data->image")."' alter='$data->image' />";
+                                if($exists) return asset("storage/$data->image");
                                 return "";
                             })
         ->addColumn('action', function(Article $data){
-            return ['Delete'=> \route('other.articel.destroy',$data->id),'edit'=> \route('other.articel.edit',$data->id)];
+            return ['Delete'=> \route('other.article.destroy',$data->id),'edit'=> \route('other.article.edit',$data->id)];
         })
         ->rawColumns(['status','action','fromuser','image'])
         ->toJson();
@@ -80,12 +80,12 @@ class ArticelController extends Controller
 
         return \view('article.create',['firm'=>$firm,'consultant'=>$consultant,'user'=>$user]);
     }
-    public function edit(Article $articel ){
-       $firm = Firm::where('status',1)->get();
+    public function edit(Article $article ){
+         $firm = Firm::where('status',1)->get();
         $consultant = Consultant::where('status',1)->get();
         $user = User::get();
 
-        return \view('article.edit',['articel'=>$articel,'firm'=>$firm,'consultant'=>$consultant,'user'=>$user]);
+        return \view('article.edit',['articel'=>$article,'firm'=>$firm,'consultant'=>$consultant,'user'=>$user]);
     }
     public function store(Request $Request){
         $rules=[

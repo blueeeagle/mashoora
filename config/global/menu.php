@@ -364,7 +364,7 @@ return array(
                 'items' => array(
                     array(
                         'title'  => 'Manage Articles',
-                        'path'   => 'other/articel',
+                        'path'   => 'other/article',
                         'bullet' => '<span class="bullet bullet-dot"></span>',
                     ),
                     array(
@@ -443,21 +443,7 @@ return array(
                         'path'   => 'activities/config',
                         'bullet' => '<span class="bullet bullet-dot"></span>',
                     ),
-                    array(
-                        'title'  => 'Offer History',
-                        'path'   => 'history/offer',
-                        'bullet' => '<span class="bullet bullet-dot"></span>',
-                    ),
-                    array(
-                        'title'  => 'Promo Purchase History',
-                        'path'   => 'history/purchase',
-                        'bullet' => '<span class="bullet bullet-dot"></span>',
-                    ),
-                    array(
-                        'title'  => 'Appointment History',
-                        'path'   => 'history/appointment',
-                        'bullet' => '<span class="bullet bullet-dot"></span>',
-                    ),
+                  
                 
                 )
             )
@@ -465,7 +451,7 @@ return array(
         ),
         //Approval
         array(
-            'title' => 'Approval',
+            'title' => 'Approvals',
             'icon'       => array(
                 'svg'  => theme()->getSvgIcon("demo1/media/icons/duotune/communication/com006.svg", "svg-icon-2"),
                 'font' => '<i class="bi bi-person fs-2"></i>',
@@ -478,7 +464,7 @@ return array(
                 'class' => 'menu-sub-accordion menu-active-bg',
                 'items' => array(
                     array(
-                        'title'  => 'Consultant Profile Approval',
+                        'title'  => 'Consultant Profile Approvals',
                         'path'   => 'approval/consultant',
                         'bullet' => '<span class="bullet bullet-dot"></span>',
                     ),

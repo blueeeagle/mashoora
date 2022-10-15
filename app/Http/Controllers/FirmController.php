@@ -48,20 +48,20 @@ class FirmController extends Controller
         ->when($search[9],function($query,$search){ return $query->where('state_id',$search);   })
         ->when($search[10],function($query,$search){ return $query->where('city_id',$search);   })
         ->when($search[11],function($query,$search){ return $query->where('zipcode','like',"%{$search}%");   })
-        ->when($search[12],function($query,$search){ return $query->where('cname','like',"%{$search}%");   })
-        ->when($search[13],function($query,$search){ return $query->where('ctitle','like',"%{$search}%");   })
-        ->when($search[14],function($query,$search){ return $query->where('cemail','like',"%{$search}%");   })
-        ->when($search[15],function($query,$search){ return $query->where('cmobile','like',"%{$search}%");   })
-        ->when($search[16],function($query,$search){ return $query->where('cphone','like',"%{$search}%");   })
-        ->when($search[17],function($query,$search){ return $query->where('categorie_id',$search);   })
-        ->when($search[18],function($query,$search){ return $query->where('account_number','like',"%{$search}%");   })
-        ->when($search[19],function($query,$search){ return $query->where('account_name','like',"%{$search}%");   })
-        ->when($search[20],function($query,$search){ return $query->where('ifsc_code','like',"%{$search}%");   })
-        ->when($search[21],function($query,$search){ return $query->where('bank_name','like',"%{$search}%");   })
-        ->when($search[22],function($query,$search){ return $query->where('branch','like',"%{$search}%");   })
-        // ->when($search[13],function($query,$search){ return $query->where('comapany_name','like',"%{$search}%");   })
-        ->when($search[24],function($query,$search){ return $query->where('email','like',"%{$search}%");   })
-        ->when($search[25],function($query,$search){ return $query->where('user_name','like',"%{$search}%");   })
+        // ->when($search[12],function($query,$search){ return $query->where('cname','like',"%{$search}%");   })
+        // ->when($search[13],function($query,$search){ return $query->where('ctitle','like',"%{$search}%");   })
+        // ->when($search[14],function($query,$search){ return $query->where('cemail','like',"%{$search}%");   })
+        // ->when($search[15],function($query,$search){ return $query->where('cmobile','like',"%{$search}%");   })
+        // ->when($search[16],function($query,$search){ return $query->where('cphone','like',"%{$search}%");   })
+        // ->when($search[17],function($query,$search){ return $query->where('categorie_id',$search);   })
+        // ->when($search[18],function($query,$search){ return $query->where('account_number','like',"%{$search}%");   })
+        // ->when($search[19],function($query,$search){ return $query->where('account_name','like',"%{$search}%");   })
+        // ->when($search[20],function($query,$search){ return $query->where('ifsc_code','like',"%{$search}%");   })
+        // ->when($search[21],function($query,$search){ return $query->where('bank_name','like',"%{$search}%");   })
+        // ->when($search[22],function($query,$search){ return $query->where('branch','like',"%{$search}%");   })
+        // // ->when($search[13],function($query,$search){ return $query->where('comapany_name','like',"%{$search}%");   })
+        // ->when($search[24],function($query,$search){ return $query->where('email','like',"%{$search}%");   })
+        // ->when($search[25],function($query,$search){ return $query->where('user_name','like',"%{$search}%");   })
         // ->when($search[1],function($query,$search){ return $query->where('comapany_name','like',"%{$search}%");   })
         // ->when($search[1],function($query,$search){ return $query->where('comapany_name','like',"%{$search}%");   })
         // ->when($search[1],function($query,$search){ return $query->where('comapany_name','like',"%{$search}%");   })
@@ -121,7 +121,7 @@ class FirmController extends Controller
                             })
                             ->editColumn('logo', function(Firm $data){
                                 $exists = Storage::disk('public_custom')->exists($data->logo);
-                                if($exists) return "<img width = 120 height = 150 src='".asset("storage/$data->logo")."' alter='$data->logo' />";
+                                if($exists) return asset("storage/$data->logo");
                                 return "";
                             })
                             // ->editColumn('gallery', function(Firm $data){
@@ -225,13 +225,12 @@ class FirmController extends Controller
         $Request['cmobile'] = \implode(',',$cmobile);
         $Request['cphone'] = \implode(',',$cphone);
         
-        if(Storage::disk('public_custom')->exists("/uploadFiles/temp/$Request->logo") && $Request->logo){
+      if(Storage::disk('public_custom')->exists("/uploadFiles/temp/$Request->logo") && $Request->logo){
             Storage::disk('public_custom')->move("/uploadFiles/temp/$Request->logo","/uploadFiles/logo/$Request->logo");
             $Request['logo'] =  "/uploadFiles/logo/$Request->logo";
         }else{
             $Request['logo'] = $firm->logo;
         }
-        
         // dd($Request->logo);
         $gallery = [];
 

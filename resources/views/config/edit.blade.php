@@ -1,4 +1,7 @@
 <x-base-layout>
+    @section('styles')
+        <link href="{{ URL::asset(theme()->getDemo().'/plugins/custom/jstree/jstree.bundle.css')}}" rel="stylesheet" type="text/css" />
+    @endsection
     <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
         <!--begin::Toolbar-->
         <div class="toolbar" id="kt_toolbar">
@@ -65,17 +68,12 @@
 
                         <div class="mb-10">
                             <label for="" class="form-label">Category<span class="text-danger">*</span></label>
-                            <select class="form-select" name="category_id[]" id="category_id" data-control="select2" multiple data-placeholder="Select an option">
-                                <option></option>
-                                @foreach($category as $data)
-                                    <option {{ (in_array($data->id, explode(",", $config->category_id))) ? 'selected' : '' }} value="{{$data->id}}">{{$data->name}}</option>
-                                @endforeach
-                            </select>
+                            <input type="hidden" name="categorie_id" id="categorie_id">
+                            <div id="kt_docs_jstree_checkable"></div>
                         </div>
                         <div class="mb-10">
                             <label class="form-label">Type</label>
                             <select class="form-select" name="type" id="type" required onchange="(showhideParent(event))" data-placeholder="Select an option">
-                                <option></option>
                                 <option value="1" {{ ($config->type ==  1)?'selected':'' }}>Discount</option>
                                 <option value="2" {{ ($config->type ==  2)?'selected':'' }}>Offer</option>
                             </select>
@@ -119,13 +117,15 @@
         </div>
     </div>
     @section('scripts')
+    <script src='{{ URL::asset(theme()->getDemo().'/plugins/custom/jstree/jstree.bundle.js')}}'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
     <script>
         const selecterdiv = document.getElementById('selecterdiv')
         const selecterdiv1 = document.getElementById('selecterdiv1')
         const discount = document.getElementById('discount')
         const offer = document.getElementById('offer')
         const type = document.getElementById('type')
-        const category_id = document.getElementById('category_id')
+        const categorie_id = document.getElementById('categorie_id')
 
 
         function showhideParent(event){
@@ -149,18 +149,13 @@
         }
 
         function changeCategory(event){
-            // console.log(event.target.value);
+          
             if(event.target.value == 2){
-                console.log(event);
-                // $(category_id).prop('multiple', true);
-                // $(category_id).multipe = true;
                 $(discount).removeAttr('required'); 
                 $(offer).removeAttr('required'); 
                 $(type).removeAttr('required'); 
             }
             else{
-                
-                // $(category_id).removeAttribute('multiple');
                 $(offer).prop('required','true');
                 $(discount).prop('required','true');
                 $(type).prop('required','true');
@@ -172,6 +167,43 @@
         $(document).ready(function () {
             back = `{{ route('activities.config.index') }}`
         })
+
+        var KTJSTreeCheckable = {
+            init: function () {
+                $("#kt_docs_jstree_checkable")
+                // listen for event
+                    .on('changed.jstree', function (e, data) {
+                        var i, j, r = [];
+                        for(i = 0, j = data.selected.length; i < j; i++) {
+                            r.push(data.instance.get_node(data.selected[i]).id);
+                        }
+                        categorie_id.value = r.join(',');
+                        console.log(r);
+                    })
+                    .jstree({
+                    plugins: ["wholerow", "checkbox", "types"],
+                    core: {
+                        themes: {
+                            responsive: !1
+                        },
+                        data: {!! json_encode($tree) !!}
+                    },
+                    types: {
+                        default: {
+                            icon: ""
+                        },
+                        file: {
+                            icon: ""
+                        }
+                    }
+                })
+            }
+        };
+
+        KTUtil.onDOMContentLoaded((function () {
+            KTJSTreeCheckable.init()
+        }));
+
     </script>
     @endsection
 </x-base-layout>

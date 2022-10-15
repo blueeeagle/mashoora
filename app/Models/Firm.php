@@ -8,6 +8,7 @@ use App\Models\Country;
 use App\Models\State;
 use App\Models\City;
 use App\Models\Consultant;
+use App\Models\Offer;
 
 class Firm extends Model
 {
@@ -28,6 +29,11 @@ class Firm extends Model
                        }
 public function consultant(){
         return $this->hasMany(Consultant::class,'firm_choose','id');
+    }
+    public function offer()
+    {
+        $date = today()->format('m/d/Y');
+        return $this->hasMany(Offer::class)->where('status',1)->where('has_validity','!=',1)->orWhere('has_validity',1)->where('from_date','<',$date)->where('to_date','>',$date);
     }
 }
 

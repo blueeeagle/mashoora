@@ -58,13 +58,13 @@
                 <!--begin::Products-->
                 <div class="card card-flush">
                     <!--begin::Card body-->
-                    <div class="card-body pt-0">
+                    <div class="card-body rounded border pt-0">
                         <form action="{{ route('other.discount.store') }}" method="post" id="formCreate">
                             @csrf
                             <div class="py-5">
-                                <div class="rounded border p-10">
-
-                                    <div class="fv-row mb-10">
+                                <div class="p-10">
+                                <div class="form-group row">
+                                    <div class="fv-row mb-10 col-md-6">
                                         <label for="" class="form-label">Choose Consultant<span class="text-danger">*</span></label>
                                         <select class="form-select" name="consultant_id" id="consultant_id" data-control="select2" data-placeholder="Select an option">
                                             <option></option>
@@ -73,39 +73,41 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="form-label fs-6 mb-2" >Promo Tittle</label>
-                                        <input type="text" name="promo_title" class="form-control" placeholder="Promo Tittle"/>
+                                    <div class="fv-row mb-10 col-md-6">
+                                        <label class="form-label fs-6 mb-2" >Promo Title</label>
+                                        <input type="text" name="promo_title" class="form-control" placeholder="Promo Title"/>
                                     </div>
-                                    <div class="fv-row mb-10">
+                                    <div class="fv-row mb-10 col-md-6">
                                         <label class="form-label fs-6 mb-2" >Promo Code<span class="text-danger">*</span></label>
                                         <input type="text" name="promo_code" class="form-control" placeholder="Promo Code" required/>
                                     </div>
-                                    <div class="fv-row mb-10">
+                                    <div class="fv-row mb-10 col-md-6">
                                         <label class="form-label fs-6 mb-2" >No of Coupons<span class="text-danger">*</span></label>
                                         <input type="number" name="no_of_coupons" class="form-control" placeholder="No of Coupons" required/>
                                     </div>
-                                    <div class="fv-row mb-10">
+                                    <div class="fv-row mb-10 col-md-6">
                                         @include('components.imagecrop',['name'=>'image'])
                                     </div>
-                                    <div class="fv-row mb-10">
+                                    <div class="fv-row mb-10 col-md-6">
 
                                         <label class="form-label fs-6 mb-2" >Flat or Percentage<span class="text-danger">*</span></label>
-                                        <div class="form-check form-check-custom form-check-solid mb-5">
+                                        <div class="row">
+                                        <div class="form-check form-check-custom form-check-solid mb-5 col-md-6">
                                             <input class="form-check-input me-3" name="flat_percentage" onclick="validateamount()"  type="radio" checked  value="0" id="flat" />
                                             <label class="form-check-label" for="flat">
                                                 <div class="fw-bolder text-gray-800">Flat</div>
                                             </label>
                                         </div>
-                                        <div class="form-check form-check-custom form-check-solid mb-5">
+                                        <div class="form-check form-check-custom form-check-solid mb-5 col-md-6">
                                             <input class="form-check-input me-3" onclick="validateamount()" name="flat_percentage" type="radio" value="1" id="percentage" />
                                             <label class="form-check-label" for="percentage">
                                                 <div class="fw-bolder text-gray-800">percentage</div>
                                             </label>
                                         </div>
+                                        </div>
 
                                     </div>
-                                    <div class="fv-row mb-10">
+                                    <div class="fv-row mb-10 col-md-6">
                                         <label class="form-label fs-6 mb-2" >Amount<span class="text-danger">*</span></label>
                                          <div class="input-group  mb-5">
                                             <span class="input-group-text base_curency" id="base_curency"></span>
@@ -113,22 +115,22 @@
                                             <span id="span-error"></span>
                                         </div>
                                     </div>
-                                    <div class="fv-row mb-5">
+                                    <div class="fv-row mb-5 col-md-6">
                                         <label class="form-label " >From Date<span class="text-danger">*</span></label>
                                         <input class="form-control form-control-solid" name="from_date" id="from_date"  placeholder="From Date"  required/>
                                     </div>
-                                    <div class="fv-row mb-5">
+                                    <div class="fv-row mb-5 col-md-6">
                                          <label class="form-label " >To Date<span class="text-danger">*</span></label>
                                         <input class="form-control form-control-solid" name="to_date" id="to_date"  placeholder="To Date"  required/>
                                     </div>
 
-                                    <div class="fv-row mb-10">
+                                    <div class="fv-row mb-10 col-md-6">
                                         <label for="" class="form-label">Choose Category<span class="text-danger">*</span></label>
                                         <select class="form-select" name="category_id" id="category_id" data-control="select2" data-placeholder="Select an option">
                                             <option></option>
                                         </select>
                                     </div>
-                                    <div class="fv-row mb-10">
+                                    <div class="fv-row mb-10 col-md-6">
                                         <label for="" class="form-label">Choose Specialization <span class="text-danger">*</span></label>
                                         <select class="form-select" name="specialization_id" id="specialization_id" data-control="select2" data-placeholder="Select an option">
                                             <option></option>
@@ -136,7 +138,7 @@
                                         </select>
                                     </div>
 
-                                    <div class="fv-row mb-10" >
+                                    <div class="fv-row mb-10 col-md-6" >
                                         <label class="form-label fs-6 mb-2" >Applicable for</label>
 
                                         <div class='form-check form-switch form-check-custom form-check-solid'>
@@ -154,8 +156,11 @@
                                         </div>
 
                                     </div>
+                                    </div>
+                                    <div class="form-group row" style="float:right;">
                                     <div class="mb-10">
                                         <button type="submit" class="btn btn-primary btn-hover-rise me-5">Save</button>
+                                    </div>
                                     </div>
                                 </div>
                             </div>

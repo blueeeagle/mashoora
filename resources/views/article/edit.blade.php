@@ -33,7 +33,7 @@
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
-                        <li class="breadcrumb-item text-muted"><a href="{{ route('other.articel.index') }}" class="text-muted text-hover-primary">Article</a></li>
+                        <li class="breadcrumb-item text-muted"><a href="{{ route('other.article.index') }}" class="text-muted text-hover-primary">Article</a></li>
                         <!--end::Item-->
                         <!--begin::Item-->
                         <li class="breadcrumb-item">
@@ -155,7 +155,7 @@
     </div>
     @section('scripts')
     <script >
-        back = "{{ route('other.articel.index') }}"
+        back = "{{ route('other.article.index') }}"
      
        
         window.onload = function() {

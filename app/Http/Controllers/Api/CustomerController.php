@@ -13,7 +13,7 @@ use App\Models\Discount;
 use App\Models\Discountuser;
 use App\Models\Review;
 use App\Models\Companysetting;
-use App\Models\Offerpurchase;
+use App\Models\OfferPurchase;
 use App\Models\Firm;
 use App\Models\Consultantcategory;
 use App\Models\Language;
@@ -41,17 +41,42 @@ class Booking {
     public $offer = null;
     public $amount = 0;
     public $DiscountAmount = 0;
-    // public $OfferAmount = 0;
+
+    public $admincurrnecy = null;
+    public $consultantcurrency = null;
+    public $customercurrnecy = null;
+    public $Companysetting = null;
+
+    function newconsultant($consultant){
+        $this->consultant = $consultant;
+        $this->schedule = null;
+        $this->data = null;
+        $this->type = null;
+        $this->Discount = null;
+        $this->offer = null;
+        $this->amount = 0;
+        $this->DiscountAmount = 0;
+        $this->consultantcurrency = $consultant->country->currency;
+        $this->updateprice();
+    }
+
+    function updateprice(){
+        $this->consultant->{'video_amount_converted'} = ($this->customercurrnecy)?(float)$this->consultant->video_amount*(float)$this->customercurrnecy->price :(float)$this->consultant->video_amount;
+        $this->consultant->{'voice_amount_converted'} = ($this->customercurrnecy)?(float)$this->consultant->voice_amount*(float)$this->customercurrnecy->price :(float)$this->consultant->voice_amount;
+        $this->consultant->{'text_amount_converted'} = ($this->customercurrnecy)?(float)$this->consultant->text_amount*(float)$this->customercurrnecy->price :(float)$this->consultant->text_amount;
+        $this->consultant->{'direct_amount_converted'} = ($this->customercurrnecy)?(float)$this->consultant->direct_amount*(float)$this->customercurrnecy->price :(float)$this->consultant->direct_amount;
+        $this->consultant->{'customer_currency'} = $this->customercurrnecy;
+    }
 }
 
 class CustomerController extends Controller
 {
     public $Booking = null;
-    
+
     public  function __construct(){
 
     }
-    
+
     public function checkCustomer(){
         return response()->json(Auth::guard('customer')->check());
     }
@@ -60,6 +85,9 @@ class CustomerController extends Controller
             $this->Booking =  Session::get('Booking');
         }else{
             $this->Booking = new Booking;
+            $Companysetting = Companysetting::with('country')->where('id',1)->first();
+            $this->Booking->Companysetting = $Companysetting;
+            $this->Booking->admincurrnecy = $Companysetting->country->currency;
         }
     }
     public function setsession(){
@@ -67,10 +95,15 @@ class CustomerController extends Controller
     }
     public function login(Request $Request){
         $Request->session()->put('phone_no', $Request->phone_no);
-        $rules=[ 'phone_no' => 'required|unique:customers,phone_no,'.$Request->phone_no];
+        $Request->session()->put('dialing', $Request->dialing);
+        $rules=[ 
+            'phone_no' => 'required|unique:customers,phone_no,'.$Request->phone_no,
+            'dialing' => 'required',
+            ];
 
 		$customs=[
 			'phone_no.required'  => 'phone no Name should be filled',
+			'dialing.required'  => 'dialing should be filled',
 			'phone_no.unique'      	=> 'phone no Name already taken',
 		];
 
@@ -78,6 +111,7 @@ class CustomerController extends Controller
         if ($validator->fails()) {
           return response()->json(array('errors' => $validator->getMessageBag()->toArray(),'status'=>true));
         }
+        
         return response()->json(array('status'=>true));
     }
 
@@ -87,39 +121,57 @@ class CustomerController extends Controller
     }
 
     public function VerifyOtp(Request $request){
+        $this->getsession();
         $phone_no = $request->session()->get('phone_no',null);
+        $dialing = $request->session()->get('dialing',null);
         $request['phone_no'] = $phone_no;
-        $rules=[ 'phone_no' => "required|unique:customers,phone_no,$phone_no"];
+        $request['$dialing'] = $dialing;
+        $rules=[ 
+            'phone_no' => "required|unique:customers,phone_no,$phone_no",
+            'dialing' => 'required',
+            ];
 
 		$customs=[
 			'phone_no.required'  => 'phone no Name should be filled',
 			'phone_no.unique'      	=> 'phone no Name already taken',
+			'dialing.required'  => 'dialing should be filled',
 		];
 
         $validator = Validator::make($request->all(), $rules,$customs);
         if (!$validator->fails()) {
             $Customer  = new Customer;
             $Customer->phone_no = $phone_no;
+            $Customer->dialing = "+$dialing";
             $Customer->api_token = Str::random(60);
             $Customer->remember_token = Str::random(60);
             $Customer->phone_no_verify_at = Carbon::now();
             $Customer->save();
-            
+
             $Wallet = new Wallet;
             $Wallet->customer_id = $Customer->id;
             $Wallet->save();
-            
+
+            $this->Booking->customercurrnecy = $Customer->country->currency;
+            $this->setsession();
             Auth::guard('customer')->login($Customer);
             return response()->json(array('msg'=>'Customer Created','customer'=>$Customer));
         }
         $Customer  = Customer::where('phone_no', $phone_no)->first();
+        
+        if(!isset($Customer->dialing)){
+            $Customer->dialing = "+$dialing";
+            $Customer->update();
+        }
+        
+        $this->Booking->customercurrnecy = $Customer->country->currency;
         Auth::guard('customer')->login($Customer);
-         $Wallet = Wallet::where('customer_id',Auth::guard('customer')->user()->id)->first();
+        $Wallet = Wallet::where('customer_id',Auth::guard('customer')->user()->id)->first();
         if(!$Wallet){
             $Wallet = new Wallet;
             $Wallet->customer_id = $Customer->id;
-            $Wallet->save();     
+            $Wallet->save();
         }
+        $this->setsession();
         return response()->json(array('msg'=>'Login Sucess','customer'=>Auth::guard('customer')->user()));
     }
 
@@ -130,7 +182,7 @@ class CustomerController extends Controller
 
         return response()->json(['orga'=>$Firm,'lang'=>$Language,'spec'=>$Consultantcategory]);
     }
-    
+
     public function updateprofile(Request $request){
         $Customer = Auth::guard('customer')->user();
         $Customer->update($request->all());
@@ -187,7 +239,7 @@ class CustomerController extends Controller
             }
         }
         $datas = $datas->orderBy('id','desc')->get();
-        
+
         if($request->has('rating')){
             if($request->rating == 'asc') $datas = (new Collection($datas))->sortBy('review_count');
             if($request->rating == 'desc') $datas = (new Collection($datas))->sortByDesc('review_count');
@@ -202,7 +254,7 @@ class CustomerController extends Controller
     }
     
     public function consultant(Request $request){
-        
+
         $type = $request->type;
         $datas = Consultant::with('country')->with('state')->with('city')->with('Review')->withCount('Review')->where('status',1)
         ->when($request->gender,function($query,$search){ return $query->where('gender',$search); })
@@ -228,48 +280,60 @@ class CustomerController extends Controller
     }
 
     public function consultantdetails(Request $request, Consultant $consultant){
+        $this->getsession();
         $consultant = Consultant::with('country')->with('state')->with('city')->with('firm')->with('Review')->where('id',$consultant->id)->first();
-        if(isset($consultant->country->currency->currencycode)) {
-            $consultant->{'currencycode'} = $consultant->country->currency->currencycode;
-        }else{
-            $consultant->{'currencycode'} = '';
-        }
-        $this->Booking = new Booking;
-        $this->Booking->consultant = $consultant;
-        Session::put('Booking',$this->Booking);
-        return $consultant;
+        $this->Booking->newconsultant($consultant);
+        $this->setsession();
+        return $this->Booking->consultant;
     }
     public function consultantinsurance(Request $request){
         $this->getsession();
-        return $this->Booking->consultant->insurance;
+        $typeantemp = ['text'=>'text_consultation','voice'=>'audio_voice_call_consultation','direct'=>'direct_consultation','video'=>'video_consultation'];
+        $insurance = $this->Booking->consultant->insurance->filter(function($data) use ($typeantemp){
+            $consultant_type = \explode(',',$data->consultant_type);
+            if(in_array($typeantemp[$this->Booking->type],$consultant_type)) return $data;
+        });
+        return $insurance;
     }
+
     public function schedule(Request $request,$type){
         $this->getsession();
         $this->Booking->consultant->Schedule;
-        
+
         $data = $this->change_to_API_fORMET($this->getslotsApi($this->Booking->consultant->Schedule,$type),$this->Booking->consultant);
-        
+
         $this->Booking->data = $data;
         $this->Booking->type = $type;
-        
+
         $this->setsession();
-        
+
         if(empty($data)) return response()->json(['data'=>[],'msg'=>'No Schedule found'], 200);
         return response()->json(['data'=>$data,'msg'=>''], 200);
     }
+
     public function offer(Request $request){
         $this->getsession();
-        $this->Booking->consultant->offer;
+        $Booking = $this->Booking;
+        $offer = $this->Booking->consultant->offer;
+        $firmOffer = ($this->Booking->consultant->firm)?$this->Booking->consultant->firm->offer:[];
+        $offer->merge($firmOffer);
+        $offer = $offer->filter(function($data) use ($Booking){
+            $data->{'amount_converted'} = ($Booking->customercurrnecy)?(float)$data->amount*(float)$Booking->customercurrnecy->price :(float)$data->amount;
+            $data->{'customer_currency'} = $Booking->customercurrnecy;
+            return $data;
+        });
         $this->setsession();
-        return response()->json($this->Booking->consultant->offer);
+        return response()->json($offer);
     }
+
     public function Applyoffer(Request $request,Offer $offer){
-        
+
         $this->getsession();
-        
+        $offer->{'amount_converted'} = ($this->Booking->customercurrnecy)?(float)$offer->amount*(float)$this->Booking->customercurrnecy->price :(float)$offer->amount;
+        $offer->{'customer_currency'} = $this->Booking->customercurrnecy;
+
         $this->Booking->offer = $offer;
-        // $this->BooKing->OfferAmount = $offer->amount;
-        $amount = $this->Booking->consultant->{$this->Booking->type.'_amount'} - $offer->amount;
+        $amount = $this->Booking->amount - $offer->amount_converted;
         $this->Booking->amount = $amount;
         $this->setsession();
         $test = [];
@@ -279,33 +343,35 @@ class CustomerController extends Controller
     public function Discount(){
         $this->getsession();
         $date = today()->format('m/d/Y');
-        $Discount = Discount::where('consultant_id',$this->Booking->consultant->id)->where('from_date','<',$date)->where('to_date','>',$date)->where('status',1)->get();
+        $Discount = Discount::where('consultant_id',$this->Booking->consultant->id)->where('from_date','<',$date)->where('to_date','>',$date)->where($this->Booking->type,1)->where('status',1)->get();
         return response()->json($Discount);
 
     }
     public function ApplyDiscount(Request $request){
         $this->getsession();
         $date = today()->format('m/d/Y');
-        
         $Discount = Discount::where('promo_code',$request->promocode)->where('to_date','>',$date)->where('from_date','<',$date)->where($this->Booking->type,1)->where('consultant_id',$this->Booking->consultant->id)->where('status',1)->first();
-        // dd($date);
         if(empty($Discount)) return response()->json(['status'=>false,'msg'=>'In valide Coupon code']);
-        
+
         $Discountuser = Discountuser::where('discount_id',$Discount->id)->count();
         if($Discount->no_of_coupons > $Discountuser){
-            $this->Booking->Discount = $Discount;
-            $this->Booking->amount += $this->Booking->DiscountAmount;
+
             if($Discount->flat_percentage == 0){
                 $this->Booking->DiscountAmount = ($this->Booking->consultant->{$this->Booking->type.'_amount'} / 100) * $Discount->amount;
-                // $this->Booking->amount = $this->Booking->amount - ($this->Booking->consultant->{$this->Booking->type.'_amount'} / 100) * $Discount->amount;
+                $Discount->{'amount_converted'} = ($this->Booking->customercurrnecy)?(float)$this->Booking->DiscountAmount*(float)$this->Booking->customercurrnecy->price :(float)$this->Booking->DiscountAmount;
+                $Discount->{'customer_currency'} = $this->Booking->customercurrnecy;
             }else{
-                $this->Booking->DiscountAmount = $Discount->amount;
-                // $this->Booking->amount = $this->Booking->amount - $Discount->amount;
+                $Discount->{'amount_converted'} = ($this->Booking->customercurrnecy)?(float)$Discount->amount*(float)$this->Booking->customercurrnecy->price :(float)$Discount->amount;
+                $Discount->{'customer_currency'} = $this->Booking->customercurrnecy;
+                $this->Booking->DiscountAmount = $Discount->amount_converted;
             }
-            
+            $this->Booking->Discount = $Discount;
             $this->Booking->amount = $this->Booking->amount - $this->Booking->DiscountAmount;
             $this->setsession();
             return response()->json(['status'=>true,'msg'=>'Valide','amount'=>$this->Booking->amount]);
+        }else{
+            $this->setsession();
+            return response()->json(['status'=>false,'msg'=>'Coupon Expired','amount'=>$this->Booking->amount]);
         }
     }
       public function appointment(Request $request){
@@ -314,7 +380,7 @@ class CustomerController extends Controller
         if($Wallet->balance < $this->Booking->amount){
             return response()->json(['Appointment'=>false,'msg'=>'Insufficient Balance'], 200);
         }
-        
+
         $Appointment = new Appointment;
         $Discountuser = new Discountuser;
 
@@ -411,7 +477,7 @@ class CustomerController extends Controller
     }
     
     public function bookingReschedule(Request $request, Appointment $Appointment){
-
+ 
         $msg = '';
         $Companysetting = Companysetting::with('country')->where('id',1)->first();
         $countdown = strtotime($Appointment->appointment_date) - strtotime('now');
@@ -436,13 +502,16 @@ class CustomerController extends Controller
     }
     
     public function offerindex(Request $request){
-
+        $this->getsession();
+        $Booking = $this->Booking;
         $date = today()->format('m/d/Y');
         $Offer = Offer::when($request->cat,function($query,$search){ return $query->where('category_id',$search); })
         ->when($request->sub,function($query,$search){ return $query->where('sub_category_id',$search); })
         ->where('has_validity','!=',1)->orWhere('has_validity',1)->where('from_date','<',$date)->where('to_date','>',$date)
         ->get();
-        $banner = (new Collection($Offer))->map(function($data, $key) {
+        $banner = (new Collection($Offer))->map(function($data, $key) use ($Booking) {
+            $data->{'amount_converted'} = ($Booking->customercurrnecy)?(float)$data->amount*(float)$Booking->customercurrnecy->price :(float)$data->amount;
+            $data->{'customer_currency'} = $Booking->customercurrnecy;
             return $data;
         });
 
@@ -450,11 +519,17 @@ class CustomerController extends Controller
     }
 
     public function offerdetail(Offer $offer){
+        $this->getsession();
+        $offer->{'amount_converted'} = ($this->Booking->customercurrnecy)?(float)$offer->amount*(float)$this->Booking->customercurrnecy->price :(float)$offer->amount;
+        $offer->{'customer_currency'} = $this->Booking->customercurrnecy;
         return response()->json($offer);
     }
 
     public function offerpurchased(Offer $offer){
-        $payment = $this->addsubammount($offer->amount,'sub','offer purchas');
+        $this->getsession();
+        $offer->{'amount_converted'} = ($this->Booking->customercurrnecy)?(float)$offer->amount*(float)$this->Booking->customercurrnecy->price :(float)$offer->amount;
+        $offer->{'customer_currency'} = $this->Booking->customercurrnecy;
+        $payment = $this->addsubammount($offer->amount_converted,'sub','offer purchas');
 
         $Offerpurchase = new Offerpurchase;
         $Offerpurchase->rawoffer = utf8_encode(bzcompress(serialize($offer), 9));

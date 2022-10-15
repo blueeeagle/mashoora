@@ -1,73 +1,78 @@
 <x-base-layout>
     <div class="row col-10 gy-12 gx-xl-12">
-        <div class="card card-docs flex-row-fluid mb-2">
+        <div class="card card-docs rounded border flex-row-fluid mb-2">
             <form action="{{ route('other.video.store') }}" method="post" id="formCreate">
                 @csrf
                 <div class="py-5">
-                    <div class="rounded border p-10">
-
-                        <div class="fv-row mb-10">
+                    <div class="p-10">
+                        <div class="form-group row">
+                        <div class="fv-row mb-10 col-md-6">
                             <label class="required fw-bold fs-6 mb-3">Pos from</label>
                             <div class="d-flex flex-column fv-row">
-                                <div class="form-check form-check-custom form-check-solid mb-5">
+                                <div class="row">
+                                <div class="form-check form-check-custom form-check-solid mb-5 col-md-4">
                                     <input class="form-check-input me-3" name="post_from"  type="radio" checked  value="0" id="kt_docs_formvalidation_radio_option_1" />
                                     <label class="form-check-label" for="kt_docs_formvalidation_radio_option_1">
                                         <div class="fw-bolder text-gray-800">Firm</div>
                                     </label>
                                 </div>
-                                <div class="form-check form-check-custom form-check-solid mb-5">
+                                <div class="form-check form-check-custom form-check-solid mb-5 col-md-4">
                                     <input class="form-check-input me-3" name="post_from" type="radio" value="1" id="kt_docs_formvalidation_radio_option_1" />
                                     <label class="form-check-label" for="kt_docs_formvalidation_radio_option_1">
                                         <div class="fw-bolder text-gray-800">Consultant</div>
                                     </label>
                                 </div>
-                                <div class="form-check form-check-custom form-check-solid mb-5">
+                                <div class="form-check form-check-custom form-check-solid mb-5 col-md-4">
                                     <input class="form-check-input me-3" name="post_from" type="radio" value="2" id="kt_docs_formvalidation_radio_option_2" />
                                     <label class="form-check-label" for="kt_docs_formvalidation_radio_option_2">
                                         <div class="fw-bolder text-gray-800">Admin</div>
                                     </label>
                                 </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="fv-row mb-10" id="selecterdiv1">
+                        <div class="fv-row mb-10 col-md-6" id="selecterdiv1">
                             <label class="required form-label fs-6 mb-2" >Firm</label>
                             <select class="form-select" id="firm_id" name="firm_id" data-placeholder="Search by Firm Name / Email / Mobile No / Consultant ID /  Admin Name">
                                
                             </select>
                         </div>
-                        <div class="fv-row mb-10" id="selecterdiv2" hidden>
+                        <div class="fv-row mb-10 col-md-6" id="selecterdiv2" hidden>
                             <label class="required form-label fs-6 mb-2" >Consultant</label>
                             <select class="form-select" id="consultant_id" name="consultant_id" data-placeholder="Search by Consultant Name / Email / Mobile No / Consultant ID /  Admin Name">
 
                             </select>
                         </div>
-                        <div class="fv-row mb-10" id="selecterdiv3" hidden>
+                        <div class="fv-row mb-10 col-md-6" id="selecterdiv3" hidden>
                             <label class="required form-label fs-6 mb-2" >Admin</label>
                             <select class="form-select" id="admin_id" name="admin_id" data-placeholder="Admin by Consultant Name / Email / Mobile No / Consultant ID /  Admin Name">
 
                             </select>
                         </div>
-                        <div class="mb-10">
+                        <div class="mb-10 col-md-6">
                             <label for="" class="form-label">Video Title<span class="text-danger">*</span></label>
                             <input type="text" name="video_title" class="form-control " placeholder="Video Title"/>
                         </div>
-                        <div class="mb-10">
+                        <div class="mb-10 col-md-6">
                             <label for="" class="form-label">Video URL<span class="text-danger">*</span></label>
                             <input type="url" name="video_url" class="form-control " placeholder="Video URL"/>
                         </div>
-                        <div class="mb-10">
+                        <div class="mb-10 col-md-6">
                             <label class="form-check-label" for="display_in_home">
                                 <div class="fw-bolder text-gray-800">Display in Home</div>
                             </label>   
                             <input class="form-check-input me-3" name="display_in_home" type="checkbox" value="1" id="display_in_home" />
                                            
                         </div>
-                        <div class="mb-10">
+                        <div class="mb-10 col-md-6">
                             <label for="" class="form-label">Sort No<span class="text-danger">*</span></label>
                             <input type="number" name="sort_no" class="form-control " placeholder="Sort No"/>
                         </div>
+                        </div>
+                        <div class="form-group row" style="float:right;">
                         <div class="mb-10">
                             <button type="submit" class="btn btn-primary">Create</button>
+                        </div>
                         </div>
                     </div>
                 </div>

@@ -15,10 +15,10 @@ class Customer extends Authenticatable
     use HasFactory;
 
 
-    protected $fillable = ['phone_no','name','dob','gender','email','register_address','country_id','state_id','city_id','zipcode','status'];
+    protected $fillable = ['phone_no','name','dob','gender','email','register_address','country_id','state_id','city_id','zipcode','status','dialing'];
 
     public function country(){
-        return $this->belongsTo(Country::class);
+        return $this->belongsTo(Country::class,'dialing','dialing');
    }
     public function state(){
         return $this->belongsTo(State::class);

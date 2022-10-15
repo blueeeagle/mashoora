@@ -3,11 +3,12 @@
     <div class="w-100">
         <div class="card-body pt-0">
             <div class="py-5">
-                <h4>Mobile</h4>
+                <h4>Enter Your Mobile Number</h4>
                 <div class="rounded border p-10">
                     <div class="fv-row mb-10">
                         {{-- <div class="col-10"> --}}
                             <div class="input-group mt-5">
+                                <label class="mob-label">Country Code</label>
                                 {{-- <label class="input-group-text">Country Code</label> --}}
                                 <select class="form-select" name="country_code" id="country_code" style="max-width:12%;">
                                     <option value="">--</option>
@@ -16,7 +17,7 @@
                                     @endforeach
                                 </select>
                                 <input class="input-group-text" name="c_code" id="c-code" readonly style="width: 100px">
-                                <input type="tel" name="phone_no" id="phone_no" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Mobile No" required />
+                                <input type="tel" name="phone_no" id="phone_no" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Please Enter youor Mobile Number" required />
                             </div>
 
                         {{-- </div> --}}

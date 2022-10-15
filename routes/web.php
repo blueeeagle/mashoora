@@ -157,13 +157,13 @@ Route::middleware('auth')->group(function () {
     });
     //Others
     Route::prefix('other')->name('other.')->group(function () {
-        Route::resource('articel', ArticelController::Class)->only(['create','store','index','edit','destroy']);
-        Route::Post('articel/status/{articel}', [ArticelController::Class,'status'])->name('articel.status');
-        Route::Post('articel/update/{articel}', [ArticelController::Class,'update'])->name('articel.update');
-        Route::Post('articel/datatable',[ArticelController::Class,'datatable'])->name('articel.datatable');
-        Route::Post('articel/search',[ArticelController::Class,'search'])->name('articel.search');
-        Route::Post('articel/consultant/search',[ArticelController::Class,'consultantSearch'])->name('articel.consultantSearch');
-        Route::Post('articel/user/search',[ArticelController::Class,'userSearch'])->name('articel.userSearch');
+        Route::resource('article', ArticelController::Class)->only(['create','store','index','edit','destroy']);
+        Route::Post('article/status/{articel}', [ArticelController::Class,'status'])->name('articel.status');
+        Route::Post('article/update/{articel}', [ArticelController::Class,'update'])->name('articel.update');
+        Route::Post('article/datatable',[ArticelController::Class,'datatable'])->name('articel.datatable');
+        Route::Post('article/search',[ArticelController::Class,'search'])->name('articel.search');
+        Route::Post('article/consultant/search',[ArticelController::Class,'consultantSearch'])->name('articel.consultantSearch');
+        Route::Post('article/user/search',[ArticelController::Class,'userSearch'])->name('articel.userSearch');
          // video
          Route::resource('video', VideoController::Class)->only(['create','store','index','edit','destroy']);
          Route::Post('video/status/{video}', [VideoController::Class,'status'])->name('video.status');
@@ -260,7 +260,9 @@ Route::middleware('auth')->group(function () {
         Route::resource('config', ConfigController::Class)->only(['create','store','index','edit','destroy']);
         Route::Post('config/status/{config}', [ConfigController::Class,'status'])->name('config.status');
         Route::Post('config/update/{config}', [ConfigController::Class,'update'])->name('config.update');
-        Route::Post('config/datatable',[ConfigController::Class,'datatable'])->name('config.datatable');
+        Route::Post('config/datatableForHome',[ConfigController::Class,'datatableForHome'])->name('config.datatableForHome');
+        Route::Post('config/datatableForAllCategory',[ConfigController::Class,'datatableForAllCategory'])->name('config.datatableForAllCategory');
+        Route::Post('config/datatableForCategory',[ConfigController::Class,'datatableForCategory'])->name('config.datatableForCategory');
         Route::Post('config/consultant', [ConfigController::Class,'getConsultant'])->name('config.getConsultant');
         
        

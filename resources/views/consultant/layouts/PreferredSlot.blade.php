@@ -4,9 +4,9 @@
         <div class="pb-8 pb-lg-10">
             <h2 class="fw-bolder text-dark">Preferred Slot</h2>
         </div>
-        <div class="fv-row mb-10">
+        <div class="fv-row mb-10 form-group row">
             <!--begin:Option-->
-            <label class="d-flex flex-stack mb-5 cursor-pointer">
+            <label class="d-flex flex-stack mb-5 cursor-pointer col-md-4">
                 <!--begin:Label-->
                 <span class="d-flex align-items-center me-2">
                     <!--begin:Icon-->
@@ -41,7 +41,7 @@
             <!--end::Option-->
 
             <!--begin:Option-->
-            <label class="d-flex flex-stack mb-5 cursor-pointer">
+            <label class="d-flex flex-stack mb-5 cursor-pointer col-md-4">
                 <!--begin:Label-->
                 <span class="d-flex align-items-center me-2">
                     <!--begin:Icon-->
@@ -76,7 +76,7 @@
             <!--end::Option-->
 
             <!--begin:Option-->
-            <label class="d-flex flex-stack mb-5 cursor-pointer">
+            <label class="d-flex flex-stack mb-5 cursor-pointer col-md-4">
                 <!--begin:Label-->
                 <span class="d-flex align-items-center me-2">
                     <!--begin:Icon-->
@@ -111,7 +111,7 @@
             <!--end::Option-->
 
             <!--begin:Option-->
-            <label class="d-flex flex-stack mb-5 cursor-pointer">
+            <label class="d-flex flex-stack mb-5 cursor-pointer col-md-4">
                 <!--begin:Label-->
                 <span class="d-flex align-items-center me-2">
                     <!--begin:Icon-->

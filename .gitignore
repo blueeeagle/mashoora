@@ -1,13 +1,13 @@
 /node_modules
 
-/public/hot
-/public/storage
-/public/css
-/public/js
-/public/media
-/public/plugins
+# /public/hot
+# /public/storage
+# /public/css
+# /public/js
+# /public/media
+# /public/plugins
 
-/public/demo1
+# /public/demo1
 /public/demo2
 /public/demo3
 /public/demo4
@@ -22,7 +22,7 @@
 /public/demo13
 
 /storage/*.key
-/vendor
+# /vendor
 .env
 .env.backup
 .phpunit.result.cache
@@ -34,4 +34,5 @@ yarn-error.log
 _ide_helper.php
 _ide_helper_models.php
 .phpstorm.meta.php
-composer.lock
+# composer.lock
+*.zip

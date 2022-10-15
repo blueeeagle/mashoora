@@ -120,7 +120,7 @@ class OfferController extends Controller
         })
         ->addColumn('Image', function(Offer $data){
                                 $exists = Storage::disk('public_custom')->exists($data->image);
-                                if($exists) return "<img width = 120 height = 150 src='".asset("storage/$data->image")."' alter='$data->image' />";
+                                if($exists) return asset("storage/$data->image");
                                 return "";
                             })
         ->editColumn('status', function(Offer $data) {

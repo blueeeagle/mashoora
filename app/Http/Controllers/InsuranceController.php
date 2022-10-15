@@ -87,6 +87,11 @@ class InsuranceController extends Controller
                             ->editColumn('register_address',function(Insurance $data){
                                 return $data->register_address;
                             })
+                            ->editColumn('logo', function(Insurance $data){
+                                $exists = Storage::disk('public_custom')->exists($data->logo);
+                                if($exists) return asset("storage/$data->logo");
+                                return "";
+                            })
                             ->editColumn('consultant_type',function(Insurance $data){
                                 $consultant_type = \explode(',',$data->consultant_type);
                                 $return = null;

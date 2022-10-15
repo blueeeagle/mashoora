@@ -33,7 +33,7 @@
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
-                        <li class="breadcrumb-item text-muted"><a href="{{ route('other.articel.index') }}" class="text-muted text-hover-primary">Article</a></li>
+                        <li class="breadcrumb-item text-muted"><a href="{{ route('other.article.index') }}" class="text-muted text-hover-primary">Article</a></li>
                         <!--end::Item-->
                         <!--begin::Item-->
                         <li class="breadcrumb-item">
@@ -58,12 +58,13 @@
                 <!--begin::Products-->
                 <div class="card card-flush">
                     <!--begin::Card body-->
-                    <div class="card-body pt-0">
-                        <form action="{{ route('other.articel.store') }}" method="post" id="formCreate">
+                    <div class="card-body rounded border pt-0">
+                        <form action="{{ route('other.article.store') }}" method="post" id="formCreate">
                             @csrf
                             <div class="py-5">
-                                <div class="rounded border p-10">
-                                    <div class="fv-row mb-10">
+                                <div class=" p-10">
+                                    <div class="form-group row">
+                                    <div class="fv-row mb-10 col-md-6">
                                         <label class="required fw-bold fs-6 mb-3">Pos from</label>
                                         <div class="d-flex flex-column fv-row">
                                             <div class="form-check form-check-custom form-check-solid mb-5">
@@ -86,7 +87,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="fv-row mb-10" id="selecterdiv1">
+                                    <div class="fv-row mb-10 col-md-6" id="selecterdiv1">
                                         <label class="required form-label fs-6 mb-2" >Firm</label>
                                         <select class="form-select" id="firm_id" name="firm_id" data-placeholder="Search by Firm Name / Email / Mobile No / Consultant ID /  Admin Name">
                                             
@@ -95,19 +96,19 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="fv-row mb-10" id="selecterdiv2" hidden>
+                                    <div class="fv-row mb-10 col-md-6" id="selecterdiv2" hidden>
                                         <label class="required form-label fs-6 mb-2" >Consultant</label>
                                         <select class="form-select" id="consultant_id" name="consultant_id" data-placeholder="Search by Consultant Name / Email / Mobile No / Consultant ID /  Admin Name">
 
                                         </select>
                                     </div>
-                                    <div class="fv-row mb-10" id="selecterdiv3" hidden>
+                                    <div class="fv-row mb-10 col-md-6" id="selecterdiv3" hidden>
                                         <label class="required form-label fs-6 mb-2" >Admin</label>
                                         <select class="form-select" id="admin_id" name="admin_id" data-placeholder="Admin by Consultant Name / Email / Mobile No / Consultant ID /  Admin Name">
 
                                         </select>
                                     </div>
-                                    <div class="fv-row mb-10">
+                                    <div class="fv-row mb-10 col-md-6">
                                         <label class="required fw-bold fs-6 mb-2">Title</label>
                                         <input type="text" name="title" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Title" required />
                                     </div>
@@ -115,7 +116,7 @@
                                         @include('components.imagecrop',['name'=>'image'])
                                         <!--end::Image input-->
                                     </div>
-                                    <div class="fv-row mb-10">
+                                    <div class="fv-row mb-10 col-md-6">
                                         <label class="required fw-bold fs-6 mb-2">Short Description</label>
                                         <textarea name="describtion" class="form-control form-control-solid"></textarea>
                                     </div>
@@ -133,8 +134,11 @@
                                             <!--end::Label-->
                                         </div>
                                     </div>
+                                    </div>
+                                     <div class="form-group row" style="float:right;">
                                     <div class="mb-10">
                                         <button type="submit" class="btn btn-primary btn-hover-rise me-5">Submit</button>
+                                    </div>
                                     </div>
                                 </div>
                             </div>
@@ -150,7 +154,7 @@
     </div>
     @section('scripts')
     <script>
-        back = "{{ route('other.articel.index') }}"
+        back = "{{ route('other.article.index') }}"
         const selecterdiv1 = document.getElementById('selecterdiv1')
         const selecterdiv2 = document.getElementById('selecterdiv2')
         const selecterdiv3 = document.getElementById('selecterdiv3')

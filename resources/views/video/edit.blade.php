@@ -29,12 +29,13 @@
         <div class="post d-flex flex-column-fluid" id="kt_post">
             <div id="kt_content_container" class="container-xxl">
                 <div class="card card-flush">
-                    <div class="card-body pt-0">
+                    <div class="card-body rounded border pt-0">
                         <form action="{{ route('other.video.update',$video->id) }}" method="POST" id="formEdit">
                             @csrf
                             <div class="py-5">
-                                <div class="rounded border p-10">
-                                <div class="fv-row mb-10">
+                                <div class="p-10">
+                                    <div class="form-group row">
+                                <div class="fv-row mb-10 col-md-6">
                                         <label class="required fw-bold fs-6 mb-3">Pos from</label>
                                         <div class="d-flex flex-column fv-row">
                                             <div class="form-check form-check-custom form-check-solid mb-5">
@@ -57,7 +58,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="fv-row mb-10" id="selecterdiv1" {{ ($video->firm_id =='')?'hidden':'' }}>
+                                    <div class="fv-row mb-10 col-md-6" id="selecterdiv1" {{ ($video->firm_id =='')?'hidden':'' }}>
                                         <label class="required form-label fs-6 mb-2" >Firm</label>
                                         <select class="form-select " id="firm_id" name="firm_id" data-placeholder="Search by Firm Name / Email / Mobile No / Consultant ID /  Admin Name">
                                             <option value=""></option>
@@ -66,7 +67,7 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="fv-row mb-10" id="selecterdiv2" {{ ($video->consultant_id =='')?'hidden':'' }}>
+                                    <div class="fv-row mb-10 col-md-6" id="selecterdiv2" {{ ($video->consultant_id =='')?'hidden':'' }}>
                                         <label class="required form-label fs-6 mb-2" >Consultant</label>
                                         <select class="form-select" id="consultant_id" name="consultant_id" data-placeholder="Search by Consultant Name / Email / Mobile No / Consultant ID /  Admin Name">
                                             <option value=""></option>
@@ -75,7 +76,7 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="fv-row mb-10" id="selecterdiv3" {{ ($video->admin_id =='')?'hidden':'' }}>
+                                    <div class="fv-row mb-10 col-md-6" id="selecterdiv3" {{ ($video->admin_id =='')?'hidden':'' }}>
                                         <label class="required form-label fs-6 mb-2" >Admin</label>
                                         <select class="form-select" id="admin_id" name="admin_id" data-placeholder="Admin by Consultant Name / Email / Mobile No / Consultant ID /  Admin Name">
                                             <option value=""></option>
@@ -84,27 +85,28 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="mb-10">
+                                    <div class="mb-10 col-md-6">
                                         <label for="" class="form-label">Video Title<span class="text-danger">*</span></label>
                                         <input type="text" name="video_title" class="form-control " placeholder="Video Title" value="{{ $video->video_title }}"/>
                                     </div>
-                                    <div class="mb-10">
+                                    <div class="mb-10 col-md-6">
                                         <label for="" class="form-label">Video URL<span class="text-danger">*</span></label>
                                         <input type="text" name="video_url" class="form-control " placeholder="Video URL" value="{{ $video->video_url }}"/>
                                     </div>
                       
-                                    <div class="mb-10">
+                                    <div class="mb-10 col-md-6">
                                         <label class="form-check-label" for="display_in_home">
                                             <div class="fw-bolder text-gray-800">Display in Home</div>
                                         </label>   
                                         <input class="form-check-input me-3" name="display_in_home" type="checkbox" value="1" {{ ($video->display_in_home == '1')?'checked':'' }} id="display_in_home" />
                                                     
                                     </div>
-                                    <div class="mb-10">
+                                    <div class="mb-10 col-md-6">
                                         <label for="" class="form-label">Sort No<span class="text-danger">*</span></label>
                                         <input type="number" name="sort_no" class="form-control " placeholder="Sort No" value="{{ $video->sort_no}}"/>
                                     </div>
-                                   
+                                   </div>
+                                        <div class="form-group row" style="float:right;">
                                     <div class="mb-10">
                                         <button type="submit" class="btn btn-primary">Update</button>
                                     </div>
