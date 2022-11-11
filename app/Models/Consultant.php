@@ -17,21 +17,28 @@ use App\Models\Payment;
 use App\Models\Wallet;
 use Carbon\Carbon;
 use App\Models\Review;
-
+use App\Models\Language;
+use App\Models\Category;
+use App\Models\Consultantcategory;
+use DateTime;
+use DateTimeZone;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Consultant extends Authenticatable
 {
     use HasFactory;
-
     // protected $fillable = ['phone_no','name','email'];
     protected $appends = ['subtext'];
 
+    
     public function country(){
-        return $this->belongsTo(Country::class);
+        return $this->belongsTo(Country::class,'country_code',"country_code");
     }
     public function currency(){
         return $this->belongsTo(Country::class,'country_code');
+    }
+    public function Addcountry(){
+        return $this->belongsTo(Country::class,'country_id','id');
     }
     public function state(){
         return $this->belongsTo(State::class);
@@ -43,14 +50,30 @@ class Consultant extends Authenticatable
         return $this->belongsTo(Firm::class,'firm_choose');
     }
     public function Schedule(){
-        
-        return $this->hasMany(Schedule::class)->where('to_date','>=',date('m/d/Y'));
+        return $this->hasMany(Schedule::class,'consultant_id','id')->where('to_date','>=',date('Y-m-d'));
+    }
+    public function Allschedule(){
+        return $this->hasMany(Schedule::class,'consultant_id','id');
     }
     
     public function offer()
     {
         $date = today()->format('m/d/Y');
         return $this->hasMany(Offer::class)->where('consultant_id',$this->id)->where('status',1)->where('has_validity','!=',1)->orWhere('has_validity',1)->where('from_date','<',$date)->where('to_date','>',$date);
+    }
+    public function getLanguage()
+    {
+        return Language::whereIn('id',\explode(',',$this->language))->get();
+    }
+    public function discount(){
+        
+        $date = today()->format('m/d/Y');
+        $hasMany = $this->hasMany(Discount::class)->where('consultant_id',$this->id)->where('status',1)->where('from_date','<',$date)->where('to_date','>',$date);
+        if($this->video) $hasMany = $hasMany->where('video',1);
+        if($this->voice) $hasMany = $hasMany->orwhere('voice',1);
+        if($this->text) $hasMany = $hasMany->orwhere('text',1);
+        if($this->direct) $hasMany = $hasMany->orwhere('direct',1);
+        return $hasMany;
     }
     
     public function getSubtextAttribute()
@@ -73,8 +96,10 @@ public function getInsuranceAttribute(){
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function Review()
-    {
+    public function category(){
+        return $this->belongsTo(Category::class);
+    }
+    public function Review(){
         return $this->hasMany(Review::class);
     }
     
@@ -101,4 +126,21 @@ public function getInsuranceAttribute(){
         return $this->belongsTo(Wallet::class,'id','consultant_id');
     }
 
+    public function convertcomTemp($companeySetting,$amount,$type,$consultant){
+        return ($type == 0)? $this->country->currency->currencycode.' '.$amount.' / '.$companeySetting->country->currency->currencycode.' '.round(($amount/$consultant->country->currency->price)*$companeySetting->country->currency->price,2):
+                $amount.'%';
+    }
+
+    public function parentcat(){
+        return Category::whereIn('id',\explode(',',$this->categorie_id))->where('type',0)->where('status',1)->first();
+    }
+    public function subcat(){
+        return Category::whereIn('id',\explode(',',$this->categorie_id))->where('type',1)->where('status',1)->get();
+    }
+    public function getspec(){
+        return Consultantcategory::whereIn('id',\explode(',',$this->specialized))->where('status',1)->get();
+    }
+    public function gettimeZone(){
+        return new DateTime(null, new DateTimeZone( \DateTimeZone::listIdentifiers(\DateTimeZone::PER_COUNTRY, $this->country->country_code)[0]));
+    }
 }

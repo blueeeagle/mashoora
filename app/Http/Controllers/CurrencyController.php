@@ -26,7 +26,7 @@ class CurrencyController extends Controller
             $search[] = $colum['search']['value'];
         }
 
-        $datas = Currency::orderBy('id','desc')
+        $datas = Currency::orderBy('countryname','ASC')
         ->when($search[1],function($query,$search){
             return $query->where('countryname','LIKE',"%{$search}%");
         })
@@ -61,8 +61,6 @@ class CurrencyController extends Controller
     }
     
     public function update(Request $Request,Currency $currency){
-        dd($Request);
-      
         $currency->update($Request->all());
         return response()->json(['msg'=>'Updated Successfully']);
     }

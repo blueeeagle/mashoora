@@ -52,7 +52,7 @@
                                         <div class="col-md-2">
                                             <label class="required fw-bold fs-6 mb-4">Choose</label>
                                         </div>
-                                        <div class="col-md-10">
+                                        <div class="col-md-3">
                                             <input class="form-check-input me-3" name="type" type="radio" checked value="0" id="kt_docs_formvalidation_radio_option_1" /> <label class="form-check-label" for="kt_docs_formvalidation_radio_option_1">
                                                 <div class="fw-bolder text-gray-800">Parent</div>
                                             </label>
@@ -60,8 +60,15 @@
                                             <label class="form-check-label" for="kt_docs_formvalidation_radio_option_2">
                                                 <div class="fw-bolder text-gray-800">Sub Category</div>
                                             </label>
-
                                         </div>
+                                        
+                                         <div class="col-md-3" id="is_insurance">
+                                            <input class="form-check-input me-3 " name="insurance" type="checkbox" value="1" id="insurance" />
+                                            <label class="form-check-label" for="insurance">
+                                                <div class="fw-bolder text-gray-800">Category has insurance?</div>
+                                            </label>
+                                        </div>
+                                        
                                     </div>
 
                                     <div class="form-group row">
@@ -81,12 +88,14 @@
                                                 @endforeach
                                             </select>
                                         </div>
+                                        
+                                       
                                     </div>
 
                                     <div class="form-group row">
                                         <div class="col-md-6">
                                             <label class="required fw-bold fs-6 mb-4">Document</label>
-                                            <select class="form-select" name="document_id[]" id="document_id" data-control="select2" multiple data-placeholder="Select an option">
+                                            <select class="form-select" name="document_id[]" id="document_id" data-control="select2" multiple data-placeholder="Select an option" required>
                                                 <option value=""></option>
                                                 @foreach ($documents as $key => $value )
                                                     <option value="{{ $value->id }}">{{$value->title }}</option>
@@ -96,7 +105,7 @@
 
                                         <div class="col-md-6">
                                             <label class="required fw-bold fs-6 mb-4">Short Description</label>
-                                            <textarea name="description" class="form-control form-control-solid" maxlength="256" placeholder="256 Characters Alone"></textarea>
+                                            <textarea name="description" class="form-control" maxlength="256" placeholder="256 Characters Alone" required></textarea>
                                         </div>
                                     </div>
 
@@ -107,32 +116,26 @@
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label class="required fw-bold fs-6 mb-4">Menu Image/Icon</label>
-                                            <span>Image must be less than 5MB</span>
-                                            <div class="col-md-6">
-                                            @include('components.imagecrop',['name'=>'img'])
-                                            </div>
+                                            <label class="required fw-bold fs-6 mb-4">Sort No</label>
+                                            <input type="number" name="sort_no_list" class="form-control mb-4 " placeholder="for Category list" required />
                                         </div>
-
+                                        
                                     </div>
 
                                     <div class="form-group row">
-                                        <div class="col-md-6">
-                                            <label class="required fw-bold fs-6 mb-4">Sort No</label>
-                                            <input type="text" name="sort_no_list" class="form-control form-control-solid mb-4 " placeholder="for Category list" required />
-                                        </div>
+                                        
                                    
                                         <div class="col-md-6">
                                             <input class="form-check-input mb-3" name="display_in_home" type="checkbox" value="1" id="display_in_home"  onclick="show_dis_in_home(this)" /><label class="form-check-label" for="display_in_home">
                                                 <div class="fw-bolder text-gray-800">  &nbsp; Display in home</div>
                                             </label>
                                             <div hidden id="display_sort">
-                                                <input type="text" id="sort_no_home" name="sort_no_home" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="for Home list" />
+                                                <input type="number" id="sort_no_home" name="sort_no_home" class="form-control mb-3 mb-lg-0" placeholder="for Home list" />
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="form-group row">
+                                    <div class="form-group row" hidden>
                                         <div class="col-md-6">
                                             <input class="form-check-input me-3 " name="status" type="checkbox" value="1" id="status" checked />
                                             
@@ -143,11 +146,20 @@
                                     </div>
                                 </div>
                             </div>
-                        
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <label class="required fw-bold fs-6 mb-4">Menu Image/Icon</label>
+                                    <span>Image must be less than 5MB</span>
+                                    <div class="col-md-6">
+                                    @include('components.imagecrop',['name'=>'img'])
+                                    </div>
+                                </div>
+                            </div>
+
                             
                             <div class="form-group row" style="float:right" >
                                 <div class="col-md-6">
-                                    <button type="button" class="btn btn-secondary btn-hover-rise me-5 ">Reset</button>
+                                    <button type="reset" id="formreset" class="btn btn-secondary btn-hover-rise me-5">Reset</button>
                                 </div>
                                 <div class="col-md-6">
                                     <button type="submit" class="btn btn-primary btn-hover-rise me-5">Save</button>
@@ -174,7 +186,8 @@
         const selecter = document.getElementById('selecter')
         const categories_id = document.getElementById('categories_id')
         const display_sort = document.getElementById('display_sort')
-
+        const is_insurance = document.getElementById('is_insurance')
+        
         var RadioButton = document.getElementById('formCreate').elements['type'];
         RadioButton.forEach(element => {
             element.addEventListener('click',showhideParent)
@@ -182,9 +195,11 @@
 
         function showhideParent(event){
             if(event.target.value == 1){
+                is_insurance.setAttribute('hidden',true)
                 selecter.removeAttribute('hidden')
                 $(categories_id).prop('required','true');
             }else{
+                is_insurance.removeAttribute('hidden')
                 selecter.setAttribute('hidden',true)
                 $(categories_id).removeAttr('required');
                 $(categories_id).val('');

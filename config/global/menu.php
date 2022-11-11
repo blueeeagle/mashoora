@@ -1,5 +1,4 @@
 <?php
-
 return array(
     // Documentation menu
     'documentation' => array(
@@ -466,6 +465,16 @@ return array(
                     array(
                         'title'  => 'Consultant Profile Approvals',
                         'path'   => 'approval/consultant',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                    array(
+                        'title'  => 'Consultant Pay In Approvals',
+                        'path'   => 'approval/pay_in',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                    array(
+                        'title'  => 'Consultant Pay Out Approvals',
+                        'path'   => 'approval/pay_out',
                         'bullet' => '<span class="bullet bullet-dot"></span>',
                     ),
                     array(

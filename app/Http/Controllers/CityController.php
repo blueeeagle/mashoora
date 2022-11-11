@@ -7,6 +7,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\State;
 use App\Models\City;
+use App\Models\Customer;
+use App\Models\Companysetting;
+use App\Models\User;
+use App\Models\Firm;
+use App\Models\Insurance;
+use App\Models\Consultant;
 use Auth;
 use Validator;
 use DataTables;
@@ -39,7 +45,7 @@ class CityController extends Controller
         ->when($search[3],function($query,$search){
             return $query->where('cities.city_name','LIKE',"%{$search}%");
         })
-        ->orderBy('cities.id','desc')->select('cities.*','countries.country_name as country_name','states.state_name as state_name')->get();
+        ->orderBy('countries.country_name','ASC')->select('cities.*','countries.country_name as country_name','states.state_name as state_name')->get();
 
          return DataTables::of($datas)
                 ->addIndexColumn()
@@ -63,8 +69,8 @@ class CityController extends Controller
 	}
 
 	public function create(){
-		$countrys=Country::where('status','1')->get();
-		$data=State::where('status','1')->get();
+		$countrys=Country::where('status','1')->orderBy('country_name','asc')->get();
+		$data=State::where('status','1')->orderBy('state_name','asc')->get();
 		return view('city.create',compact('data','countrys'));
 	}
 
@@ -143,6 +149,27 @@ if($request->stateName){
 
     public function destroy(City $city)
     {
+        $User = User::where('city_id',$city->id)->exists();
+        $Firm = Firm::where('city_id',$city->id)->exists();
+        $Customer = Customer::where('city_id',$city->id)->exists();
+        $Companysetting = Companysetting::where('city_id',$city->id)->exists();
+        $Insurance = Insurance::where('city_id',$city->id)->exists();
+        $Consultant = Consultant::where('city_id',$city->id)->exists();
+      
+        if( $User || $Firm || $Customer || $Companysetting || $Insurance || $Consultant ){
+          
+            $temp = ($User)?' User, ':'';
+            $temp .= ($Firm)?' Firm,':'';
+            $temp .= ($Customer)?' Customer, ':'';
+            $temp .= ($Companysetting)?' Company Setting, ':'';
+            $temp .= ($Insurance)?' Insurance,':'';
+            $temp .= ($Consultant)?' Consultant, ':'';
+            $data1['error'] = 'City is Mapped with ' .$temp. 'so cannot delete';
+           
+            $data1['status'] = false;
+            return response()->json($data1);
+        }
+        
         $city->delete();
         $data1['msg'] = 'Data Deleted Successfully.';
         $data1['status'] = true;

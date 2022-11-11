@@ -29,7 +29,7 @@
                         <select class="form-select form-select-solid" data-control="select2" data-placeholder="Search option" data-allow-clear="true" id="filter" multiple="multiple">
                             <option value="phone_no">Phone No</option>
                             <option value="dob">DOB</option>
-                            <option value="gender">Gnder</option>
+                            <option value="gender">Gender</option>
                             <option value="email">Email</option>
                             <option value="register_address">Register Address</option>
                             <option value="country_id">Country</option>
@@ -48,7 +48,7 @@
                             <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='3' />
                         </div>
                         <div class="col-xxl-4" data-id-filter="gender" hidden>
-                            <label class="fs-6 form-label fw-bolder text-dark">Gnder</label>
+                            <label class="fs-6 form-label fw-bolder text-dark">Gender</label>
                             <select class="form-control form-control form-control-solid datatable-input" data-col-index='4'>
                                 <option value="">Select Gender</option>
                                 <option value="male">Male</option>
@@ -135,7 +135,7 @@
                             <option selected value="1">Phone No</option>
                             <option selected value="2">Name</option>
                             <option selected value="3">DOB</option>
-                            <option selected value="4">Gnder</option>
+                            <option selected value="4">Gender</option>
                             <option selected value="5">Email</option>
                             <option selected value="6">Register Address</option>
                             <option selected value="7">Country</option>
@@ -279,7 +279,7 @@
                                             <th>Phone No</th>
                                             <th>Name</th>
                                             <th>DOB</th>
-                                            <th>Gnder</th>
+                                            <th>Gender</th>
                                             <th>Email</th>
                                             <th>Register Address</th>
                                             <th>Country</th>

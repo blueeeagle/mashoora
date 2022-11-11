@@ -46,7 +46,7 @@ class UsersController extends Controller
             $search[] = $colum['search']['value'];
         }
 
-        $datas = User::orderBy('id','desc')
+        $datas = User::orderBy('first_name','ASC')
         ->when($search[1],function($query,$search){
             return $query->where('first_name','LIKE',"%{$search}%")->orwhere('last_name','LIKE',"%{$search}%");
         })

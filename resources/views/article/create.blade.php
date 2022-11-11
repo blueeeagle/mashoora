@@ -90,7 +90,7 @@
                                     <div class="fv-row mb-10 col-md-6" id="selecterdiv1">
                                         <label class="required form-label fs-6 mb-2" >Firm</label>
                                         <select class="form-select" id="firm_id" name="firm_id" data-placeholder="Search by Firm Name / Email / Mobile No / Consultant ID /  Admin Name">
-                                            
+                                            <option></option>
                                             @foreach ($firm as $data)
                                                 <option value="{{$data->id}}" data-image="{{asset("storage/$data->logo")}}">{{ $data->comapany_name}} - {{ $data->email}}</option>
                                             @endforeach
@@ -99,7 +99,7 @@
                                     <div class="fv-row mb-10 col-md-6" id="selecterdiv2" hidden>
                                         <label class="required form-label fs-6 mb-2" >Consultant</label>
                                         <select class="form-select" id="consultant_id" name="consultant_id" data-placeholder="Search by Consultant Name / Email / Mobile No / Consultant ID /  Admin Name">
-
+                                            
                                         </select>
                                     </div>
                                     <div class="fv-row mb-10 col-md-6" id="selecterdiv3" hidden>
@@ -195,34 +195,34 @@
             }
         }
 
-        // $('#firm_id').select2({
-        //     ajax: {
-        //         url: '{{ route('other.articel.search') }}',
-        //         type: 'POST',
-        //         data: function (params) {
-        //         var query = {
-        //             search: params.term,
-        //             "_token": "{{ csrf_token() }}",
-        //             }
-        //             return query;
-        //         },
-        //         processResults: function (data) {
-        //             return {
-        //             results:  $.map(data, function (item) {
-        //                     return {
-        //                         text: item.title,
-        //                         children: $.map(item.children, function (data) { return { id:`${data.id}`,text : data.text } })
-        //                     }
-        //                 })
-        //             };
-        //         },
-        //         cache: true
-        //     },
+        $('#firm_id').select2({
+            ajax: {
+                url: '{{ route('other.article.search') }}',
+                type: 'POST',
+                data: function (params) {
+                var query = {
+                    search: params.term,
+                    "_token": "{{ csrf_token() }}",
+                    }
+                    return query;
+                },
+                processResults: function (data) {
+                    return {
+                    results:  $.map(data, function (item) {
+                            return {
+                                text: item.title,
+                                children: $.map(item.children, function (data) { return { id:`${data.id}`,text : data.text } })
+                            }
+                        })
+                    };
+                },
+                cache: true
+            },
 
-        // })
+        })
         $('#consultant_id').select2({
             ajax: {
-                url: '{{ route('other.articel.consultantSearch') }}',
+                url: '{{ route('other.article.consultantSearch') }}',
                 type: 'POST',
                 data: function (params) {
                 var query = {
@@ -247,7 +247,7 @@
         })
         $('#admin_id').select2({
             ajax: {
-                url: '{{ route('other.articel.userSearch') }}',
+                url: '{{ route('other.article.userSearch') }}',
                 type: 'POST',
                 data: function (params) {
                 var query = {

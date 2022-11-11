@@ -52,6 +52,7 @@ Route::prefix('helper')->name('helper.')->group(function () {
 });
 Route::get('/auth', function(){ return response()->json('Unauthorized',401); })->name('auth');
 
+Route::get('/guest', [CustomerController::class, 'gust']);
 Route::prefix('index')->group(function () {
     Route::get('/', [IndexController::class, 'index']);
     Route::get('/viewallcategory/{id?}', [IndexController::class, 'viewallcategoty']);
@@ -63,6 +64,24 @@ Route::prefix('index')->group(function () {
 Route::get('checkCustomer', [CustomerController::class, 'checkCustomer']);
 Route::post('/customer/login', [CustomerController::class, 'login']);
 Route::post('/customer/verifyotp', [CustomerController::class, 'VerifyOtp']);
+
+//Geust
+Route::prefix('customer')->group(function () { 
+    //consultant
+    Route::prefix('consultant')->group(function () {
+        Route::get('/', [CustomerController::class, 'consultant']);
+        Route::get('/consultantcatsub/{id}/{sub?}', [CustomerController::class, 'consultantcatsub']);
+        Route::get('/consultantdetails/{consultant}', [CustomerController::class, 'consultantdetails']);
+    });
+    
+        //Firm
+    Route::prefix('firm')->group(function () {
+        Route::get('/getfirm', [CustomerController::class, 'getfirm']);
+        Route::get('/consultantfirm/{firm}', [CustomerController::class, 'consultantfirm']);
+    });
+});
+
+
 Route::prefix('customer')->middleware('Apiauth:customer')->group(function () {
     Route::post('/logout', [CustomerController::class, 'logout']);
     Route::post('/updateprofile', [CustomerController::class, 'updateprofile']);
@@ -71,9 +90,7 @@ Route::prefix('customer')->middleware('Apiauth:customer')->group(function () {
         
     //consultant
     Route::prefix('consultant')->group(function () {
-        Route::get('/', [CustomerController::class, 'consultant']);
-        Route::get('/consultantcatsub/{id}/{sub?}', [CustomerController::class, 'consultantcatsub']);
-        Route::get('/consultantdetails/{consultant}', [CustomerController::class, 'consultantdetails']);
+        
         Route::get('/schedule/{type}', [CustomerController::class, 'schedule']);
 
         Route::get('/insurance', [CustomerController::class, 'consultantinsurance']);
@@ -82,8 +99,8 @@ Route::prefix('customer')->middleware('Apiauth:customer')->group(function () {
         Route::get('/applyoffer/{offer}', [CustomerController::class, 'Applyoffer']);
         Route::get('/get/promo', [CustomerController::class, 'Discount']);
         Route::get('/verifi/promo', [CustomerController::class, 'ApplyDiscount']);
-
         Route::post('/appointment/schedule', [CustomerController::class, 'appointment']);
+        Route::post('/appointment/reschedule/{Appointment}', [CustomerController::class, 'AppointmentReschedule']);
     });
     
     //Wallet
@@ -96,11 +113,7 @@ Route::prefix('customer')->middleware('Apiauth:customer')->group(function () {
         Route::post('/delete/{card}', [CustomerController::class, 'deletecard']);
     });
 
-    //Firm
-    Route::prefix('firm')->group(function () {
-        Route::get('/getfirm', [CustomerController::class, 'getfirm']);
-        Route::get('/consultantfirm/{firm}', [CustomerController::class, 'consultantfirm']);
-    });
+
     
     //Booking
     Route::prefix('booking')->group(function () {
@@ -139,12 +152,13 @@ Route::post('/consultant/login', [ConsultantController::class, 'login']);
 Route::post('/consultant/verifyotp', [ConsultantController::class, 'VerifyOtp']);
 Route::prefix('consultant')->middleware('Apiauth:consultant')->group(function () {
     Route::get('/logout', [ConsultantController::class, 'logout']);
-
+    Route::get('/get/consultant', [ConsultantController::class, 'getconsultant']);
     //profile update
     Route::prefix('profile')->group(function () {
         Route::post('/storeProfile', [ConsultantController::class, 'storeProfile']);
         Route::get('/documents', [ConsultantController::class, 'getdocuments']);
         Route::get('/speclizatioi', [ConsultantController::class, 'getspeclization']);
+        Route::get('/insurance', [ConsultantController::class, 'getinsurance']);
     });
 
     //Bokking
@@ -156,7 +170,14 @@ Route::prefix('consultant')->middleware('Apiauth:consultant')->group(function ()
         Route::get('/bookingcancel/{Appointment}', [ConsultantController::class, 'bookingcancel']);
         Route::get('/bookingcompleted/{Appointment}', [ConsultantController::class, 'bookingcompleted']);
     });
-
+    //schedule
+    Route::prefix('schedule')->group(function () {
+        Route::get('/indexschedule', [ConsultantController::class, 'indexschedule']);
+        Route::get('/getfromdate', [ConsultantController::class, 'getfromdate']);
+        Route::post('/saveschedule', [ConsultantController::class, 'saveschedule']);
+        Route::post('/saveschedulecopy/{schedule}', [ConsultantController::class, 'saveschedulecopy']);
+        Route::delete('/deleteschedule/{schedule}', [ConsultantController::class, 'deleteschedule']);
+    });
     //wallet
     Route::prefix('wallet')->group(function () {
         Route::get('/wallet', [ConsultantController::class, 'wallet']);

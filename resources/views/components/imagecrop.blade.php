@@ -1,12 +1,13 @@
-<!-- image modal-->
+<!-- image modal -->
 
-<label class="img-icons" for="{{ $name }}">
-    <i class="bi bi-file-image"></i>
-    <img class="file-preview" @if(isset($imgsrc)) src="{{ asset("storage/$imgsrc") }}" @endif style="width:40px; #222;height: 40px">
+<label for="{{ $name }}">
+    <img class="file-preview" @if(isset($imgsrc)) src="{{ asset("storage/$imgsrc") }}" @else src="{{ asset("storage//uploadFiles/default_image.jpg") }}" @endif style="width:100px; #222;height: 100px">
     <input type="hidden" id="imageValue" name="{{ $name }}" value="">
 </label>
-<input type="file" id="{{ $name }}" class="{{ $name }}" style="width:70px;padding:20px; #222; display:none" accept="image/*">
-<a href="javascript:;" hidden id="removeImage">X</a>
+<input type="file" id="{{ $name }}" class="{{ $name }}" accept="image/png, image/jpeg" style="width:70px;padding:20px; #222; display:none">
+
+
+  <button type="button"  {{ isset($imgsrc) ? '':'hidden'}} id="removeImage">X</button>
 
 {{-- model --}}
 <div id="uploadimageModal_{{ $name }}" class="modal" role="dialog" style="z-index: 10000;top: 55px;">
@@ -37,13 +38,18 @@
 
 @section('scripts')
 @parent
+@if(!isset($qqqq))
+
+@endif
 <script>
+    const defaultImage = "{{ asset('storage//uploadFiles/default_image.jpg') }}"
+    console.log(defaultImage);
     $(document).ready(function(){
         $image_crop_{{ $name }} = $('#image_demo_{{$name}}').croppie({
         enableExif: true,
         viewport: {
-          width:{{ isset($width)?$width:700 }},
-          height:{{ isset($height)?$height:700 }},
+          width:{{ isset($width)?$width:500 }},
+          height:{{ isset($height)?$height:500 }},
           type:'square' //circle
         },
         boundary:{
@@ -98,7 +104,7 @@
                     objectB.children[0].children[0].src = response;
                     $('#uploadimageModal_{{ $name }}').modal('hide');
                     objectB.children[0].children[1].value = data['Name'];
-                },error:function(data){
+                },error:function(data){ 
                     objectB.children[0].children[0].src = response;
                     $('#uploadimageModal_{{ $name }}').modal('hide');
                     objectB.children[0].children[1].value = data['Name'];
@@ -111,11 +117,14 @@
     
     $('#removeImage').click(function(event){
     
-      this.parentElement.querySelector('.file-preview').src='';
+      this.parentElement.querySelector('.file-preview').src= defaultImage;
       this.parentElement.querySelector('#imageValue').value='';
       this.parentElement.querySelector('#removeImage').setAttribute('hidden',true)
       
     })
 
 </script>
+@php 
+  $qqqqq = 'hhh';
+@endphp
 @endsection

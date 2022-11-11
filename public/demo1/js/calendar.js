@@ -38,7 +38,7 @@ var KTAppCalendar = function () {
     var submitButton;
     var cancelButton;
     var closeButton;
-
+    var Lastscheduledate;
     // View event variables
     var viewEventName;
     var viewAllDay;
@@ -54,6 +54,25 @@ var KTAppCalendar = function () {
     var from_date;
     var to_date;
     var EditUrl;
+
+    var From_Date;
+    var To_Date;
+    var From_DateFlatpickr;
+    var To_DateFlatpickr;
+    var table
+
+    //Mdel
+    var pop_copy_model;
+    var pop_modal;
+    var pop_form;
+    var pop_submitButton;
+    var pop_cancelButton;
+    var pop_close;
+
+    var pop_from;
+    var pop_to;
+    var pop_fromFlatpickr;
+    var pop_toFlatpickr;
 
     // Private functions
     var initCalendarApp = function () {
@@ -81,7 +100,7 @@ var KTAppCalendar = function () {
             select: function (arg) {
                 hidePopovers();
                 formatArgs(arg);
-                handleNewEvent();
+                // handleNewEvent();
             },
 
             // Click event --- more info: https://fullcalendar.io/docs/eventClick
@@ -214,6 +233,31 @@ var KTAppCalendar = function () {
             noCalendar: true,
             dateFormat: "H:i",
         });
+
+        To_DateFlatpickr = flatpickr(To_Date, {
+            enableTime: false,
+            dateFormat: "Y-m-d",
+        });
+
+        From_DateFlatpickr = flatpickr(From_Date, {
+            enableTime: false,
+            dateFormat: "Y-m-d",
+            onChange : function(selectedDates, dateStr, instance){
+                To_DateFlatpickr.set({minDate:selectedDates[0]})
+            }
+        });
+
+        pop_toFlatpickr = flatpickr(pop_to, {
+            enableTime: false,
+            dateFormat: "Y-m-d",
+        });
+        pop_fromFlatpickr = flatpickr(pop_from, {
+            enableTime: false,
+            dateFormat: "Y-m-d",
+            onChange : function(selectedDates, dateStr, instance){
+                pop_toFlatpickr.set({minDate:selectedDates[0]})
+            }
+        });
     }
 
     // Handle add button
@@ -258,15 +302,22 @@ var KTAppCalendar = function () {
                 });
             }
         });
-
         populateForm(data);
     }
+
+
+
 const refeshcalender = function(){
     axios.post(refresh)
     .then(function (response) {
         calendar.removeAllEventSources()
         calendar.addEventSource(response.data.getslots)
         table?.ajax.reload(null, false);
+        From_DateFlatpickr.set({minDate:response.data.fromDate})
+        To_DateFlatpickr.set({minDate:response.data.fromDate})
+        pop_toFlatpickr.set({minDate:response.data.fromDate})
+        pop_fromFlatpickr.set({minDate:response.data.fromDate})
+        Lastscheduledate = response.data.fromDate
     })
 }
 const createformEvent = function (){
@@ -297,7 +348,7 @@ const createformEvent = function (){
                                 modal.hide();
                                 submitButton.disabled = false;
                                 form.reset();
-
+                                [...document.querySelectorAll('input[type=time]')].forEach(e => e.disabled = true)
                                 Swal.fire({
                                     text: "New Schedule added to calendar!",
                                     icon: "success",
@@ -323,53 +374,6 @@ const createformEvent = function (){
                         });
 
 
-                        // Swal.fire({
-                        //     text: "New event added to calendar!",
-                        //     icon: "success",
-                        //     buttonsStyling: false,
-                        //     confirmButtonText: "Ok, got it!",
-                        //     customClass: {
-                        //         confirmButton: "btn btn-primary"
-                        //     }
-                        // }).then(function (result) {
-                        //     if (result.isConfirmed) {
-                        //         modal.hide();
-                        //         submitButton.disabled = false;
-
-                        //         // Detect if is all day event
-                        //         let allDayEvent = false;
-                        //         if (allDayToggle.checked) { allDayEvent = true; }
-                        //         if (startTimeFlatpickr.selectedDates.length === 0) { allDayEvent = true; }
-
-                        //         // Merge date & time
-                        //         var startDateTime = moment(startFlatpickr.selectedDates[0]).format();
-                        //         var endDateTime = moment(endFlatpickr.selectedDates[endFlatpickr.selectedDates.length - 1]).format();
-                        //         if (!allDayEvent) {
-                        //             const startDate = moment(startFlatpickr.selectedDates[0]).format('YYYY-MM-DD');
-                        //             const endDate = startDate;
-                        //             const startTime = moment(startTimeFlatpickr.selectedDates[0]).format('HH:mm:ss');
-                        //             const endTime = moment(endTimeFlatpickr.selectedDates[0]).format('HH:mm:ss');
-
-                        //             startDateTime = startDate + 'T' + startTime;
-                        //             endDateTime = endDate + 'T' + endTime;
-                        //         }
-
-                        //         // Add new event to calendar
-                        //         calendar.addEvent({
-                        //             id: uid(),
-                        //             title: eventName.value,
-                        //             description: eventDescription.value,
-                        //             location: eventLocation.value,
-                        //             start: startDateTime,
-                        //             end: endDateTime,
-                        //             allDay: allDayEvent
-                        //         });
-                        //         calendar.render();
-
-                        //         // Reset form for demo purposes only
-                        //         form.reset();
-                        //     }
-                        // });
                 } else {
                     // Show popup warning
                     Swal.fire({
@@ -538,6 +542,7 @@ const createformEvent = function (){
                 if (result.value) {
                     form.reset(); // Reset form
                     modal.hide(); // Hide modal
+                    [...document.querySelectorAll('input[type=time]')].forEach(e => e.disabled = true)
                 } else if (result.dismiss === 'cancel') {
                     Swal.fire({
                         text: "Your form has not been cancelled!.",
@@ -594,7 +599,6 @@ const createformEvent = function (){
         const viewButton = document.querySelector('#kt_calendar_event_view_button');
         viewButton.addEventListener('click', e => {
             e.preventDefault();
-
             hidePopovers();
             handleViewEvent();
         });
@@ -661,21 +665,12 @@ const createformEvent = function (){
         form.querySelectorAll('[name=schedule_type]').forEach(e => {
             e.addEventListener('change',function(event) { toogleSchedule() } )
         })
+    }
 
-    }
-    
     const toogleSchedule = () => {
-        let schedule_type = form.querySelector('[name=schedule_type]:checked').value
-        if(schedule_type == 1){
-            RemoveRequired(form.querySelector('[data-standard]'),0)
-            RemoveRequired(form.querySelector('[data-Variant]'),1)
-        }else{
-            RemoveRequired(form.querySelector('[data-standard]'),1)
-            RemoveRequired(form.querySelector('[data-Variant]'),0)
-            if(!EditingForm)Standard()
-        }
+        Standard()
     }
-    
+
     const RemoveRequired = (Element,state) => {
         if(state){
             Element.querySelectorAll('input').forEach(e => {
@@ -689,11 +684,62 @@ const createformEvent = function (){
             Element.removeAttribute('hidden')
         }
     }
-    
+
     const createtriggerevent = function(){
         trigerClick.addEventListener("click", function(){
             refeshcalender();
         });
+    }
+    const calender_copy = ()=>{
+        event.preventDefault()
+        pop_modal.show()
+        pop_form.action = event.target.getAttribute('href')
+    }
+    const Switealert = (Msg,status)=>{
+        Swal.fire({
+            text: Msg,
+            icon: status,
+            buttonsStyling: false,
+            confirmButtonText: "Ok, got it!",
+            customClass: {
+                confirmButton: 'btn btn-primary'
+            }
+        });
+    }
+    const delete_record = ()=>{
+        event.preventDefault()
+        let text = event.srcElement.hasAttribute('text')? event.srcElement.getAttribute('text'): 'Are you sure you want to delete ?'
+        let route = event.srcElement.getAttribute('href')
+        Swal.fire({
+            text: text,
+            icon: "warning",
+            showCancelButton: !0,
+            buttonsStyling: !1,
+            confirmButtonText: "Yes, delete!",
+            cancelButtonText: "No, cancel",
+            customClass: {
+                confirmButton: "btn fw-bold btn-danger",
+                cancelButton: "btn fw-bold btn-active-light-primary"
+            }
+        }).then((function (t) {
+            if(t.value){
+                let data = { _token: _token }
+                fetch(route,{
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json', },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    table.ajax.reload(null, false);
+                    Switealert((data.status)?data.msg:data.msg,(data.status)?'success':'error')
+                    refeshcalender();
+                });
+            }
+        }))
+    }
+    const checkempty = () => {
+        return pop_from.value != '' && pop_to.value != ''
     }
     return {
         // Public Functions
@@ -719,7 +765,8 @@ const createformEvent = function (){
             closeButton = element.querySelector('#kt_modal_add_event_close');
             modalTitle = form.querySelector('[data-kt-calendar="title"]');
             modal = new bootstrap.Modal(element);
-
+            From_Date = document.getElementById('from_date_dumy')
+            To_Date = document.getElementById('to_date_dumy')
             // View event modal
             const viewElement = document.getElementById('kt_modal_view_event');
             viewModal = new bootstrap.Modal(viewElement);
@@ -731,6 +778,167 @@ const createformEvent = function (){
             viewEndDate = viewElement.querySelector('[data-kt-calendar="event_end_date"]');
             viewEditButton = viewElement.querySelector('#kt_modal_view_event_edit');
             viewDeleteButton = viewElement.querySelector('#kt_modal_view_event_delete');
+            //popmodel
+            pop_copy_model = document.getElementById('copy_model');
+            pop_modal = new bootstrap.Modal(pop_copy_model);
+            pop_form = document.getElementById('copy_form');
+            pop_submitButton = pop_copy_model.querySelector('.kt_modal_new_target_submit');
+            pop_cancelButton = pop_copy_model.querySelector('.kt_modal_new_target_cancel');
+            pop_close = pop_copy_model.querySelector('div[data-bs-dismiss]');
+            pop_from = document.getElementById('pop_from');
+            pop_to = document.getElementById('pop_to');
+            document.getElementById('rerendercalender').addEventListener('click',function(){ refeshcalender() });
+
+            pop_form.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                        if (checkempty()) {
+                            pop_submitButton.setAttribute('data-kt-indicator', 'on');
+
+                            pop_submitButton.disabled = true;
+                            const formData = new FormData(e.target);
+                            let URL = e.target.action
+                            fetch(URL,{
+                                method: 'POST', // or 'PUT'
+                                body: formData
+                            })
+                            .then(response => response.json())
+                            .then((response) => {
+                                if (response.status) {
+                                    pop_submitButton.removeAttribute('data-kt-indicator');
+                                    pop_submitButton.disabled = false;
+                                    refeshcalender()
+                                    Swal.fire({
+                                        text: "Form has been successfully submitted!",
+                                        icon: "success",
+                                        buttonsStyling: false,
+                                        confirmButtonText: "Ok, got it!",
+                                        customClass: {
+                                            confirmButton: "btn btn-primary"
+                                        }
+                                    }).then(function (result) {
+                                        if (result.isConfirmed) {
+                                            pop_close.click();
+                                        }
+                                    });
+                                }
+                            })
+                            .catch(error => { });
+                        } else {
+                            // Show error message.
+                            Swal.fire({
+                                text: "Sorry, Choose From and To date.",
+                                icon: "error",
+                                buttonsStyling: false,
+                                confirmButtonText: "Ok, got it!",
+                                customClass: {
+                                    confirmButton: "btn btn-primary"
+                                }
+                            });
+                        }
+            });
+
+            pop_cancelButton.addEventListener('click', function (e) {
+                e.preventDefault();
+                Swal.fire({
+                    text: "Are you sure you would like to cancel?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    buttonsStyling: false,
+                    confirmButtonText: "Yes, cancel it!",
+                    cancelButtonText: "No, return",
+                    customClass: {
+                        confirmButton: "btn btn-primary",
+                        cancelButton: "btn btn-active-light"
+                    }
+                }).then(function (result) {
+                    if (result.value) {
+                        pop_close.click();
+                        pop_submitButton.removeAttribute('data-kt-indicator');
+                        pop_submitButton.disabled = false;
+                    } else if (result.dismiss === 'cancel') {
+                        Swal.fire({
+                            text: "Your form has not been cancelled!.",
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "Ok, got it!",
+                            customClass: {
+                                confirmButton: "btn btn-primary",
+                            }
+                        });
+                    }
+                });
+            });
+
+            table = $("#kt_datatable").DataTable({
+                responsive: true,
+                buttons: [
+                        'print',
+                        'copyHtml5',
+                        'excelHtml5',
+                        'csvHtml5',
+                        'pdfHtml5',
+                    ],
+                // Pagination settings
+                // dom: `<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>`,
+                // read more: https://datatables.net/examples/basic_init/dom.html
+
+                lengthMenu: [5, 10, 25, 100],
+
+                pageLength: 10,
+                searchDelay: 500,
+                processing: true,
+                serverSide: true,
+                bInfo : false,
+                ajax: {
+                    url : getscheduleDatatable,
+                    type: 'POST',
+                    data: {
+                        "_token": _token,
+                        'id' : Consultamt_id,
+                        columnsDef : ['id','created_at','fromto','copy']
+                    }
+
+                },
+                columns: [
+                    { data: 'DT_RowIndex'},
+                    { data: 'created_at' },
+                    { data: 'fromto' },
+                    { data: 'copy' },
+                    { data: 'action'}
+                ],
+                columnDefs : [
+                    {
+                        targets: 3,
+                        data: null,
+                        orderable: false,
+                        className: 'text-end',
+                        render: function (data, type, row) {
+                            return `
+                                <a href="${data.copy}" calender_copy class="btn btn-icon btn-success"><i href="${data.copy}" class="las la-copy fs-2 me-2"></i></a>
+                            `;
+                        },
+                    },
+                    {
+                        targets: -1,
+                        data: null,
+                        orderable: false,
+                        className: 'text-end',
+                        render: function (data, type, row) {
+                            return `
+                                <a href="${data.Delete}" delete_calender_seperate class="btn btn-icon btn-danger"><i href="${data.Delete}" class="las la-trash fs-2 me-2"></i></a>
+                            `;
+                        },
+                    },
+                ],
+                drawCallback : function( settings ) {
+                    const deletebutton = document.querySelectorAll('[delete_calender_seperate]');
+                    [...deletebutton].forEach(e => e.addEventListener('click', function() { delete_record() }))
+
+                    const calendercopy = document.querySelectorAll('[calender_copy]');
+                    [...calendercopy].forEach(e => e.addEventListener('click', function() { calender_copy() }))
+                }
+            });
 
             initCalendarApp();
             initValidator();

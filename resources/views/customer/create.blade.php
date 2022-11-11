@@ -58,48 +58,44 @@
                 <!--begin::Products-->
                 <div class="card card-flush">
                     <!--begin::Card body-->
-                    <div class="card-body rounded border pt-0">
+                    <div class="card-body pt-0">
                         <form action="{{ route('user.customer.store') }}" method="post" id="formCreate">
                             @csrf
                             <div class="py-5">
-                                <hr>
-                                <h4 class="com-head">Mobile</h4>
-                                <hr>
-                                <div class="p-10">
-                                    <div class="form-group row">
-                                    <div class="fv-row mb-10 col-md-6">
+                                <h4>Mobile</h4>
+                                
+                                <div class="rounded border p-10">
+                                    <div class="fv-row mb-10">
                                         <div class="col-10">
                                             <div class="input-group">
                                                 {{-- <label class="input-group-text">Country Code</label> --}}
-                                                <select class="form-select w-0" name="country_code" id="country_code" style="max-width:10%;">
+                                                <select class="form-select w-5" name="country_code" id="country_code"  style="max-width:10%;">
                                                     <option>--</option>
                                                     @foreach($countrys as $data)
                                                         <option value="{{$data->id}}" data-has_state='{{ $data->has_state }}'>{{$data->country_code}}</option>
                                                     @endforeach
                                                 </select>
+                                                <input class="input-group-text" name="dialing" id="dialing" readonly style="width: 100px">
                                                 <input type="text" name="phone_no" id="phone_no" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Mobile No" required />
                                             </div>
 
                                         </div>
                                     </div>
-                                    </div>
                                 </div>
-                                <hr>
-                                <h4 class="com-head">Personal</h4>
-                                <hr>
-                                <div class="p-10">
-                                    <div class="form-group row">
-                                
-                                    <div class="fv-row mb-10 col-md-6">
+                             
+                                  
+                                <h4>Personal</h4>
+                                <div class="rounded border p-10">
+                                    <div class="fv-row mb-10">
                                         <label class="required form-label fs-6 mb-2" >Name</label>
                                         <input type="text" name="name" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Name" required />
                                     </div>
-                                    <div class="mb-10 fv-row col-md-6">
+                                    <div class="mb-10 fv-row">
                                         <label class="required form-label fs-6 mb-2" >Date of Birth</label>
                                         <input class="form-control form-control-solid" name="dob" id="dob"  placeholder="Date of Birth"  required/>
                                     </div>
-                                    <div class="fv-row mb-10 col-md-6" style="display:flex;align-items:center;">
-                                        <label class="required form-label fs-6 mb-2" style="margin-top: -8px;margin-right: 6px;">Gender </label>
+                                    <div class="fv-row mb-10">
+                                        <label class="required form-label fs-6 mb-2" >Gender </label>
                                         <div class="form-check form-check-custom form-check-solid mb-5">
                                             <input class="form-check-input me-3" name="gender" type="radio" value="male" checked id="male" />
                                             <label class="form-check-label" for="male">
@@ -113,17 +109,13 @@
                                             </label>
                                         </div>
                                     </div>
-                                   
-                                    <div class="mb-10 fv-row col-md-6">
+                                    <div class="mb-10 fv-row">
                                         <label class="required form-label fs-6 mb-2" >Email</label>
                                         <input class="form-control form-control-solid" name="email" id="Email"  placeholder="Email" type="email" required/>
                                     </div>
-                                     </div>
                                 </div>
-                                <hr>
-                                <h4 class="com-head">Address</h4>
-                                <hr>
-                                <div class="p-10">
+                                <h4>Address</h4>
+                                <div class="rounded border p-10">
                                     @include('components.addressComponent',['register_address'=>'','page'=>'create','countrys'=>$countrys])
 
                                     <div class="fv-row mb-10">
@@ -140,10 +132,8 @@
                                             <!--end::Label-->
                                         </div>
                                     </div>
-                                    <div class="form-group row" style="float:right;">
                                     <div class="mb-10">
                                         <button type="submit" class="btn btn-primary btn-hover-rise me-5">Submit</button>
-                                    </div>
                                     </div>
                                 </div>
                             </div>
@@ -158,14 +148,13 @@
         <!--end::Post-->
     </div>
     @section('scripts')
-     <script src='{{ URL::asset(theme()->getDemo().'/plugins/custom/cropper/cropper.bundle.js')}}'></script>
-    <script src='{{ URL::asset(theme()->getDemo().'/plugins/custom/formrepeater/formrepeater.bundle.js')}}'></script>
-    <script src='{{ URL::asset(theme()->getDemo().'/plugins/custom/tinymce/tinymce.bundle.js')}}'></script>
+     <script src='{{ URL::asset(theme()->getDemo().'/plugins/custom/tinymce/tinymce.bundle.js')}}'></script>
     <script>
          back = "{{ route('user.customer.index') }}"
         const yesterday = new Date();
         var BasicDetails = null
         yesterday.setDate(yesterday.getDate() - 1);
+        var country_id = $("#country_id");
 
         $("#dob").val(formatDate(yesterday))
         $("#dob").daterangepicker({
@@ -174,9 +163,7 @@
                 minYear: 1901,
                 maxYear: parseInt(moment().format("YYYY"),10),
                 maxDate : formatDate(yesterday),
-                locale: {
-                        format: '{{ strtoupper($companeySetting->date_format) }}'
-                    }
+                
             }, function(start, end, label) {}
         )
 
@@ -190,12 +177,12 @@
         function padTo2Digits(num) {
             return num.toString().padStart(2, '0');
         }
-        
+
         var state = $("#state_id")
         var city = $("#city_id")
         var country_id = $("#country_id")
         var stateDiv = $('#stateDiv')
-        var phone_no = $('#phone_no')
+        var dialing = $('#dialing')
         $("#country_code").change(function (e) {
            
             var id = e.currentTarget.options[e.currentTarget.options.selectedIndex].value;
@@ -228,12 +215,12 @@
                     country_id.val(id).trigger("change");
                     state.html(option).val('').trigger("change");
                     city.html(option1).val('').trigger("change");
-                    phone_no.val(data.Country.dialing)
+                    dialing.val(data.Country.dialing)
                 }
             })
             
         });
-
+       
     </script>
     @endsection
 </x-base-layout>

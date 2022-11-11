@@ -27,15 +27,18 @@ class DiscountController extends Controller
     }
 
     public function create(){
-        $Consultantcategory = Consultantcategory::where('status',1)->get();
-        $Category = Category::where('status',1)->get();
-        return response()->json(['specialization'=>$Consultantcategory,'category'=>$Category]);
+        $category = Category::where('type',0)->where('status',1)->whereIn('id',explode(",",Auth::guard('consultant')->user()->categorie_id))->first();
+        $subctegory = Category::where('type',1)->where('status',1)->whereIn('id',explode(",",Auth::guard('consultant')->user()->categorie_id))->get();
+        return response()->json(['category'=>$category,'subctegory'=>$subctegory]);
     }
 
     public function edit(Request $request,Discount $discount){
-        $Consultantcategory = Consultantcategory::where('status',1)->get();
-        $Category = Category::where('status',1)->get();
-        return response()->json(['edit_discount'=>$discount,'specialization'=>$Consultantcategory,'category'=>$Category], 200);
+        $discount->{'parent_Cat'} = $discount->parentcat();
+        $discount->{'sub_Cat'} = $discount->subcat();
+        
+        $category = Category::where('type',0)->where('status',1)->whereIn('id',explode(",",Auth::guard('consultant')->user()->categorie_id))->first();
+        $subctegory = Category::where('type',1)->where('status',1)->whereIn('id',explode(",",Auth::guard('consultant')->user()->categorie_id))->get();
+        return response()->json(['category'=>$category,'subctegory'=>$subctegory]);
     }
 
     public function store(Request $Request)
@@ -50,8 +53,7 @@ class DiscountController extends Controller
 			'from_date' => 'required',
 			'to_date' => 'required',
 			'image' => 'required',
-			'category_id' => 'required',
-			'specialization_id' => 'required',
+			'category_id' => 'required'
 		];
 
 		$customs=[
@@ -67,7 +69,6 @@ class DiscountController extends Controller
 			'to_date.required'  => 'To Date Name should be filled',
 			'image.required'  => 'Image Name should be filled',
 			'category_id.required'  => 'Category Name should be filled',
-			'specialization_id.required'  => 'specialization Name should be filled',
 		];
 
         $validator = Validator::make($Request->all(), $rules,$customs);
@@ -79,10 +80,11 @@ class DiscountController extends Controller
         $Discount = new Discount;
         $Discount->fill($Request->all());
         if($Request->has('image')){
-            $Discount->image = $Request->file('image')->store("uploadFiles/Discount/",'public_custom');
+            $Discount->image = $Request->file('image')->store("/uploadFiles/Discount/",'public_custom');
         }
 
         $Discount->consultant_id = Auth::guard('consultant')->user()->id;
+        $Discount->category_id = \implode(',',$Request->category_id);
         $Discount->status = (isset($Request->status)?1:0);
         $Discount->save();
 
@@ -101,7 +103,6 @@ class DiscountController extends Controller
 			'from_date' => 'required',
 			'to_date' => 'required',
 			'category_id' => 'required',
-			'specialization_id' => 'required',
 		];
 
 		$customs=[
@@ -116,20 +117,21 @@ class DiscountController extends Controller
 			'from_date.required'  => 'From Date Name should be filled',
 			'to_date.required'  => 'To Date Name should be filled',
 			'category_id.required'  => 'Category Name should be filled',
-			'specialization_id.required'  => 'specialization Name should be filled',
 		];
 
         $validator = Validator::make($Request->all(), $rules,$customs);
         if ($validator->fails()) {
           return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
-
-        if($Request->has('image')){
-           $pauth = $Request->file('image')->store("uploadFiles/Discount/",'public_custom');
-        }
-        $Request->image = $pauth;
+        
         $Request->status = (isset($Request->status)?1:0);
+        $Request['category_id'] = \implode(',',$Request->category_id);
         $discount->update($Request->all());
+        if($Request->has('image')){
+           $pauth = $Request->file('image')->store("/uploadFiles/Discount/",'public_custom');
+           $discount->image = $pauth;
+           $discount->update();
+        }
         return response()->json(['msg'=>'Update Successfully']);
     }
 

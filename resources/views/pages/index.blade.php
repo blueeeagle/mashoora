@@ -1,5 +1,10 @@
 <x-base-layout>
-
+    @if (\Session::has('errors'))
+        <div class="alert alert-danger alert-dismissible fade show">
+            <strong>{!! \Session::get('errors') !!}</strong> 
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
     <!--begin::Row-->
     <div class="row gy-5 g-xl-8">
         <!--begin::Col-->

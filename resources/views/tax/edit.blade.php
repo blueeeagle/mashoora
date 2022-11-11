@@ -78,6 +78,7 @@
                                     </div>
                                      <div class="form-group row" style="float:right;">
                                     <div class="mb-10">
+                                        <button type="button" id="formEditReset" class="btn btn-secondary btn-hover-rise me-5 ">Reset</button>
                                         <button type="submit" class="btn btn-primary btn-hover-rise me-5">Update</button>
                                     </div>
                                     </div>

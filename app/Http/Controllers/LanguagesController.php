@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Language;
+use App\Models\Consultant;
 use Illuminate\Support\Facades\Input;
 use DataTables;
 use Illuminate\Support\Collection;
@@ -33,7 +34,7 @@ class LanguagesController extends Controller
 
         $datas = Language::when($search[1],function($query,$search){
             return $query->where('title','LIKE',"%{$search}%");
-        })->orderBy('id','desc')->get();
+        })->orderBy('title','ASC')->get();
 
 
         return DataTables::of($datas)
@@ -80,6 +81,7 @@ class LanguagesController extends Controller
         }
         $language = new Language();
         $language->title = $Request->title;
+        $language->status = 1;
         $language->save();
         return response()->json(['msg'=>'Language Added']);
     }
@@ -111,6 +113,21 @@ class LanguagesController extends Controller
     }
 
     public function destroy(Language $language){
+        
+        $consultant = Consultant::all()->filter(function($value) use ($language) {
+            $temp = in_array($language->id,explode(',',$value->language));
+            return $temp;
+        })->toArray();
+
+
+        if($consultant != null ){
+            $temp = ($consultant)?'Consultant':'';
+            $data1['error'] = 'Language is Mapped with ' .$temp.'.so cannot delete';
+           
+            $data1['status'] = false;
+            return response()->json($data1);
+        }
+        
         $language->delete();
         $data1['msg'] = 'Data Deleted Successfully.';
         $data1['status'] = true;

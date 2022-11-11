@@ -53,14 +53,14 @@
                                     </div>
                                     <div class="col-md-6">
                                         <label for="" class="form-label fs-6 mb-4">Country Code<span class="text-danger">*</span></label>
-                                        <input type="text" name="countrycode" class="form-control mb-4" placeholder="Country Code" value="{{ $currency->countrycode }}" required/>
+                                        <input type="text" class="form-control mb-4" placeholder="Country Code" value="{{ $currency->countrycode }}" required readonly/>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <div class="col-md-6">
                                         <label for="" class="form-label fs-6 mb-4">Currency Code<span class="text-danger">*</span></label>
-                                        <input type="text" name="currencycode" class="form-control mb-4" placeholder="Currency Code" value="{{ $currency->currencycode }}" required/>
+                                        <input type="text" class="form-control mb-4" placeholder="Currency Code" value="{{ $currency->currencycode }}" readonly/>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="" class="form-label fs-6 mb-4">Symbol<span class="text-danger">*</span></label>
@@ -85,7 +85,8 @@
 
                                 <div class="form-group row" style="float:right" >
                                     <div class="col-md-6">
-                                        <button type="button" class="btn btn-secondary btn-hover-rise me-5 ">Reset</button>
+                                        <button type="button" id="formEditReset" class="btn btn-secondary btn-hover-rise me-5 ">Reset</button>
+
                                     </div>
                                     <div class="col-md-6">
                                         <button type="submit" class="btn btn-primary btn-hover-rise me-5">Save</button>

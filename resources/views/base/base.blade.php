@@ -105,10 +105,11 @@ License: {{ theme()->getOption('product', 'license') }}
 @endif
 <script src="{{ URL::asset(theme()->getDemo().'/js/jquery.min.js') }}"></script>
 <script src="{{ URL::asset(theme()->getDemo().'/js/myscript.js') }}"></script>
-<script src="{{ URL::asset(theme()->getDemo().'/js/datatables.bundle.js') }}"></script>
+<!--<script src="{{ URL::asset(theme()->getDemo().'/js/datatables.bundle.js') }}"></script>-->
 <script src="{{ URL::asset(theme()->getDemo().'/plugins/global/plugins.bundle.js') }}"></script>
 <script src="{{ URL::asset(theme()->getDemo().'/plugins/custom/datatables/datatables.bundle.js') }}"></script>
 <script src="{{ URL::asset(theme()->getDemo().'/js/croppie.js') }}"></script>
+<script src='{{ URL::asset(theme()->getDemo().'/plugins/custom/flatpickr/flatpickr.bundle.js')}}'></script>
 <script>
     const csrf = `{{ csrf_token() }}`
     const baseURl = `{{ url('') }}`

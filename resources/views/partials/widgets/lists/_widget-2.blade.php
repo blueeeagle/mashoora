@@ -238,9 +238,9 @@ $chartHeight = $chartHeight ?? '175px';
             columns: [
                 { data: 'DT_RowIndex' },
                 { data: 'name' },
-                { data: 'phone_no' },
-                { data: 'email' },
-                { data: 'created_at' },
+                { data: 'phone_no' ,defaultContent:'-'},
+                { data: 'email' ,defaultContent:'-'},
+                { data: 'created_at' ,defaultContent:'-'},
                 { data: 'action' }
             ],
             columnDefs : [
@@ -294,9 +294,9 @@ $chartHeight = $chartHeight ?? '175px';
             columns: [
                 { data: 'DT_RowIndex' },
                 { data: 'name' },
-                { data: 'phone_no' },
-                { data: 'email' },
-                { data: 'created_at' },
+                { data: 'phone_no' ,defaultContent:'-'},
+                { data: 'email',defaultContent:'-' },
+                { data: 'created_at',defaultContent:'-'},
                 { data: 'action' }
             ],
             columnDefs : [
@@ -358,12 +358,12 @@ $chartHeight = $chartHeight ?? '175px';
             },
             columns: [
                 { data: 'DT_RowIndex'},
-                { data: 'customer_id'},
-                { data: 'mobile'},
-                { data: 'email'},
-                { data: 'booking_id'},
-                { data: 'consultant_id'},
-                { data: 'appointment_date'},
+                { data: 'customer_id',defaultContent:'-'},
+                { data: 'mobile',defaultContent:'-'},
+                { data: 'email',defaultContent:'-'},
+                { data: 'booking_id',defaultContent:'-'},
+                { data: 'consultant_id',defaultContent:'-'},
+                { data: 'appointment_date',defaultContent:'-'},
                 { data: 'status'}
             ],
         

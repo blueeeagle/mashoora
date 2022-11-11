@@ -295,7 +295,7 @@
                                 <br>
                                 <div class="form-group row" style="float:right" >
                                     <div class="col-md-6">
-                                        <button type="button" class="btn btn-secondary btn-hover-rise me-5 ">Reset</button>
+                                        <button type="reset" id="formreset" class="btn btn-secondary btn-hover-rise me-5 ">Reset</button>
                                     </div>
                                     <div class="col-md-6">
                                         <button type="submit" class="btn btn-primary btn-hover-rise me-5">Save</button>
@@ -315,7 +315,8 @@
     @section('scripts')
     <script src='{{ URL::asset(theme()->getDemo().'/plugins/custom/tinymce/tinymce.bundle.js')}}'></script>
 
-    <script>       
+    <script>  
+        back = `{{ route('admin.user.index') }}`
         $('[data-head]').click(function() {
             if ($(this).is(':checked')) {
                 // debugger;

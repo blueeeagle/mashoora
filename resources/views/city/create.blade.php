@@ -47,7 +47,7 @@
                                 <div class="form-group row">
                                     <div class="col-md-6">
                                         <label for="" class="form-label">Country<span class="text-danger">*</span></label>
-                                        <select class="form-select mb-4" name="countryName" id="country_id" data-control="select2" data-placeholder="Select an option">
+                                        <select class="form-select mb-4" name="countryName" id="country_id" data-control="select2" required data-placeholder="Select an option">
                                             <option></option>
                                             @foreach($countrys as $country)
                                                 <option value="{{$country->id}}" data-has_state='{{ $country->has_state }}' >{{$country->country_name}}</option>
@@ -57,7 +57,7 @@
                                     <div class="col-md-6" id="stateDiv">
                             
                                         <label for="" class="form-label">State<span class="text-danger">*</span></label>
-                                        <select class="form-select mb-4 " name="stateName" id="state_id" data-control="select2" data-placeholder="Select an option">
+                                        <select class="form-select mb-4 " name="stateName" id="state_id" data-control="select2" required data-placeholder="Select an option">
                                             <option></option>
                                         </select>
                                     </div>
@@ -67,13 +67,13 @@
                                    
                                     <div class="col-md-6">
                                         <label for="" class="form-label ">City<span class="text-danger">*</span></label>
-                                        <input type="text" name="cityName" class="form-control " placeholder="City"/>
+                                        <input type="text" name="cityName" class="form-control " required placeholder="City"/>
                                     </div>
                                 </div>
 
                                 <div class="form-group row" style="float:right" >
                                     <div class="col-md-6">
-                                        <button type="button" class="btn btn-secondary btn-hover-rise ">Reset</button>
+                                        <button type="reset" id="formreset" class="btn btn-secondary btn-hover-rise me-5">Reset</button>
                                     </div>
                                     <div class="col-md-6">
                                         <button type="submit" class="btn btn-primary btn-hover-rise">Save</button>

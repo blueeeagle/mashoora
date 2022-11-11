@@ -9,6 +9,8 @@ use DataTables;
 use Illuminate\Support\Collection;
 use Validator;
 use App\Models\Category;
+use App\Models\Consultant;
+use App\Models\Discount;
 
 class ConsultantCategoryController extends Controller
 {
@@ -33,10 +35,13 @@ class ConsultantCategoryController extends Controller
             $search[] = $colum['search']['value'];
         }
 
-        $datas = Consultantcategory::with('Category')->with('SubCategory')->when($search[1],function($query,$search){  return $query->where('title','LIKE',"%{$search}%"); })
+        $datas = Consultantcategory::with(['Category' => function ($query)
+                    { $query->orderBy('name','ASC');} ])
+        ->with('SubCategory')
+        ->when($search[1],function($query,$search){  return $query->where('title','LIKE',"%{$search}%"); })
         ->when($search[2],function($query,$search){  $search = \explode(',',$search);  return $query->whereIn('categorie_id',$search); })
         ->when($search[3],function($query,$search){  $search = \explode(',',$search);  return $query->whereIn('subcategorie_id',$search);  })
-        ->orderBy('id','desc')->get();
+        ->get();
 
         return DataTables::of($datas)
         ->addIndexColumn()
@@ -63,15 +68,15 @@ class ConsultantCategoryController extends Controller
     }
 
     public function create(){
-        $Category = Category::where('type',0)->get();
-        $ChildCategory = Category::where('type',1)->get();
+        $Category = Category::where('type',0)->orderBy('name','ASC')->get();
+        $ChildCategory = Category::where('type',1)->orderBy('name','ASC')->get();
         return \view('consultantcategory.create',['Category'=>$Category,'ChildCategory'=>$ChildCategory]);
     }
 
     public function edit(Consultantcategory $specialization){
         $Category = Category::where('type',0)->get();
         $ChildCategory = Category::where('type',1)->where('id',$specialization->subcategorie_id)->get();
-        return \view('consultantcategory.edit',['Document'=>$specialization,'Category'=>$Category,'ChildCategory'=>$ChildCategory]);
+        return \view('consultantcategory.edit',['consultantcategory'=>$specialization,'Category'=>$Category,'ChildCategory'=>$ChildCategory]);
     }
     public function store(Request $Request){
 
@@ -93,7 +98,7 @@ class ConsultantCategoryController extends Controller
         $Consultantcategory->title = $Request->title;
         $Consultantcategory->categorie_id = $Request->categorie_id;
         $Consultantcategory->subcategorie_id = $Request->subcategorie_id;
-        $Consultantcategory->status =  (isset($Request->status)?1:0);
+        $Consultantcategory->status =  1;
         $Consultantcategory->save();
         return response()->json(['msg'=>'Added']);
     }
@@ -101,6 +106,7 @@ class ConsultantCategoryController extends Controller
 	public function update(Request $Request,$id){
         $rules=[
 			'title' => 'required|unique:consultantcategories,title,'.$id,
+		
 		];
 
 		$customs=[
@@ -116,7 +122,6 @@ class ConsultantCategoryController extends Controller
         $Consultantcategory->title = $Request->title;
         $Consultantcategory->categorie_id = $Request->categorie_id;
         $Consultantcategory->subcategorie_id = $Request->subcategorie_id;
-        $Consultantcategory->status =  (isset($Request->status)?1:0);
         $Consultantcategory->update();
         return response()->json(['msg'=>'Update']);
 
@@ -127,7 +132,22 @@ class ConsultantCategoryController extends Controller
         return response()->json(['status'=>true,'msg'=>'Status Updated']);
     }
     public function destroy(Consultantcategory $specialization){
-       
+        $Discount = Discount::where('specialization_id',$specialization->id)->exists();
+        $consultant = Consultant::all()->filter(function($value) use ($specialization) {
+            $temp = in_array($specialization->id,explode(',',$value->specialized));
+            return $temp;
+        })->toArray();
+
+
+        if($consultant != null ||  $Discount){
+            $temp = ($consultant)?'Consultant':'';
+            $temp .= ($Discount)?',Discount':'';
+            $data1['error'] = 'Specialization is Mapped with ' .$temp.'.so cannot delete';
+           
+            $data1['status'] = false;
+            return response()->json($data1);
+        }
+
         $specialization->delete();
         $data1['msg'] = 'Data Deleted Successfully.';
         $data1['status'] = true;

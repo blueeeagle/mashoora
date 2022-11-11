@@ -58,12 +58,25 @@
                 <!--begin::Products-->
                 <div class="card card-flush">
                     <!--begin::Card body-->
-                    <div class="card-body pt-0">
+                    <div class="card-body rounded border pt-0">
                         <form action="{{ route('user.insurance.update',$insurance->id) }}" method="post" id="formEdit">
                             @csrf
                             <div class="py-5">
-                                <h4>About</h4>
-                                <div class="rounded border p-10">
+                                   <div class="tabs effect-1">
+			<!-- tab-title -->
+			<input type="radio" id="tab-1" name="tab-effect-1" checked="checked">
+			<span>About</span>
+
+			<input type="radio" id="tab-2" name="tab-effect-1">
+			<span> Address</span>
+
+			<input type="radio" id="tab-3" name="tab-effect-1">
+			<span>Contact</span>
+
+			<!-- tab-content -->
+			<div class="tab-content">
+				<section id="tab-item-1">
+					 <div class="p-10">
                                     <div class="fv-row mb-10">
                                         <label class="required form-label fs-6 mb-2" >Company Name</label>
                                         <input type="text" value="{{ $insurance->comapany_name }}" name="comapany_name" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Company Name" required />
@@ -126,12 +139,25 @@
                                         </div>
                                     </div>
                                 </div>
-                                <h4>Address</h4>
-                                <div class="rounded border p-10">
+				</section>
+				<section id="tab-item-2">
+				  <div class="p-10">
                                     @include('components.addressComponent',['country_id'=>$insurance->country_id,'state_id'=>$insurance->state_id,
                                         'city_id'=>$insurance->city_id,'zipcode'=>$insurance->zipcode,'register_address'=>$insurance->register_address,'page'=>'Edit','countrys'=>$countrys,'state'=>$state,'city'=>$city])
                                 </div>
-                                @include('components.contact',['contact'=>$contact])
+				</section>
+				<section id="tab-item-3">
+				       <div class="p-10">
+				  @include('components.contact',['contact'=>$contact])
+				  </div>
+				</section>
+				
+			</div>
+		</div>
+                               
+                               
+                                
+                               
                                 <div class="rounded border p-10">
                                     <div class="fv-row mb-10">
                                         {{-- <label class="required fw-bold fs-6 mb-5"></label> --}}

@@ -5,58 +5,57 @@
 	<link href="{{ URL::asset(theme()->getDemo().'/plugins/custom/flatpickr/flatpickr.bundle.css')}}" rel="stylesheet" type="text/css" />
     @endsection
     <input type="hidden" name="" id="trigerClick">
-    <div id="kt_content_container" class="container-xxl">
-        <div class="row gy-10 gx-xl-10">
-            <div class="card card-docs flex-row-fluid mb-2">
-                <table id="kt_datatable" class="table table-row-bordered gy-5">
-                    <thead>
-                        <tr class="fw-bold fs-6 text-muted">
-                            <th>SNo</th>
-                            <th>Create Date</th>
-                            <th>schedule From - To</th>
-                            <th>Type</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tfoot>
-                        <tr>
-                            <th>SNo</th>
-                            <th>Create Date</th>
-                            <th>schedule From - To</th>
-                            <th>Type</th>
-                            <th>Action</th>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-        </div>
-
-        <!--begin::Card-->
-        <div class="card">
-            <!--begin::Card header-->
-            <div class="card-header">
-                <h2 class="card-title fw-bolder">Calendar</h2>
-                <div class="card-toolbar">
-                    <button class="btn btn-flex btn-primary" data-kt-calendar="add">
-                    <!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg-->
-                    <span class="svg-icon svg-icon-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <rect opacity="0.5" x="11.364" y="20.364" width="16" height="2" rx="1" transform="rotate(-90 11.364 20.364)" fill="currentColor" />
-                            <rect x="4.36396" y="11.364" width="16" height="2" rx="1" fill="currentColor" />
-                        </svg>
-                    </span>
-                    <!--end::Svg Icon-->Add Event</button>
+    <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
+            <!--begin::Container-->
+            <div id="kt_app_toolbar_container" class="app-container container-xxl d-flex flex-stack">
+                <!--begin::Page title-->
+                <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+                    <!--begin::Title-->
+                    <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">Schedule View</h1>
+                    <!--end::Title-->
+                    <!--begin::Breadcrumb-->
+                    <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
+                        <!--begin::Item-->
+                        <li class="breadcrumb-item text-muted">
+                            <a href="#" class="text-muted text-hover-primary">Home</a>
+                        </li>
+                        <!--end::Item-->
+                        <!--begin::Item-->
+                        <li class="breadcrumb-item">
+                            <span class="bullet bg-gray-400 w-5px h-2px"></span>
+                        </li>
+                        <!--end::Item-->
+                        <!--begin::Item-->
+                        <li class="breadcrumb-item text-muted">Schedule</li>
+                        <!--end::Item-->
+                    </ul>
+                    <!--end::Breadcrumb-->
                 </div>
+                <div class="d-flex align-items-center gap-2 gap-lg-3">
+                    <a href="{{ route('activities.schedules.index') }}" class="btn btn-sm btn-secondary"><i class="fas fa-arrow-left "></i></a>
+                </div>
+                <!--end::Page title-->
             </div>
-            <!--end::Card header-->
-            <!--begin::Card body-->
-            <div class="card-body">
-                <!--begin::Calendar-->
-                <div id="kt_calendar_app"></div>
-                <!--end::Calendar-->
-            </div>
-            <!--end::Card body-->
+            <!--end::Container-->
         </div>
+    <div id="kt_content_container" class="container-xxl py-3 py-lg-6">
+        <div class="card mb-5 mb-xl-10">
+            <div class="card-body pt-9 pb-0">
+                @include('schedule.basicinfo')
+                <div class="card-body pt-1 pb-0">
+                    <ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bolder">
+                        <li class="nav-item mt-2">
+                            <a class="nav-link text-active-primary ms-0 me-10 py-5 active" id="rerendercalender" data-bs-toggle="tab" href="#kt_tab_pane_1" >Calander</a>
+                        </li>
+                        <li class="nav-item mt-2">
+                            <a class="nav-link text-active-primary ms-0 me-10 py-5" data-bs-toggle="tab" href="#kt_tab_pane_2" >List</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+        @include('schedule.copy')
         <!--end::Card-->
         <!--begin::Modals-->
         <!--begin::Modal - New Product-->
@@ -77,18 +76,12 @@
                             </div>
                         </div>
                         <div class="modal-body py-10 px-lg-17">
-                            <div class="fv-row mb-5">
+                            <div class="fv-row mb-5 d-none">
                                 <label class="required form-label fs-6 mb-2" >Scheduling Type</label>
                                 <div class="form-check form-check-custom form-check-solid mb-5">
                                     <input class="form-check-input me-3" name="schedule_type" type="radio" value="0" checked id="standard" />
                                     <label class="form-check-label" for="standard">
                                         <div class="fw-bolder text-gray-800">Standard </div>
-                                    </label>
-                                </div>
-                                <div class="form-check form-check-custom form-check-solid mb-5">
-                                    <input class="form-check-input me-3" name="schedule_type" type="radio" value="1" id="Variant" />
-                                    <label class="form-check-label" for="Variant">
-                                        <div class="fw-bolder text-gray-800">Flexi or Variant</div>
                                     </label>
                                 </div>
                             </div>
@@ -110,33 +103,33 @@
                                     <span class="form-check-label fw-bold" for="kt_calendar_datepicker_allday">All Day</span>
                                 </label>
                             </div>
-                            <div class="fv-row mb-9" data-standard>
+                            <div class="fv-row mb-9" >
                                 <div class="form-group row">
                                     <div class="col-md-4">
                                         <label class="form-label">From</label>
                                         <div class="input-group mb-3">
-                                            <input name="from_date" id="from_date" class="form-control form-control-solid" placeholder="" required />
+                                            <input name="from_date" id="from_date_dumy" class="form-control form-control-solid" placeholder="From Date" required />
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label">To</label>
                                         <div class="input-group mb-3">
-                                            <input name="to_date" id="to_date" class="form-control form-control-solid" placeholder="" required />
+                                            <input name="to_date" id="to_date_dumy" class="form-control form-control-solid" placeholder="To Date" required />
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-4 d-none" hidden>
                                         <button class="btn btn-sm btn-light-primary" id="create_Slot" type="button">
                                             <i class="la la-plus"></i> Create Slot
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="fv-row mb-9" data-Variant>
+                            <div class="fv-row mb-9 " data-Variant hidden>
                                 <div class="form-group row">
                                     <div class="col-md-4">
                                         <label class="form-label">Recurring Till</label>
                                         <div class="input-group mb-3">
-                                            <input name="recurring" id="recurring" class="form-control form-control-solid" placeholder="" required />
+                                            <input name="recurring" id="recurring" class="form-control form-control-solid" placeholder="" />
                                         </div>
                                     </div>
                                 </div>
@@ -162,7 +155,7 @@
                                                                         <div class="col-md-4">
                                                                         <label class="form-label">From :</label>
                                                                         <div class="input-group mb-3">
-                                                                            <input type="time" name="from" class="form-control" placeholder="Enter contact number" required />
+                                                                            <input type="time" name="from" class="form-control fromtime" placeholder="Enter contact number" required />
                                                                         </div>
                                                                         </div>
                                                                         <div class="col-md-4">
@@ -222,7 +215,7 @@
                                                                     </div>
                                                                 </div>
                                                                 <button class="btn btn-sm btn-light-primary" data-repeater-create type="button">
-                                                                    <i class="la la-plus"></i> Add Number
+                                                                    <i class="la la-plus"></i> Add
                                                                 </button>
                                                             </div>
                                                         </div>
@@ -233,7 +226,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row row-cols-lg-2 g-10 d-none">
+                            <div class="row row-cols-lg-2 g-10 d-none" hidden>
                                 <div class="col">
                                     <div class="fv-row mb-9">
                                         <label class="fs-6 fw-bold mb-2 required">Event Start Date</label>
@@ -293,7 +286,7 @@
                     <!--begin::Modal header-->
                     <div class="modal-header border-0 justify-content-end">
                         <!--begin::Edit-->
-                        <div class="btn btn-icon btn-sm btn-color-gray-400 btn-active-icon-primary me-2" data-bs-toggle="tooltip" data-bs-dismiss="click" title="Edit Event" id="kt_modal_view_event_edit">
+                        <div hidden class="btn btn-icon btn-sm btn-color-gray-400 btn-active-icon-primary me-2" data-bs-toggle="tooltip" data-bs-dismiss="click" title="Edit Event" id="kt_modal_view_event_edit">
                             <!--begin::Svg Icon | path: icons/duotune/art/art005.svg-->
                             <span class="svg-icon svg-icon-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -305,7 +298,7 @@
                         </div>
                         <!--end::Edit-->
                         <!--begin::Edit-->
-                        <div class="btn btn-icon btn-sm btn-color-gray-400 btn-active-icon-danger me-2" data-bs-toggle="tooltip" data-bs-dismiss="click" title="Delete Event" id="kt_modal_view_event_delete">
+                        <div hidden class="btn btn-icon btn-sm btn-color-gray-400 btn-active-icon-danger me-2" data-bs-toggle="tooltip" data-bs-dismiss="click" title="Delete Event" id="kt_modal_view_event_delete">
                             <!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->
                             <span class="svg-icon svg-icon-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -421,6 +414,42 @@
         </div>
         <!--end::Modal - New Product-->
         <!--end::Modals-->
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade" id="kt_tab_pane_2" role="tabpanel">
+                <div class="row gy-10 gx-xl-10">
+                    <div class="card card-docs flex-row-fluid mb-2">
+                        <table id="kt_datatable" class="table table-row-bordered table-row-dashed gy-5">
+                            <thead>
+                                <tr class="fw-semibold fs-6 text-gray-800">
+                                    <th>SNo</th>
+                                    <th>Create Date</th>
+                                    <th>schedule From - To</th>
+                                    <th>Copy</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade  show active" id="kt_tab_pane_1" role="tabpanel">
+                <!--begin::Card-->
+                <div class="card">
+                    <!--begin::Card header-->
+                    <div class="card-header">
+                        <h2 class="card-title fw-bolder">Calendar</h2>
+                    </div>
+                    <!--end::Card header-->
+                    <!--begin::Card body-->
+                    <div class="card-body">
+                        <!--begin::Calendar-->
+                        <div id="kt_calendar_app"></div>
+                        <!--end::Calendar-->
+                    </div>
+                    <!--end::Card body-->
+                </div>
+            </div>
+        </div>
     </div>
     @section('scripts')
 
@@ -433,49 +462,11 @@
 
         const refresh = `{{ route('activities.schedules.getAllschedule',$consultant->id) }}?_token={{ csrf_token() }}`
         const Consultamt_id = `{{ $consultant->id }}`
-        const create_Slot = document.getElementById('create_Slot');
-        create_Slot.addEventListener('click',function(){ variant($('#from_date').val(),$('#to_date').val()) })
         var _token = `{{ csrf_token() }}`
-
+        const getscheduleDatatable = "{{route('activities.schedules.getscheduleDatatable')}}"
         const formrepeat = $('.kt_docs_repeater_nested');
-        $("#from_date").daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                minYear: 1901,
-                maxYear: parseInt(moment().format("YYYY"),10),
 
-            }, function(start, end, label) {
-                let toDay = new Date($("#from_date").val());
-                let PlusThirtyDays = new Date();
-                PlusThirtyDays.setDate(toDay.getDate() + 30)
-                $("#to_date").daterangepicker({
-                        setDate : start.format('MM/DD/YYYY'),
-                        singleDatePicker: true,
-                        showDropdowns: true,
-                        minYear: 1901,
-                        maxYear: parseInt(moment().format("YYYY"),10),
-                        maxDate : formatDate(PlusThirtyDays),
-                        minDate : start.format('MM/DD/YYYY'),
 
-                    }, function(start, end, label) {
-
-                    }
-                );
-            }
-        );
-
-        $("#recurring").daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                minYear: 1901,
-                maxYear: parseInt(moment().format("YYYY"),10),
-                // locale: {
-                //         format: '{{ strtoupper($companeySetting->date_format) }}'
-                //     }
-            }, function(start, end, label) {
-
-            }
-        );
         const date =  new Date();
         formrepeat.repeater({
             repeaters: [{
@@ -499,16 +490,7 @@
                 $(this).slideUp(deleteElement);
             }
         });
-        function formatDate(date) {
-            return [
-                padTo2Digits(date.getMonth() + 1),
-                padTo2Digits(date.getDate()),
-                date.getFullYear(),
-            ].join('/');
-        }
-        function padTo2Digits(num) {
-            return num.toString().padStart(2, '0');
-        }
+
         const Standard = function(){
             formrepeat.setList([
                 {title:'Sunday','day':'sunday'},
@@ -534,97 +516,7 @@
             }
             formrepeat.setList(data)
         }
-        var table = null;
-        $(document).ready(function () {
-            table = $("#kt_datatable").DataTable({
-                responsive: true,
-                buttons: [
-                        'print',
-                        'copyHtml5',
-                        'excelHtml5',
-                        'csvHtml5',
-                        'pdfHtml5',
-                    ],
-                // Pagination settings
-                dom: `<'row'<'col-sm-12'tr>>
-                <'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>`,
-                // read more: https://datatables.net/examples/basic_init/dom.html
 
-                lengthMenu: [5, 10, 25, 100],
-
-                pageLength: 10,
-                searchDelay: 500,
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    url : "{{route('activities.schedules.getscheduleDatatable')}}",
-                    type: 'POST',
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                        'id' : `{{ $consultant->id }}`,
-                        columnsDef : ['id','created_at','fromto','scheduleType']
-                    }
-
-                },
-                columns: [
-                    { data: 'DT_RowIndex'},
-                    { data: 'created_at' },
-                    { data: 'fromto' },
-                    { data: 'scheduleType' },
-                    { data: 'action'}
-                ],
-                columnDefs : [
-                    {
-                        targets: -1,
-                        data: null,
-                        orderable: false,
-                        className: 'text-end',
-                        render: function (data, type, row) {
-                            return `
-                                <a href="${data.Delete}" delete_calender class="btn btn-icon btn-danger"><i href="${data.Delete}" delete class="las la-trash fs-2 me-2"></i></a>
-                            `;
-                        },
-                    },
-                ],
-                drawCallback : function( settings ) { }
-            });
-        });
-        document.body.addEventListener('click', function(event){
-                const e = event
-
-                if(e.srcElement.hasAttribute('delete_calender')){
-                    e.preventDefault()
-                    var text = e.srcElement.hasAttribute('text')? e.srcElement.getAttribute('text'): 'Are you sure you want to delete ?'
-                    Swal.fire({
-                        text: text,
-                        icon: "warning",
-                        showCancelButton: !0,
-                        buttonsStyling: !1,
-                        confirmButtonText: "Yes, delete!",
-                        cancelButtonText: "No, cancel",
-                        customClass: {
-                            confirmButton: "btn fw-bold btn-danger",
-                            cancelButton: "btn fw-bold btn-active-light-primary"
-                        }
-                    }).then((function (t) {
-                        if(t.value){
-                            let route = e.srcElement.getAttribute('href')
-                            let data = { _token: _token }
-                            fetch(route,{
-                                method: 'DELETE',
-                                headers: { 'Content-Type': 'application/json', },
-                                body: JSON.stringify(data)
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                $('#trigerClick').click();
-                                table.ajax.reload(null, false);
-                                Switealert((data.status)?data.msg:'error',(data.status)?'success':'error')
-                            });
-                        }
-                    }))
-                }
-        }, true);
         $(document).on('change', '.checkboxOnOff', function(){
             const parent = event.target.parentNode.parentNode.parentNode
             const inputCheckbox = event.target
@@ -645,6 +537,9 @@
 
             }
         });
+        // $(document).on('change','.fromtime', function(){
+        //     debugger
+        // });
         </script>
     @endsection
 </x-base-layout>

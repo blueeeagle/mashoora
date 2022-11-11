@@ -10,6 +10,9 @@ use DataTables;
 use Illuminate\Support\Collection;
 use Validator;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Consultant;
+use App\Models\Offer;
+use App\Models\Discount;
 
 class CategoryController extends Controller
 {
@@ -41,8 +44,8 @@ class CategoryController extends Controller
         ->when($search[5],function($query,$search){ return $query->where('tags','like',"%{$search}%");   })
         ->when($search[6],function($query,$search){ return $query->where('display_in_home',$search);   })
         ->when($search[7],function($query,$search){ return $query->where('status',$search);   })
-        ->orderBy('id','desc')->get();
-// dd($datas);
+        ->orderBy('name','ASC')->get();
+
         return DataTables::of($datas)
         ->addIndexColumn()
         ->editColumn('display_in_home', function(Category $data) {
@@ -56,9 +59,14 @@ class CategoryController extends Controller
             if($data->categories_id) return $data->child_forIndex->name;
             return "";
         })
-        ->addColumn('Type', function (Category $data){
-            if($data->type == 0) return 'parent';
-            return 'Children';
+        ->editColumn('created_at', function (Category $data){
+            $date=date_create($data->created_at);
+            return  date_format($date,"Y-m-d");
+        })
+        ->editColumn('updated_at', function (Category $data){
+            if($data->updated_at == null) return '';
+            $date=date_create($data->updated_at);
+            return  date_format($date,"Y-m-d");
         })
         ->editColumn('status', function(Category $data) {
             $status = ($data->status == 1)?'checked':'' ;
@@ -81,13 +89,13 @@ class CategoryController extends Controller
     }
 
     public function create(){
-        $Category = Category::where('type',0)->get();
-        $documents = Document::where('status',1)->get();
+        $Category = Category::where('type',0)->orderBy('name','ASC')->get();
+        $documents = Document::where('status',1)->orderBy('title','ASC')->get();
         return \view('category.create',['Category'=>$Category,'documents'=>$documents]);
     }
     public function edit(Category $Category){
-        $Parent = Category::where('type',0)->get();
-        $documents = Document::where('status',1)->get();
+        $Parent = Category::where('type',0)->orderBy('name','ASC')->get();
+        $documents = Document::where('status',1)->orderBy('title','ASC')->get();
         return \view('category.edit',['Category'=>$Category,'Parent'=>$Parent,'documents'=>$documents]);
     }
     public function store(Request $Request){
@@ -118,13 +126,14 @@ class CategoryController extends Controller
         $Category->type = $Request->type;
         $Category->name = $Request->name;
         $Category->categories_id = $Request->categories_id;
+        $Category->insurance = (isset($Request->insurance)?1:0);
         $Category->document_id = implode(',',$Request->document_id);
         $Category->description = $Request->description;
         $Category->tags = $Request->tags;
         $Category->sort_no_list = $Request->sort_no_list;
         $Category->sort_no_home = $Request->sort_no_home;
         $Category->display_in_home = (isset($Request->display_in_home)?1:0);
-        $Category->status =  (isset($Request->status)?1:0);
+        $Category->status =  1;
 
         $Category->img = $Request->img;
         $Category->save();
@@ -159,13 +168,14 @@ class CategoryController extends Controller
         $Category->type = $Request->type;
         $Category->name = $Request->name;
         $Category->categories_id = ($Request->type == 1)?$Request->categories_id:'';
+        $Category->insurance = (isset($Request->insurance)?1:0);
         $Category->document_id = implode(',',$Request->document_id);
         $Category->description = $Request->description;
         $Category->tags = $Request->tags;
         $Category->sort_no_list = $Request->sort_no_list;
         $Category->sort_no_home = $Request->sort_no_home;
         $Category->display_in_home = (isset($Request->display_in_home)?1:0);
-        $Category->status =  (isset($Request->status)?1:0);
+       
         if(isset($Request->img)){
             $Category->img = $Request->img;
         }
@@ -180,7 +190,26 @@ class CategoryController extends Controller
         return response()->json(['status'=>true,'msg'=>'Status Updated']);
     }
     public function destroy(Category $category){
-        dd($category);
+        // dd($category);
+        $parent = Category::where('type',1)->where('id',$category->id)->exists();
+        $offer = Offer::where('category_id',$category->id)->orWhere('sub_category_id',$category->id)->exists();
+        $discount = Discount::where('category_id',$category->id)->exists();
+        $consultant = Consultant::all()->filter(function($value) use ($category) {
+            $temp = in_array($category->id,explode(',',$value->categorie_id));
+            return $temp;
+        })->toArray();
+      
+        if($consultant != null || $offer || $discount || $parent ){
+            $temp = ($consultant)?' Consultant ':'';
+            $temp .= ($offer)?' Offer ':'';
+            $temp .= ($discount)?' Discount ':'';
+            $temp .= ($parent)?' Parent Category ':'';
+            $data1['error'] = 'Category is Mapped with ' .$temp.'.so cannot delete';
+           
+            $data1['status'] = false;
+            return response()->json($data1);
+        }
+        
         if($category->type == 0){
             $cat = Category::where('categories_id',$category->id)->get();
             foreach ($cat as $key => $value) {
@@ -204,7 +233,7 @@ class CategoryController extends Controller
         return response()->json(['status'=>true,'msg'=>'Status Updated']);
     }
     public function getchild(Request $Request,Category $category){
-        $child = Category::where('categories_id',$category->id)->where('status',1)->get();
+        $child = Category::where('categories_id',$category->id)->where('status',1)->orderBy('name','ASC')->get();
     	return response()->json(['child'=>$child]);
     }
 }

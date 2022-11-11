@@ -93,15 +93,15 @@
                         <select class="form-select" id="toogleColum" data-control="select2" data-placeholder="Toggle column" multiple="multiple">
                             <option></option>
                             <option selected value="0">#</option>
-                            <option selected value="1">Type</option>
+                            <option selected value="1">Date & Time</option>
                             <option selected value="2">Name</option>
-                            <option selected value="3">Category</option>
-                            <option selected value="4">Description</option>
-                            <option selected value="5">Tag</option>
-                            <option selected value="6">Image</option>
-                            <option selected value="7">Display In Home</option>
-                            <option selected value="8">Status</option>
-                            <option selected hidden value="9">Action</option>
+                            <option selected value="3">Email</option>
+                            <option selected value="4">Category</option>
+                            <option selected value="5">Status</option>
+                            <option selected value="6">Date & Time</option>
+                            <option selected value="7">Option</option>
+                            <option selected value="8">Select</option>
+                            
                         </select>
                     </div>
                     
@@ -235,8 +235,16 @@
                                             <th>status</th>
                                             <th>Date & Time Stamp</th>
                                             <th>Option</th>
+                                            <th>Select</th>
                                         </tr>
                                     </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="7"></td>
+                                            <td><button class="btn btn-danger btn-sm" onclick="update_approval(this)" value="1" id="decline">Decline</button></th>
+                                            <td><button class="btn btn-success btn-sm" onclick="update_approval(this)" value="2" id="approve">Approve</button></th>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                                 
                             </div>
@@ -252,7 +260,7 @@
     </div>
 @section('scripts')
 <script type="text/javascript">
-
+    var checked =[];
     var table = null;
         $(document).ready(function () {
             table = $("#kt_customers_table").DataTable({
@@ -299,7 +307,7 @@
                     type: 'POST',
                     data: {
                         "_token": "{{ csrf_token() }}",
-                        columnsDef : ['id','created_at','name','email','category','status','updated_at','option']
+                        columnsDef : ['id','created_at','name','email','category','approval','updated_at','option']
                     }
 
                 },
@@ -309,14 +317,21 @@
                     { data: 'name' },
                     { data: 'email' },
                     { data: 'category' },
-                    { data: 'status'},
+                    { data: 'approval'},
                     { data: 'updated_at'},
-                    {data: 'option'}
+                    { data: 'option'},
+                    { data: 'select'}
                 ],
                 columnDefs : [
                     {
                         targets: -1,
-                        data: null,
+                        orderable: true,
+                        render: function (data, type, row) {
+                            return `<input  class="typecheck" type="checkbox" value='${row.id}' >`;
+                        },
+                    },
+                    {
+                        targets: 7,
                         orderable: true,
                         render: function (data, type, row) {
                             return `
@@ -331,21 +346,7 @@
                             `;
                         },
                     },
-                    {
-                        targets: 5,
-                        data: null,
-                        orderable: false,
-                        render: function (data, type, row) {
-                            return `
-                                <select name="" id="" class="form-select" onchange='status(this)' data-control="select2">
-                                    <option ${(row.dropdown.select == 1)?'selected':''} value="${row.dropdown.ped}">Pending</option>
-                                    <option ${(row.dropdown.select == 2)?'selected':''} value="${row.dropdown.acc}">Approval</option>
-                                    <option ${(row.dropdown.select == 3)?'selected':''} value="${row.dropdown.dec}">Decline</option>
-                                </select>
-                            `;
-                        },
-
-                    }
+                   
                 ],
                 drawCallback : function( settings ) { }
             });
@@ -355,6 +356,22 @@
             filterSearch.addEventListener('keyup', function (e) {
                 table.search(e.target.value).draw();
             });
+
+            $('body').on('click','.typecheck',function(e){
+                var alreadyCheck = checked.includes(e.target.value);
+                if(e.currentTarget.checked==true && !alreadyCheck){ 
+                    checked.push(e.target.value); 
+                }
+                else{
+                    checked = arrayRemove(checked,e.target.value );
+                    function arrayRemove(arr, value) { 
+                        return arr.filter(function(ele){ 
+                            return ele != value; 
+                        });
+                    }
+                }
+            })
+
             
             $( "#reset" ).click(function() {
                 $('#kt_subheader_search_form').val('');
@@ -362,35 +379,37 @@
             });
         });
 
-    function status(obj){
-        value = obj.value;
-        
-        $.ajax({
-            url: value,
-            method:"post",
-            data:{
-                "_token": "{{ csrf_token() }}",
-                changeValue:value,
-            },
-            success:function(data){
-            if(data.msg){
-                Switealert(data.msg,'success')
-                
-            }else{
-                var Ptag = "";
-                for(var error in data.errors) { Ptag += data.errors[error]+', '; };
-                // Switealert(Ptag,'error')
-            }
-            
-        },
-        error:function(erroe){
-            console.log(erroe);
-            window.scrollTo({top:0,behavior:'smooth'});
-            alert("Something is wrong");
+    function update_approval(e){
+       
+        if(e.value == 1){
+            var status = "Decline";
         }
-                
-        })
-
+        else{
+            var status = "Approve";
+        }
+        
+        if(checked.length !=0 ){
+            $.ajax({
+                url: "{{ route('approval.consultant.status')}}",
+                method:"post",
+                data:{
+                    "_token": "{{ csrf_token() }}",
+                    status:status,
+                    id:checked,
+                },
+                success:function(data){
+                    if(data.msg){
+                        checked = [];
+                        Switealert(data.msg,'success')
+                        table.draw()
+                    }else{
+                        var Ptag = "";
+                        for(var error in data.errors) { Ptag += data.errors[error]+', '; };
+                        Switealert(Ptag,'error')
+                    }
+                }
+            })
+        }
     }
     
     function Switealert(Msg,status){

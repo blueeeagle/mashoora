@@ -13,7 +13,7 @@ class TaxController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('Permissions:Tax_View',['only'=>['index']]);
+        $this->middleware('Permissions:Tax',['only'=>['index']]);
         $this->middleware('Permissions:Tax_Create',['only'=>['create']]);
         $this->middleware('Permissions:Tax_Edit',['only'=>['edit']]);
         $this->middleware('Permissions:Tax_delete',['only'=>['destroy']]);
@@ -32,7 +32,7 @@ class TaxController extends Controller
 
         $datas = Tax::when($search[1],function($query,$search){
             return $query->where('title','LIKE',"%{$search}%");
-        })->orderBy('id','desc')->get();
+        })->orderBy('title','ASC')->get();
 
 
         return DataTables::of($datas)

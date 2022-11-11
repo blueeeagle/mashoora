@@ -1,5 +1,10 @@
 <x-base-layout>
-
+@if (\Session::has('errors'))
+        <div class="alert alert-danger alert-dismissible fade show">
+            <strong>{!! \Session::get('errors') !!}</strong> 
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
     <div id="kt_engage_demos" class="bg-body" data-kt-drawer="true" data-kt-drawer-name="explore" data-kt-drawer-activate="true" data-kt-drawer-overlay="true" data-kt-drawer-width="{default:'350px', 'lg': '475px'}" data-kt-drawer-direction="end" data-kt-drawer-toggle="#kt_engage_demos_toggle" data-kt-drawer-close="#kt_engage_demos_close">
         <!--begin::Card-->
         <div class="card shadow-none rounded-0 w-100">
@@ -29,8 +34,8 @@
                         <select class="form-select form-select-solid" data-control="select2" data-placeholder="Search option" data-allow-clear="true" id="filter" multiple="multiple">
                             <option value="name">Name</option>
                             {{-- <option value="categories_id">Category</option> --}}
-                            <option value="description">Description</option>
-                            <option value="tags">Tag</option>
+                            {{-- <option value="description">Description</option>
+                            <option value="tags">Tag</option> --}}
                         </select>
                     </div>
                     <div class="row">
@@ -47,14 +52,14 @@
                                 @endforeach
                             </select>
                         </div> --}}
-                        <div class="col-xxl-10" data-id-filter="description" hidden>
+                        {{-- <div class="col-xxl-10" data-id-filter="description" hidden>
                             <label class="fs-6 form-label fw-bolder text-dark">Description</label>
                             <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='4' />
                         </div>
                         <div class="col-xxl-10" data-id-filter="tags" hidden>
                             <label class="fs-6 form-label fw-bolder text-dark">Tag</label>
                             <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='5' />
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="rounded py-4 px-6 mb-5" hidden id="search_div">
                         <button type="button" id="search_two" class="btn btn-primary me-5">Search</button>
@@ -92,16 +97,15 @@
                     <div class="fv-row mb-12">
                         <select class="form-select" id="toogleColum" data-control="select2" data-placeholder="Toggle column" multiple="multiple">
                             <option></option>
-                            <option selected value="0">SNo</option>
-                            <option selected value="1">Type</option>
-                            <option selected value="2">Name</option>
-                            <option selected value="3">Category</option>
-                            <option selected value="4">Description</option>
-                            <option selected value="5">Tag</option>
-                            <option selected value="6">Image</option>
-                            <option selected value="7">Display In Home</option>
-                            <option selected value="8">Status</option>
-                            <option selected hidden value="9">Action</option>
+                            <option selected value="0">#</option>
+                            <option selected value="1">Image</option>
+                            <option selected value="2">Category</option>
+                            <option selected value="3">Parent</option>
+                            <option selected value="4">Created Date</option>
+                            <option selected value="5">Updated Date</option>
+                            <option selected value="6">Display In Home</option>
+                            <option selected value="7">Status</option>
+                            <option selected value="8">Action</option>
                         </select>
                     </div>
                     
@@ -189,12 +193,12 @@
                                     </svg>
                                 </span>
                                 <!--end::Svg Icon-->
-                                <input type="text" id="kt_subheader_search_form"  class="form-control form-control-solid w-250px ps-15" placeholder="Search ">
+                                <input type="text" id="kt_subheader_search_form"  data-kt-docs-table-filter="search" class="form-control form-control-solid w-250px ps-15" placeholder="Search ">
 
                             </div>
                             <div class="d-flex align-items-center p-10">
                                 <!--<button type="button" id="search" class="btn btn-primary me-5">Search</button>-->
-                                <button type="button" id="reset" class="btn btn-primary me-5">Reset</button>
+                                <button type="button" id="reset" class="btn btn-primary btn-xs me-5">Reset</button>
                                 
                             </div>
 
@@ -224,18 +228,20 @@
                         <!--begin::Table-->
                         <div id="kt_customers_table_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
                             <div class="table-responsive" style="margin-top:-25px;">
-                                <table class="table align-middle table-row-dashed fs-6 gy-5 dataTable no-footer" id="kt_customers_table">
+                                <table class="table table-row-bordered table-row-dashed gy-5" id="kt_customers_table">
                                     <thead>
-                                        <th class="sorting " tabindex="0" aria-controls="kt_customers_table" rowspan="1" colspan="1"  style="width: 50px;" aria-sort="descending">#</th>
-                                        <th class="sorting " tabindex="0" aria-controls="kt_customers_table" rowspan="1" colspan="1" style="width: 100px;" aria-sort="descending">Type</th>
-                                        <th class="sorting " tabindex="0" aria-controls="kt_customers_table" rowspan="1" colspan="1" style="width: 100px;" aria-sort="descending">Name</th>
-                                        <th class="sorting " tabindex="0" aria-controls="kt_customers_table" rowspan="1" colspan="1" style="width: 100px;" aria-sort="descending">Category</th>
-                                        <th class="sorting " tabindex="0" aria-controls="kt_customers_table" rowspan="1" colspan="1" style="width: 100px;" aria-sort="descending">Description</th>
-                                        <th class="sorting " tabindex="0" aria-controls="kt_customers_table" rowspan="1" colspan="1" style="width: 200px;" aria-sort="descending">Tag</th>
-                                        <th class="sorting " tabindex="0" aria-controls="kt_customers_table" rowspan="1" colspan="1" style="width: 100px;" aria-sort="descending">Image</th>
-                                        <th class="sorting " tabindex="0" aria-controls="kt_customers_table" rowspan="1" colspan="1" style="width: 100px;" aria-sort="descending">Display In Home</th>
-                                        <th class="sorting " tabindex="0" aria-controls="kt_customers_table" rowspan="1" colspan="1" style="width: 100px;" aria-sort="descending">Status</th>
-                                        <th class="sorting " tabindex="0" aria-controls="kt_customers_table" rowspan="1" colspan="1" style="width: 100px;" aria-sort="descending">Action</th> 
+                                        <tr class="fw-semibold fs-6 text-gray-800">
+                                            <th>#</th>
+                                            <th>Image</th>
+                                            <th>Category</th>
+                                            <th>Parent</th>
+                                            <th>Created Date</th>
+                                            <th>Updated Date</th>
+                                            <th>Display In Home</th>
+                                            <th>Status</th>
+                                            <th>Action</th> 
+                                        </tr>
+                                        
                                     </thead>
                                 </table>
                                 
@@ -299,18 +305,17 @@
                     type: 'POST',
                     data: {
                         "_token": "{{ csrf_token() }}",
-                        columnsDef : ['id','type','name','categories','description','tags','img','display_in_home','status']
+                        columnsDef : ['id','type','name','categories','img','display_in_home','status']
                     }
 
                 },
                 columns: [
                     { data: 'DT_RowIndex'},
-                    { data: 'type' },
+                    { data: 'img'},
                     { data: 'name' },
                     { data: 'categories' },
-                    { data: 'description'},
-                    { data: 'tags'},
-                    { data: 'img'},
+                    { data: 'created_at' },
+                    { data: 'updated_at' },
                     { data: 'display_in_home'},
                     { data: 'status'},
                     { data: 'action'}
@@ -337,31 +342,9 @@
                             `;
                         },
                     },
-                    {
-                        targets: 5,
-                        data: null,
-                        orderable: true,
-                        render: function (data, type, row) {
-                            if(!data){
-                                return '';
-                            }
-                            let str = [];
-                            JSON.parse(`${data.replace(/&quot;/g,'"')}`).forEach(element => {
-                                str.push(element.value)
-                            });
-                            return `${str.toString()}`;
-                        },
-                    },
+                   
                     {
                         targets: 1,
-                        data: null,
-                        orderable: true,
-                        render: function (data, type, row) {
-                            return `${row.Type}`;
-                        },
-                    },
-                    {
-                        targets: 6,
                         data: null,
                         orderable: true,
                         render: function (data, type, row) {
@@ -372,7 +355,11 @@
                                             </div>
 							            </div>`;
                             }
-                            return '';
+                            return `<div class="d-flex align-items-center">
+                                        <div class="symbol symbol-40 symbol-sm flex-shrink-0">
+                                            <img class="rounded-circle z-depth-2" src={{asset('storage/uploadFiles/default_profile_image.png')}}>
+                                        </div>
+							        </div>`;
 
                             
                         },
@@ -387,18 +374,18 @@
                     // },
                 ],
                 drawCallback : function( settings ) { }
-           });
+            });
 
-            $('#kt_subheader_search_form').keyup(function(){
-                // console.log($(this).val());  
-                // var table = $('#kt_customers_table').DataTable();
-                
-                // Event listener to the two range filtering inputs to redraw on input
-               
-                table.search($(this).val()).draw();
-               
-                // $("#kt_customers_table").DataTable.search($(this).val()).draw();   
-            }) 
+            
+            const filterSearch = document.querySelector('[data-kt-docs-table-filter="search"]');
+            filterSearch.addEventListener('keyup', function (e) {
+                table.search(e.target.value).draw();
+            });
+            
+
+            // $('#kt_subheader_search_form').keyup(function(){
+            //     table.search($(this).val()).draw();
+            // }) 
             $( "#reset" ).click(function() {
                 $('#kt_subheader_search_form').val('');
                table.search($('#kt_subheader_search_form').val()).draw();   
@@ -406,13 +393,6 @@
         });
 
     </script>
-    <style>
-        .content {
-            padding: 3px 0;
-        }
-
-        
-    </style>
 @endsection
 </x-base-layout>
 

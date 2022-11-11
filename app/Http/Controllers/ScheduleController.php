@@ -11,7 +11,7 @@ use Auth;
 use Validator;
 use DataTables;
 use Illuminate\Support\Str;
-
+use Illuminate\Support\Facades\Storage;
 class ScheduleController extends Controller{
 
     public function index(Request $request){
@@ -21,13 +21,17 @@ class ScheduleController extends Controller{
     }
 
     public function create2(Request $request,Consultant $consultant){
-        return \view('schedule.create',['consultant'=>$consultant]);
+        $Schedule = Schedule::where('consultant_id',$consultant->id)->get();
+        $getslots = $this->getslots($Schedule);
+       
+        $schedule = Schedule::where('consultant_id',$consultant->id)->orderBy('id','desc')->first();
+        return \view('schedule.create',['consultant'=>$consultant,'schedule'=>$schedule]);
     }
 
     public function getscheduleDatatable(Request $request){
 
         $datas = Schedule::where('consultant_id',$request->id)->orderBy('id','desc')->get();
-        
+
         return DataTables::of($datas)
         ->addIndexColumn()
         ->editColumn('created_at', function(Schedule $data){
@@ -35,31 +39,35 @@ class ScheduleController extends Controller{
             return date_format($date,"Y-m-d");
         })
         ->addColumn('fromto', function(Schedule $data){
-            $from_date = date_create($data->from_date);
-            $to_date = date_create($data->to_date);
-            
-            return '';
-        })
-        ->addColumn('scheduleType', function(Schedule $data){
-            return ($data->schedule_type)?'Variant':'standard';
+            return 'From: '.$data->from_date.' <br/>To: '.$data->to_date;
         })
         ->addColumn('action', function(Schedule $data){
             return ['Delete'=> \route('activities.schedules.destroy',$data->id)];
         })
+        ->addColumn('copy', function(Schedule $data){
+            return ['copy'=> \route('activities.schedules.copy',$data->id)];
+        })
         ->rawColumns(['action','fromto'])
         ->toJson();
     }
-    
+
+    public function copyschedule(Request $request,Schedule $schedule){
+        $copy = $schedule->replicate();
+        $copy->from_date = $request->from_date;
+        $copy->to_date = $request->to_date;
+        $copy->save();
+        return response()->json(['status'=>true], 200);
+    }
     public function getappdetails(Request $request){
-        
+
         $Appointment = Appointment::with('customer')->with('consultant')->where('map',$request->id)->first();
         $status =  isset($Appointment->status) ? ($Appointment->status) : 'Booked';
-        
+
         if($status == 1) $status = 'Completed';
         if($status == 2) $status = 'Cancelled By Consultant';
         if($status == 3) $status = 'Cancelled By Customer';
         if($status == 4) $status = 'Cancelled By Admin';
-        
+
         return ['appointment'=>$Appointment,'status'=>$status];
     }
 
@@ -70,7 +78,7 @@ class ScheduleController extends Controller{
             $search[] = $colum['search']['value'];
         }
 
-        $datas = Consultant::with('Schedule')
+        $datas = Consultant::with('Allschedule')
         ->when($search[2],function($query,$search){  $search = \explode(',',$search);  return $query->whereIn('categorie_id',$search); })
         ->when($search[2],function($query,$search){  $search = \explode(',',$search);  return $query->whereIn('categorie_id',$search); })
         ->when($search[2],function($query,$search){  $search = \explode(',',$search);  return $query->whereIn('categorie_id',$search); })
@@ -80,37 +88,54 @@ class ScheduleController extends Controller{
         return DataTables::of($datas)
         ->addIndexColumn()
         ->addColumn('Last_Config',function(Consultant $data){
-            $schedule = $data->Schedule->last();
-            if($schedule) return 'From: '.$schedule->from_date.' To: '.$schedule->to_date;
+            $schedule = $data->Allschedule->last();
+            if($schedule) return 'From: '.$schedule->from_date.' <br/>To: '.$schedule->to_date;
             return '';
         })
+         ->addColumn('details',function(Consultant $data){
+            return "Name :".$data->name."<br/>Mobile : ".$data->country->dialing.' '.$data->phone_no.'<br/> TimeZone : '.$data->gettimeZone()->format('e P');
+        })
+         ->addColumn('country',function(Consultant $data){
+            return $data->country->country_name ?? '';
+        })
+        ->editColumn('categorie_id', function(Consultant $data){
+            $category = $data->parentcat();
+            $subCategory = $data->subcat()->pluck('name')->toArray();
+            return ['cat'=>$category->name ?? '','sub'=>$subCategory];
+        })
         ->addColumn('Schedule_type',function(Consultant $data){
-            $schedule = $data->Schedule->last();
+            $schedule = $data->Allschedule->last();
             if($schedule) return ($schedule->schedule_type == 0)?'standard':'varient';
             return '';
         })
+        ->editColumn('picture', function(Consultant $data){
+            if(!isset($data->picture)) return "";
+            $exists = Storage::disk('public_custom')->exists($data->picture);
+            if($exists) return asset("storage/$data->picture");
+            return "";
+        })
         ->addColumn('lastUpDate',function(Consultant $data){
-            $schedule = $data->Schedule->last();
-            if($schedule) return date('y-m-d', strtotime($schedule->updated_at));
+            $schedule = $data->Allschedule->last();
+            if($schedule) return date('m/d/y', strtotime($schedule->created_at));
             return '';
         })
         ->addColumn('scheduleOrNot',function(Consultant $data){
-            if(!$data->Schedule->isEmpty()) return 'Scheduled';
-            return 'Not Scheduled';
+            if(!$data->Allschedule->isEmpty()) return 1;
+            return 0;
         })
         ->addColumn('view', function(Consultant $data){
             return ['view'=> \route('activities.schedules.create2',$data->id)];
         })
-        ->rawColumns(['view'])
+        ->rawColumns(['view','Last_Config','details'])
         ->toJson();
     }
 
     public function getAllschedule(Consultant $consultant){
-        
-        $Schedule = $consultant->Schedule;
+
+        $Schedule = $consultant->Allschedule;
         $getslots = $this->getslots($Schedule);
-        
-        return ['getslots'=>$getslots];
+        $fromDate = $consultant->Schedule->last()->to_date ?? date('m/d/Y');
+        return ['getslots'=>$getslots,'fromDate'=>$fromDate];
     }
 
     public function store(Request $request){
@@ -161,6 +186,12 @@ class ScheduleController extends Controller{
     }
 
     public function destroy(Request $request,Schedule $schedule){
+        $AppointmentCount = Appointment::where('schedule_id',$schedule->id)->count();
+        if($AppointmentCount != 0){
+            $data1['msg'] = 'Schedule has Appointment.';
+            $data1['status'] = false;
+            return response()->json($data1);
+        }
         $schedule->delete();
         $data1['msg'] = 'Data Deleted Successfully.';
         $data1['status'] = true;
@@ -174,9 +205,9 @@ class ScheduleController extends Controller{
         }
         $Schedule->schedule_type = 0;
         $Schedule->description = $request->description;
-        $Schedule->from_date = \date('m/d/y');
-        $Schedule->to_date = $request->recurring;
-        $Schedule->recurring = $request->recurring;
+        $Schedule->from_date = $request->from_date;
+        $Schedule->to_date = $request->to_date;
+        $Schedule->recurring = $request->to_date;
         $Schedule->schedule = json_encode($this->generateSchedule($request));
         $Schedule->save();
        return response()->json(['msg'=>($Schedule)?'Schedule Updated':'Standard Add']);

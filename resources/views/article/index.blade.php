@@ -369,30 +369,7 @@
                table.search($('#kt_subheader_search_form').val()).draw();   
             });
 
-            // $('#f_c_a').select2({
-            //     ajax: {
-            //         url: '{{ route('other.articel.search') }}',
-            //         type: 'POST',
-            //         data: function (params) {
-            //         var query = {
-            //             search: params.term,
-            //             "_token": "{{ csrf_token() }}",
-            //             }
-            //             return query;
-            //         },
-            //         processResults: function (data) {
-            //             return {
-            //             results:  $.map(data, function (item) {
-            //                     return {
-            //                         text: item.title,
-            //                         children: $.map(item.children, function (data) { return { id:`${data.id}|${item.title}`,text : data.text} })
-            //                     }
-            //                 })
-            //             };
-            //         },
-            //         cache: true
-            //     },
-            // })
+            
 
         });
 

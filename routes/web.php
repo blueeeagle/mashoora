@@ -38,6 +38,8 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ReviewRatingController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\PayInApprovalController;
+use App\Http\Controllers\PayOutApprovalController;
 use Illuminate\Support\Facades\Route;
 //arun
 /*
@@ -161,9 +163,9 @@ Route::middleware('auth')->group(function () {
         Route::Post('article/status/{articel}', [ArticelController::Class,'status'])->name('articel.status');
         Route::Post('article/update/{articel}', [ArticelController::Class,'update'])->name('articel.update');
         Route::Post('article/datatable',[ArticelController::Class,'datatable'])->name('articel.datatable');
-        Route::Post('article/search',[ArticelController::Class,'search'])->name('articel.search');
-        Route::Post('article/consultant/search',[ArticelController::Class,'consultantSearch'])->name('articel.consultantSearch');
-        Route::Post('article/user/search',[ArticelController::Class,'userSearch'])->name('articel.userSearch');
+        Route::Post('article/search',[ArticelController::Class,'search'])->name('article.search');
+        Route::Post('article/consultant/search',[ArticelController::Class,'consultantSearch'])->name('article.consultantSearch');
+        Route::Post('article/user/search',[ArticelController::Class,'userSearch'])->name('article.userSearch');
          // video
          Route::resource('video', VideoController::Class)->only(['create','store','index','edit','destroy']);
          Route::Post('video/status/{video}', [VideoController::Class,'status'])->name('video.status');
@@ -188,7 +190,8 @@ Route::middleware('auth')->group(function () {
          Route::Post('offer/datatable',[OfferController::Class,'datatable'])->name('offer.datatable');
          Route::Post('offer/search',[OfferController::Class,'search'])->name('offer.search');
          Route::Post('offer/getCategory',[OfferController::Class,'getCategory'])->name('offer.getCategory');
-
+            Route::Post('offer/consultant/category',[OfferController::Class,'consultantcategory'])->name('offer.consultantcategory');
+         Route::Post('offer/getconsultant',[OfferController::Class,'getconsultant'])->name('offer.getconsultant');
          // communication
 
          Route::resource('communication', CommunicationController::Class)->only(['create','store','index','destroy']);
@@ -236,6 +239,8 @@ Route::middleware('auth')->group(function () {
         Route::Post('consultant/datatable',[ConsultantController::Class,'datatable'])->name('consultant.datatable');
         Route::Post('consultant/wallet',[WalletController::Class,'datatable'])->name('consultant.wallet.index');
         Route::Post('consultant/get/subCat/spec/',[ConsultantController::Class,'subCategory'])->name('consultant.getSubCategory');
+        Route::Post('consultant/update/{consultant}', [ConsultantController::Class,'update'])->name('consultant.update');
+        Route::Post('consultant/modelcategory/', [ConsultantController::Class,'modelcategory'])->name('modelcategory');
     });
     //schedule
     Route::prefix('activities')->name('activities.')->group(function () {
@@ -243,6 +248,7 @@ Route::middleware('auth')->group(function () {
         Route::post('schedules/get/{consultant}', [ScheduleController::Class,'getAllschedule'])->name('schedules.getAllschedule');
         Route::post('schedules/{schedules}/editget', [ScheduleController::Class,'editget'])->name('schedules.editget');
         Route::DELETE('schedules/destroy/{schedule}', [ScheduleController::Class,'destroy'])->name('schedules.destroy');
+        Route::post('schedules/copy/{schedule}', [ScheduleController::Class,'copyschedule'])->name('schedules.copy');
         Route::Post('customer/update/{schedules}', [ScheduleController::Class,'update'])->name('schedules.update');
         Route::get('schedules/create/{consultant}', [ScheduleController::Class,'create2'])->name('schedules.create2');
         Route::Post('schedules/datatable',[ScheduleController::Class,'datatable'])->name('schedules.datatable');
@@ -272,11 +278,20 @@ Route::middleware('auth')->group(function () {
     Route::prefix('approval')->name('approval.')->group(function () {
         Route::resource('consultant', ConsultantApprovalController::Class)->only(['index','create','store','destroy','edit']);
         Route::Post('consultant/datatable',[ConsultantApprovalController::Class,'datatables'])->name('consultant.datatable');
-        Route::Post('consultant/status/{consultant}{status}', [ConsultantApprovalController::Class,'status'])->name('consultant.status');
+        Route::Post('consultant/status/', [ConsultantApprovalController::Class,'status'])->name('consultant.status');
       
         Route::resource('firm', FirmApprovalController::Class)->only(['index','create','store','destroy','edit']);
         Route::Post('firm/datatable',[FirmApprovalController::Class,'datatables'])->name('firm.datatable');
-        Route::Post('firm/status/{firm}{status}', [FirmApprovalController::Class,'status'])->name('firm.status');
+        Route::Post('firm/status/', [FirmApprovalController::Class,'status'])->name('firm.status');
+        
+        Route::resource('pay_in', PayInApprovalController::Class)->only(['index']);
+        Route::Post('pay_in/datatable',[PayInApprovalController::Class,'datatables'])->name('pay_in.datatable');
+        Route::Post('pay_in/status/', [PayInApprovalController::Class,'status'])->name('pay_in.status');
+
+        Route::resource('pay_out', PayOutApprovalController::Class)->only(['index']);
+        Route::Post('pay_out/datatable',[PayOutApprovalController::Class,'datatables'])->name('pay_out.datatable');
+        Route::Post('pay_out/status/', [PayOutApprovalController::Class,'status'])->name('pay_out.status');
+
 
     });
 

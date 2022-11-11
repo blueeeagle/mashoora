@@ -44,7 +44,7 @@
                                 <div class="form-group row">
                                     <div class="col-md-6">
                                         <label for="" class="form-label">Country<span class="text-danger">*</span></label>
-                                        <select class="form-select mb-4" name="country_id" id="country_id" data-control="select2" data-placeholder="Select an option">
+                                        <select class="form-select mb-4" name="country_id" id="country_id" data-control="select2" required data-placeholder="Select an option">
                                             <option></option>
                                             @foreach($countrys as $country)
                                                 <option {{ ($city->country_id ==  $country->id)?'selected':'' }} data-has_state='{{ $country->has_state }}'  value="{{$country->id}}">{{$country->country_name}}</option>
@@ -58,7 +58,7 @@
                                     </div>
                                     <div class="col-md-6" id="stateDiv" style="{{ (!$stateDiv)?'display:none':'' }}">
                                         <label for="" class="form-label">State<span class="text-danger">*</span></label>
-                                        <select class="form-select" name="state_id" id="state_id" data-control="select2" data-placeholder="Select an option">
+                                        <select class="form-select" name="state_id" id="state_id" data-control="select2" required data-placeholder="Select an option">
                                             <option></option>
                                             @if ($stateDiv)
                                                 @foreach($state as $country)
@@ -73,13 +73,13 @@
                                     <div class="col-md-6">
                                     
                                         <label for="" class="form-label">City name<span class="text-danger">*</span></label>
-                                        <input type="text" value="{{ $city->city_name }}" name="city_name" class="form-control " placeholder="City name"/>
+                                        <input type="text" value="{{ $city->city_name }}" name="city_name" class="form-control "  required placeholder="City name"/>
                                     </div>
                                 </div>
                                  
                                 <div class="form-group row" style="float:right" >
                                     <div class="col-md-6">
-                                        <button type="button" class="btn btn-secondary btn-hover-rise ">Reset</button>
+                                       <button type="button" id="formEditReset" class="btn btn-secondary btn-hover-rise me-5 ">Reset</button>
                                     </div>
                                     <div class="col-md-6">
                                         <button type="submit" class="btn btn-primary btn-hover-rise">Save</button>

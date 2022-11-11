@@ -44,23 +44,27 @@ class FirmApprovalController extends Controller
             $cat = Category::whereIn('id',explode(',',$datas->categorie_id))->get();
             $template='';
             for($i = 0;$i<count($cat); $i++){
-                $template .=  $cat[$i]->name."<br>";       
+                $template .= "<span class='badge badge-success'>".$cat[$i]->name."</span>"."<br/>";          
             }
             return $template;
           
         })
-        ->addColumn('dropdown',function($datas){
-            return [
-                'ped'=> route('approval.firm.status',['firm'=>$datas->id,'status'=>1]),
-                'acc'=> route('approval.firm.status',['firm'=>$datas->id,'status'=>2]),
-                'dec'=> route('approval.firm.status',['firm'=>$datas->id,'status'=>3]),
-                'select' => $datas->approval
-            ];
-        })        
+        ->editColumn('approval',function(Firm $datas){
+            if($datas->approval == 2){
+                return $temp = "<span class='badge badge-success'>Approved</span>";
+            }
+            if($datas->approval == 3){
+                return  $temp = "<span class='badge badge-danger'>Decline</span>";
+            }
+            return 'Pending';
+        })           
         ->addColumn('option',function($datas){
             return ['view'=> \route('user.firms.edit',$datas->id)];
         })
-        ->rawColumns(['category','status','action'])
+        ->addColumn('select',function($datas){
+            return ['select'];
+        })
+        ->rawColumns(['category','approval','action'])
         ->toJson(); //--- Returning Json Data To Client Side
     }
 
@@ -69,10 +73,23 @@ class FirmApprovalController extends Controller
 		return view('approval.firm.index');
 	}
 
-	public function status(Firm $firm,$status){
-       
-        $firm->approval = $status;
-        $firm->update();
-        return response()->json(['status'=>true,'msg'=>'Status Updated']);
+	public function status(Request $request){
+    //    dd($request);
+        if($request->status == 'Decline'){
+            foreach ($request->id as $key => $id) {
+                $approval = Firm::where('id',$id)->first();
+                $approval->approval = 3;
+                $approval->update();
+            }
+            return response()->json(['status'=>true,'msg'=>'Declined']);
+        }
+        if($request->status == 'Approve'){
+            foreach ($request->id as $key => $id) {
+                $approval = Firm::where('id',$id)->first();
+                $approval->approval = 2;
+                $approval->update();
+            }
+            return response()->json(['status'=>true,'msg'=>'Approved']);
+        }
     }
 }

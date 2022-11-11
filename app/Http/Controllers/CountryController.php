@@ -11,6 +11,7 @@ use App\Models\State;
 use App\Models\City;
 use App\Models\Currency;
 use DataTables;
+use Validator;
 
 class CountryController extends Controller
 {
@@ -30,7 +31,7 @@ class CountryController extends Controller
             $search[] = $colum['search']['value'];
         }
 
-        $datas = Country::orderBy('id','desc')
+        $datas = Country::orderBy('country_name','ASC')
         ->when($search[1],function($query,$search){
             return $query->where('country_name','LIKE',"%{$search}%");
         })
@@ -51,6 +52,10 @@ class CountryController extends Controller
                             })
                             ->addColumn('dialing', function(Country $datas) {
                                 return $datas->dialing;
+                            }) 
+                            ->editColumn('created_at', function(Country $datas) {
+                                $date=date_create($datas->created_at);
+                                 return  date_format($date,"d-m-Y");
                             })
                             ->addColumn('has_state', function(Country $datas) {
                                 $state = ($datas->has_state == 1)?'checked':'' ;
@@ -83,7 +88,7 @@ class CountryController extends Controller
             $currencySelect = Currency::where('countryname',$Country->country_name)->first();
             if($currencySelect) $currency = $currencySelect;
             if($Country->has_state){
-                $state = State::where('country_id',$request->id)->where('status',1)->get();
+                $state = State::where('country_id',$request->id)->where('status',1)->orderBy('state_name','asc')->get();
             }else{
                 $city = City::where('country_id',$request->id)->where('status',1)->get();
             }
@@ -92,12 +97,34 @@ class CountryController extends Controller
     }
     
      public function edit(Country $country){
-	//dd($country);
+
 		return view('country.edit',compact('country'));
 	}
 	
 	public function update(Request $Request,Country $country){
-        // dd($Request);
+	    
+        $rules=[
+			'country_name' => 'required|unique:countries,country_name,'.$country->id,
+			'dialing' => 'required|unique:countries,dialing,'.$country->id,
+			'country_code' => 'required|unique:countries,country_code,'.$country->id,
+		];
+
+		$customs=[
+			'dialing.required'  => 'Dialing Code should be filled',
+			'dialing.unique'      	=> 'Dialing Code already taken',
+			
+			'country_code.required'  => 'Country Code should be filled',
+			'country_code.unique'      	=> 'Country Code already taken',
+			
+			'country_name.required'  => 'Country Name should be filled',
+			'country_name.unique'      	=> 'Country Name already taken',
+		];
+        $validator = Validator::make($Request->all(), $rules,$customs);
+
+        if ($validator->fails()) {
+          return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
+        }
+
        
         $country->update($Request->all());
         return response()->json(['msg'=>'Updated Successfully']);
@@ -115,8 +142,16 @@ class CountryController extends Controller
         return response()->json(['status'=>true,'msg'=>'Has State Updated']);
     }
      public function status(Request $request,Country $country){
-        $country->status = $request->status;
-        $country->update();
-        return response()->json(['status'=>true,'msg'=>'Status Updated']);
+        
+        if($country->currency){
+            $country->status = $request->status;
+            $country->update();
+            return response()->json(['status'=>true,'msg'=>'Status Updated']);
+        }else{
+            $country->status = 0;
+            $country->update();
+            return response()->json(['status'=>false,'msg'=>'Country has no currency']);
+        }
+        
     }
 }

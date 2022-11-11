@@ -25,8 +25,9 @@ class OfferController extends Controller
     }
 
     public function create(){
-        $category = Category::where('type',0)->where('status',1)->whereIn('id',explode(",",Auth::guard('consultant')->user()->categorie_id))->get();
-        return response()->json(['category'=>$category]);
+        $category = Category::where('type',0)->where('status',1)->whereIn('id',explode(",",Auth::guard('consultant')->user()->categorie_id))->first();
+        $subctegory = Category::where('type',1)->where('status',1)->whereIn('id',explode(",",Auth::guard('consultant')->user()->categorie_id))->get();
+        return response()->json(['category'=>$category,'subctegory'=>$subctegory]);
     }
     public function store(Request $Request){
         $rules=[
@@ -59,15 +60,16 @@ class OfferController extends Controller
         $offer->offer_title = $Request->offer_title;
         $offer->description = $Request->description;
         $offer->amount = $Request->amount;
-        if(isset($consultant->has_validity)) $offer->has_validity = $consultant->has_validity;
-        if(isset($consultant->from_date)) $offer->from_date = $consultant->from_date;
-        if(isset($consultant->to_date)) $offer->to_date = $consultant->to_date;
-        $offer->category_id = \implode(',',$Request->category_id);
-        $offer->sub_category_id = \implode(',',$Request->sub_category_id);
+        if(isset($Request->has_validity)) $offer->has_validity = $Request->has_validity;
+        if(isset($Request->from_date)) $offer->from_date = $Request->from_date;
+        if(isset($Request->to_date)) $offer->to_date = $Request->to_date;
+        $category_id = $Request->sub_category_id;
+        $category_id[] = $Request->category_id;
+        $offer->category_id = \implode(',',$category_id);
         $offer->status = (isset($Request->status)?1:0);
 
         if($Request->has('image')){
-            $offer->image = $Request->file('image')->store("uploadFiles/offer/",'public_custom');
+            $offer->image = $Request->file('image')->store("/uploadFiles/offer/",'public_custom');
         }
         $offer->save();
 
@@ -106,15 +108,15 @@ class OfferController extends Controller
         $offer->offer_title = $Request->offer_title;
         $offer->description = $Request->description;
         $offer->amount = $Request->amount;
-        if(isset($consultant->has_validity)) $offer->has_validity = $consultant->has_validity;
-        if(isset($consultant->from_date)) $offer->from_date = $consultant->from_date;
-        if(isset($consultant->to_date)) $offer->to_date = $consultant->to_date;
+        if(isset($Request->has_validity)) $offer->has_validity = $Request->has_validity;
+        if(isset($Request->from_date)) $offer->from_date = $Request->from_date;
+        if(isset($Request->to_date)) $offer->to_date = $Request->to_date;
         $offer->category_id = \implode(',',$Request->category_id);
         $offer->sub_category_id = \implode(',',$Request->sub_category_id);
         $offer->status = (isset($Request->status)?1:0);
 
         if($Request->has('image')){
-            $offer->image = $Request->file('image')->store("uploadFiles/offer/",'public_custom');
+            $offer->image = $Request->file('image')->store("/uploadFiles/offer/",'public_custom');
         }
 
         $offer->update();
@@ -124,8 +126,10 @@ class OfferController extends Controller
 
     public function edit(Request $request, Offer $offer){
         $sub = explode(',',$offer->category_id);
-        $category = Category::where('type',0)->where('status',1)->whereIn('id',explode(",",Auth::guard('consultant')->user()->categorie_id))->get();
-        $subcategory = Category::where('type',1)->where('status',1)->whereIn('id',$sub)->get();
+        $offer->{'parent_Cat'} = $offer->parentcat();
+        $offer->{'sub_Cat'} = $offer->subcat();
+        $category = Category::where('type',0)->where('status',1)->whereIn('id',explode(",",Auth::guard('consultant')->user()->categorie_id))->first();
+        $subcategory = Category::where('type',1)->where('status',1)->where('categories_id',$category->id)->get();
 
         return response()->json(['edit_offers'=>$offer,'category'=>$category,'subcategory'=>$subcategory] ,200);
     }

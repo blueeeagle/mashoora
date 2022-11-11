@@ -20,4 +20,13 @@ class Consultantcategory extends Model
     public function SubCategory(){
         return  $this->belongsTo(Category::class,'subcategorie_id')->where('status',1);
     }
+    
+    public function CategoryAlter(){
+        return  $this->belongsTo(Category::class,'categorie_id')->where('status',1)->select('name');
+    }
+
+    public function SubCategoryAlter(){
+        return  $this->belongsTo(Category::class,'subcategorie_id')->where('status',1)->select('name');
+    }
+
 }

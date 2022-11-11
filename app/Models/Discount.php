@@ -24,5 +24,10 @@ class Discount extends Model
     public function consultant(){
         return $this->belongsTo(Consultant::class,'consultant_id');
     }
-
+public function parentcat(){
+        return Category::whereIn('id',\explode(',',$this->categorie_id))->where('type',0)->where('status',1)->first();
+    }
+    public function subcat(){
+        return Category::whereIn('id',\explode(',',$this->categorie_id))->where('type',1)->where('status',1)->get();
+    }  
 }

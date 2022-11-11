@@ -1,5 +1,10 @@
 <x-base-layout>
-
+    @if (\Session::has('errors'))
+        <div class="alert alert-danger alert-dismissible fade show">
+            <strong>{!! \Session::get('errors') !!}</strong> 
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
     <div id="kt_engage_demos" class="bg-body" data-kt-drawer="true" data-kt-drawer-name="explore" data-kt-drawer-activate="true" data-kt-drawer-overlay="true" data-kt-drawer-width="{default:'350px', 'lg': '475px'}" data-kt-drawer-direction="end" data-kt-drawer-toggle="#kt_engage_demos_toggle" data-kt-drawer-close="#kt_engage_demos_close">
         <!--begin::Card-->
         <div class="card shadow-none rounded-0 w-100">

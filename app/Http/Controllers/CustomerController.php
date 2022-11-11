@@ -45,11 +45,12 @@ class CustomerController extends Controller
         return view('customer.index',['City'=>$City,'State'=>$State,'Country'=>$Country]);
     }
     
-     public function view(Customer $customer){
-        $customer = Customer::with('state','country','city')->where('id',$customer->id)->get()->first();
+    public function view(Customer $customer){
+        $customer = Customer::with('state','country','city','wallet','appointment','appointment_completed','appointment.transaction','reviews.consultant','wallet_trans','offer_history.consultant')->where('id',$customer->id)->get()->first();
+        $app_completed = count($customer->appointment_completed);
         $consultant = Consultant::where('status',1)->get()->first();
-        // dd($consultant);
-        return \view('customer.view',['customer'=>$customer,'consultant'=>$consultant]);
+        // dd($customer);
+        return \view('customer.view',['customer'=>$customer,'consultant'=>$consultant,'app_completed'=>$app_completed]);
     }
 
     public function datatable(Request $request){
@@ -131,9 +132,12 @@ class CustomerController extends Controller
         if ($validator->fails()) {
           return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
+        $countrys = Country::where('id',$Request->country_code)->first();
         $Customer = new Customer;
         $Customer->fill($Request->all());
         $Customer->status = (isset($Request->status)?1:0);
+        $Customer->country_code = $countrys->country_code;
+        $Customer->mobile_reg = 0;
         $Customer->save();
 
        return response()->json(['msg'=>'Customer Addes']);

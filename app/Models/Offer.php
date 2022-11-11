@@ -28,5 +28,10 @@ class Offer extends Model
     public function sub_category(){
         return $this->belongsTo(Category::class,'sub_category_id');
     }
-                        
+    public function parentcat(){
+        return Category::whereIn('id',\explode(',',$this->categorie_id))->where('type',0)->where('status',1)->first();
+    }
+    public function subcat(){
+        return Category::whereIn('id',\explode(',',$this->categorie_id))->where('type',1)->where('status',1)->get();
+    }                    
 }

@@ -40,14 +40,27 @@
                 <!--begin::Products-->
                 <div class="card card-flush">
                     <!--begin::Card body-->
-                    <div class="card-body pt-0">
+                    <div class="card-body rounded border pt-0">
                         <form action="{{ route('setting.companysettings.update',1) }}" method="post" id="formEdit">
                             @csrf
+                            
                             <div class="py-5">
-                                <hr>
-                                <h4 class="com-head">About</h4>
-                                 <hr>
-                                <div class="rounded border p-10">
+                                   <div class="tabs effect-1 company">
+			<!-- tab-title -->
+			<input type="radio" id="tab-1" name="tab-effect-1">
+			<span>About</span>
+
+			<input type="radio" id="tab-2" name="tab-effect-1">
+			<span> Address</span>
+
+			<input type="radio" id="tab-3" name="tab-effect-1">
+			<span>Setting</span>
+
+			
+			<!-- tab-content -->
+			<div class="tab-content">
+				<section id="tab-item-1">
+					  <div class="p-10">
 
                                     <div class="form-group row">
                                         <div class="col-md-6">
@@ -96,17 +109,16 @@
                                         <textarea id="about_us" name="about_us" class="tox-target" maxlength="256">{{ $Companysetting->about_us }}</textarea>
                                     </div>
                                 </div>
- <hr>
-                                <h4 class="com-head">Address</h4>
-                                <hr>
-                                <div class="rounded border p-10">
+					
+				</section>
+				<section id="tab-item-2">
+				    <div class="p-10">
                                     @include('components.addressComponent',['country_id'=>$Companysetting->country_id,'state_id'=>$Companysetting->state_id,
                                     'city_id'=>$Companysetting->city_id,'zipcode'=>$Companysetting->zipcode,'register_address'=>$Companysetting->register_address,'page'=>'Edit','countrys'=>$countrys,'state'=>$state,'city'=>$city])
                                 </div>
-                                 <hr>
-                                <h4 class="com-head">Setting</h4>
-                                 <hr>
-                                <div class="rounded border p-10">
+				</section>
+				<section id="tab-item-3">
+				   <div class="p-10">
                                     <div class="form-group row">
                                         <div class="col-md-6">
                                             <label class="required form-label fs-6 mb-4" >Base Currency</label>
@@ -176,6 +188,16 @@
                                         @include('components.contact')
                                     </div>                                    
                                 </div>
+				</section>
+			
+			
+			
+			</div>
+		</div>
+                                
+                                
+                             
+                              
 
                                 <br>
                                 <div class="form-group row">

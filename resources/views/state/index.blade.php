@@ -1,5 +1,10 @@
 <x-base-layout>
-
+    @if (\Session::has('errors'))
+        <div class="alert alert-danger alert-dismissible fade show">
+            <strong>{!! \Session::get('errors') !!}</strong> 
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
     <div id="kt_engage_demos" class="bg-body" data-kt-drawer="true" data-kt-drawer-name="explore" data-kt-drawer-activate="true" data-kt-drawer-overlay="true" data-kt-drawer-width="{default:'350px', 'lg': '475px'}" data-kt-drawer-direction="end" data-kt-drawer-toggle="#kt_engage_demos_toggle" data-kt-drawer-close="#kt_engage_demos_close">
         <!--begin::Card-->
         <div class="card shadow-none rounded-0 w-100">
@@ -76,7 +81,8 @@
                             <option selected value="1">Country Name</option>
                             <option selected value="2">State Name</option>
                             <option selected value="3">Status</option>
-                            <option selected hidden value="4">Action</option>
+                            <option selected value="4">Create Date</option>
+                            <option selected hidden value="5">Action</option>
                         </select>
                     </div>
                     
@@ -205,7 +211,8 @@
                                             <th>#</th>
                                             <th>Country Name</th>
                                             <th>State Name</th>
-                                            <th>status</th>
+                                            <th>Created Date</th>
+                                            <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -277,6 +284,7 @@
                     { data: 'DT_RowIndex'},
                     { data: 'country_name' },
                     { data: 'state_name' },
+                    { data: 'created_at'},
                     { data: 'status'},
                     { data: 'action'}
                 ],

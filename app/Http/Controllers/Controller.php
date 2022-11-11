@@ -9,7 +9,7 @@ use App\Models\Schedule;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use DateTime;
-
+use DateTimeZone;
 
 class Controller extends BaseController
 {
@@ -51,15 +51,15 @@ class Controller extends BaseController
         $event = [];
         $ScheduleData = [];
         $currntDay = strtotime($schedules->from_date);
-        $toDay = strtotime($schedules->recurring);
+        $toDay = strtotime($schedules->to_date);
         $schedule = json_decode($schedules->schedule);
         
         foreach ($schedule as $key => $value) {
             $store = [];
-
+            
             if(!isset($value->day)) continue;
             foreach ($value->kt_docs_repeater_nested_inner as $key2 => $temp) {
-                
+    
                 $description = [];
                 //API
                 if(isset($this->type)){
@@ -68,6 +68,7 @@ class Controller extends BaseController
                     if(isset($temp->voice) && $this->type == 'voice') { $description[] = 'Voice'; $append = true; }
                     if(isset($temp->text) && $this->type == 'text') { $description[] = 'Text'; $append = true; }
                     if(isset($temp->direct) && $this->type == 'direct') { $description[] = 'Direct'; $append = true; }
+                    
                     if($append){
                         $store[] = ['description'=> \implode(", ",$description)." Schedule",'from'=>$temp->from,'to'=>$temp->to,'title'=>$days[$key].' Schedule','key'=>$key.'-'.$key2];
                     }
@@ -82,13 +83,13 @@ class Controller extends BaseController
                     $store[] = ['description'=> \implode(", ",$description)." Schedule",'from'=>$temp->from,'to'=>$temp->to,'title'=>$days[$key].' Schedule','key'=>$key.'-'.$key2];
                 }
             }
-            $ScheduleData[] = [$days[$key] => $store];
+            $ScheduleData[$key] = [$days[$key] => $store];
         }
-
+        
         for ( $i = $currntDay; $i <= $toDay; $i = $i + 86400 ) {
-
-            $thisDate = date( 'D', $i );
             
+            $thisDate = date( 'D', $i );
+           
             if(!isset($ScheduleData[$this->getDateKey($thisDate)])) continue;
 
             foreach($ScheduleData[$this->getDateKey($thisDate)] as $temps){
@@ -159,7 +160,7 @@ class Controller extends BaseController
             foreach($ScheduleData[$no] as $key => $temp){
                 # code...
                 $event[] = [
-                    'id' => $schedules->id.'-'.$temp['key'], 
+                    'id' => $schedules->id.'-'.$temp['key'],
                     'title' => $temp['title'],
                     'start' => date("Y-m-d", $i).'T'.$temp['from'],
                     'end' => date("Y-m-d", $i).'T'.$temp['to'],
@@ -173,8 +174,10 @@ class Controller extends BaseController
         return $event;
     }
 
-    function change_to_API_fORMET($DATA,$consultant){
-        $loopdate = 14;
+    function change_to_API_fORMET($MapIDs,$DATA,$consultant,$customerTimeZone,$consultantTimeZone){
+        $diff = strtotime($customerTimeZone->format("Y-m-d H:i")) - strtotime(date("Y-m-d H:i"));
+        // $diff = 0;
+        $loopdate = 30;
         $loopingSlot = 200;
         $event = [];
         $mor = [strtotime("5:00"),strtotime("11:59:59")];
@@ -183,37 +186,45 @@ class Controller extends BaseController
 
         foreach ($DATA as $key => $value) {
             # code...
-            
-            $start_strtotime = strtotime($value['start']);
-            $end_strtotime = strtotime($value['end']);
+        
+            $start_strtotime = strtotime($value['start']) + ($diff);
+            $end_strtotime = strtotime($value['end']) + ($diff);
             $dummu;
-            
-            if(strtotime($value['start']) < strtotime(date("Y-m-dTH:i"))) continue;
+
+            if(strtotime($value['start']) < strtotime(date("Y-m-d H:i"))) continue;
             $date = date_create($value['start']);
 
-            if(!isset($event[date_format($date,"y/M/d")])){
-                $dummu = array(date_format($date,"y/M/d") => ['Morning'=>[],'Afternoon'=>[],'Evening'=>[],'Night '=>[]]);
-                $event += $dummu;
-                // $event[date_format($date,"y/M/d")] = ['Morning'=>[],'Afternoon'=>[],'Evening'=>[],'Night '=>[]];
-            }
+
+            // if(!isset($event[date_format($date,"y/M/d")])){
+            //     $dummu = array(date_format($date,"y/M/d") => ['Customer'=>null,'Morning'=>[],'Afternoon'=>[],'Evening'=>[],'Night '=>[]]);
+            //     $event += $dummu;
+            // }
+
             $slor = 0;
-            for ($i = $start_strtotime; $start_strtotime <= $end_strtotime ; $start_strtotime = $start_strtotime+(60*$consultant->preferre_slot)) {
-                
+            for ($i = $start_strtotime; $start_strtotime <= $end_strtotime ; $start_strtotime = $start_strtotime+(60*$consultant->preferre_slot),$slor++) {
+
                 $day = $start_strtotime;
-                $date = date_create(date('Y-m-dTH:i',$start_strtotime));
+                $date = date_create(date('Y-m-d H:i',$start_strtotime));
+            
+                if(!isset($event[date_format($date,"y/M/d")])){
+                    $dummu = array(date_format($date,"y/M/d") => ['Customer'=>$diff,'Morning'=>[],'Afternoon'=>[],'Evening'=>[],'Night '=>[]]);
+                    $event += $dummu;
+                }
+                $id = $value['id'].'-'.$key.'-'.$slor;
+                //check slot taken
+                if(in_array($id,$MapIDs)) continue;
                 
                 $day = strtotime(date_format($date,"H:i:s"));
-                if($day >= $mor[0]  && $day <= $mor[1]) $event[date_format($date,"y/M/d")]['Morning'][] = ['id'=>$value['id'].'-'.$slor,'time'=>date_format($date,"h:i:s a")];
-                else if($day >= $aft[0] && $day <= $aft[1]) $event[date_format($date,"y/M/d")]['Afternoon'][] = ['id'=>$value['id'].'-'.$slor,'time'=>date_format($date,"h:i:s a")];
-                else if($day >= $eve[0] && $day <= $eve[1] ) $event[date_format($date,"y/M/d")]['Evening'][] = ['id'=>$value['id'].'-'.$slor,'time'=>date_format($date,"h:i:s a")];
-                else $event[date_format($date,"y/M/d")]['Night '][] = ['id'=>$value['id'].'-'.$slor,'time'=>date_format($date,"h:i:s a")];
-                $slor++;
-                
+                if($day >= $mor[0]  && $day <= $mor[1]) $event[date_format($date,"y/M/d")]['Morning'][] = ['id'=>$id,'time'=>date_format($date,"h:i:s a")];
+                else if($day >= $aft[0] && $day <= $aft[1]) $event[date_format($date,"y/M/d")]['Afternoon'][] = ['id'=>$id,'time'=>date_format($date,"h:i:s a")];
+                else if($day >= $eve[0] && $day <= $eve[1] ) $event[date_format($date,"y/M/d")]['Evening'][] = ['id'=>$id,'time'=>date_format($date,"h:i:s a")];
+                else $event[date_format($date,"y/M/d")]['Night '][] = ['id'=>$id,'time'=>date_format($date,"h:i:s a")];
+
                 if($slor == $loopingSlot) break;
             }
             if($key == $loopdate) break;
         }
-        
+
         return $event;
     }
 
@@ -221,7 +232,7 @@ class Controller extends BaseController
         $days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
         return array_search($string,$days);
     }
-    
+
     function getFromToTimeSchedule($schedule,$map){
         $schedule = json_decode($schedule->schedule);
         $from = date('h:i a' , strtotime($schedule[$map[1]]->kt_docs_repeater_nested_inner[$map[2]]->from));

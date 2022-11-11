@@ -213,7 +213,7 @@
                                         <tr class="fw-semibold fs-6 text-gray-800">
                                             <th>#</th>
                                             <th>Title</th>
-                                            <th>Create at</th>
+                                            <th>Created Date</th>
                                             <th>Status</th>
                                             <th>Actions</th>
                                         </tr>

@@ -10,7 +10,7 @@
         <select class="form-select mb-4" id="country_id" name="country_id" data-control="select2" data-placeholder="Select an Country" required>
             <option></option>
             @foreach($countrys as $country)
-                <option value="{{$country->id}}" data-has_state='{{ $country->has_state }}'>{{$country->country_name}}</option>
+                <option value="{{$country->id}}" data-dialing="{{ $country->dialing }}" data-has_state='{{ $country->has_state }}'>{{$country->country_name}}</option>
               
             @endforeach
         </select>
@@ -26,8 +26,6 @@
         <select class="form-select mb-4" name="city_id" id="city_id" data-control="select2" data-placeholder="Select an City" required>
             <option></option>
         </select>
-
-        
         <label class="required form-label fs-6 mb-4" >Zip Code</label>
         <input type="text" name="zipcode" class="form-control mb-4" placeholder="Zip Code" required />
        
@@ -51,10 +49,12 @@
         <select class="form-select mb-4" id="country_id" name="country_id" data-control="select2" data-placeholder="Select an Country" required>
             <option></option>
             @foreach($countrys as $country)
-                <option value="{{$country->id}}" data-has_state='{{ $country->has_state }}' {{ ($country_id == $country->id)?'selected':'' }}>{{$country->country_name}}</option>
+                <option value="{{$country->id}}" data-dialing="{{ $country->dialing }}" data-has_state='{{ $country->has_state }}' {{ ($country_id == $country->id)?'selected':'' }}>{{$country->country_name}}</option>
                 @php
+                    $stateDiv = true;
                     if($country_id == $country->id){
                         $stateDiv = ($country->has_state)?true : false;
+                        $dialing = $country->dialing;
                     }
                 @endphp
             @endforeach
@@ -81,7 +81,7 @@
         </select>
     
         <label class="required form-label fs-6 mb-4" >Zip Code</label>
-        <input type="text" name="zipcode" value="{{ $zipcode }}" class="form-control form-control-solid mb-4" placeholder="Zip Code" required />
+        <input type="text" name="zipcode" value="{{ $zipcode }}" class="form-control mb-4" placeholder="Zip Code" required />
         
         @if(isset($phone))
             <label class="required form-label fs-6 mb-4" >Mobile no</label>
@@ -115,6 +115,10 @@
         $("#country_id").on('select2:select', function (e) {
             var data = e.params.data;
             let has_state =  e.params.data.element.dataset.has_state
+            if(typeof REPEAT_dialing !== undefined){REPEAT_dialing = data.element.dataset.dialing
+            $("[data-cmobile]").html(REPEAT_dialing)
+            $("[data-cphone]").html(REPEAT_dialing)
+            }
             if(has_state != "0"){
                 stateDiv.show(500)
                 state.attr('required',true);
@@ -144,8 +148,8 @@
                     city.html(option1).val('').trigger("change");
                     if(data.Country){
                         // $("input[data-cmobile]").val(data.Country.dialing)
-                        $("#dial_code").val(data.Country.dialing)
-                        $('.base_curency').html(data.currency.currencycode)
+                        $("#dial_code").val(data?.Country?.dialing)
+                        $('.base_curency').html(data?.currency?.currencycode)
                     }
                 }
             })

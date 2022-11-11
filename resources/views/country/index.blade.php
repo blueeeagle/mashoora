@@ -1,4 +1,10 @@
 <x-base-layout>
+    @if (\Session::has('errors'))
+        <div class="alert alert-danger alert-dismissible fade show">
+            <strong>{!! \Session::get('errors') !!}</strong> 
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
     <div id="kt_engage_demos" class="bg-body" data-kt-drawer="true" data-kt-drawer-name="explore" data-kt-drawer-activate="true" data-kt-drawer-overlay="true" data-kt-drawer-width="{default:'350px', 'lg': '475px'}" data-kt-drawer-direction="end" data-kt-drawer-toggle="#kt_engage_demos_toggle" data-kt-drawer-close="#kt_engage_demos_close">
         <!--begin::Card-->
         <div class="card shadow-none rounded-0 w-100">
@@ -86,8 +92,9 @@
                             <option selected value="2">Code</option>
                             <option selected value="3">Dialing</option>
                             <option selected value="4">Has State</option>
-                            <option selected value="5">Status</option>
-                            <option selected value="6">Action</option>
+                            <option selected value="5">Created Date</option>
+                            <option selected value="6">Status</option>
+                            <option selected value="7">Action</option>
                         </select>
                     </div>
                     
@@ -218,6 +225,7 @@
                                             <th>Code</th>
                                             <th>Dialing</th>
                                             <th>Has State</th>
+                                            <th>Created Date</th>
                                             <th>Status</th>
                                             <th>Action</th>
                                         </tr>
@@ -287,6 +295,7 @@
                     { data: 'country_code'},
                     { data: 'dialing'},
                     { data: 'has_state'},
+                    { data: 'created_at'},
                     { data: 'status'},
                     { data: 'action'},
                 ],

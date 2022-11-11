@@ -45,7 +45,7 @@
                                     <div class="col-md-6">
                                    
                                         <label for="" class="form-label">Country<span class="text-danger">*</span></label>
-                                        <select class="form-select" name="country_id" data-control="select2" data-placeholder="Select an option">
+                                        <select class="form-select" name="country_id" data-control="select2" required data-placeholder="Select an option">
                                             <option></option>
                                             @foreach($data as $country)
                                                 <option {{ ($state->country_id ==  $country->id)?'selected':'' }} value="{{$country->id}}">{{$country->country_name}}</option>
@@ -55,12 +55,13 @@
                                     <div class="col-md-6">
                                    
                                         <label for="" class="form-label">State name<span class="text-danger">*</span></label>
-                                        <input type="text" value="{{ $state->state_name }}" name="state_name" class="form-control mb-4 " placeholder="State name"/>
+                                        <input type="text" value="{{ $state->state_name }}" name="state_name" class="form-control mb-4 " required placeholder="State name"/>
                                     </div>
                                 </div>
                                 <div class="form-group row" style="float:right" >
                                     <div class="col-md-6">
-                                        <button type="button" class="btn btn-secondary btn-hover-rise ">Reset</button>
+                                        <button type="button" id="formEditReset" class="btn btn-secondary btn-hover-rise me-5 ">Reset</button>
+
                                     </div>
                                     <div class="col-md-6">
                                         <button type="submit" class="btn btn-primary btn-hover-rise">Save</button>

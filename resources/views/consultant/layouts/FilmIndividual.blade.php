@@ -18,10 +18,8 @@
         </div>
         <div class="fv-row mb-10" id="firmselectdiv">
             <label class=" form-label fs-6 mb-2" >Choose Firm</label>
-            <select required class="form-select form-select-solid firm-img" data-placeholder="Search option" data-allow-clear="true" name="firm_choose" id="firm_choose">
-                @foreach ($firm as $key => $fi)
-                    <option data-image="{{ asset("storage/$fi->logo") }}" "{{ ($key == 0)?'selected':'' }}" value="{{ $fi->id }}">{{ $fi->comapany_name }}</option>
-                @endforeach
+            <select required class="form-select form-select-solid"  data-placeholder="Search option" data-allow-clear="true" name="firm_choose" id="firm_choose">
+                <option></option>
             </select>
         </div>
         <div class="fv-row mb-10" hidden id="other">

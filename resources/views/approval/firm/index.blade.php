@@ -235,8 +235,16 @@
                                             <th>status</th>
                                             <th>Date & Time Stamp</th>
                                             <th>Option</th>
+                                            <th>Select</th>
                                         </tr>
                                     </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="7"></td>
+                                            <td><button class="btn btn-danger btn-sm" onclick="update_approval(this)" value="1" id="decline">Decline</button></th>
+                                            <td><button class="btn btn-success btn-sm" onclick="update_approval(this)" value="2" id="approve">Approve</button></th>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                                 
                             </div>
@@ -252,7 +260,7 @@
     </div>
 @section('scripts')
 <script type="text/javascript">
-
+    var checked = [];
     var table = null;
         $(document).ready(function () {
             table = $("#kt_customers_table").DataTable({
@@ -299,7 +307,7 @@
                     type: 'POST',
                     data: {
                         "_token": "{{ csrf_token() }}",
-                        columnsDef : ['id','created_at','company_name','email','category','status','updated_at','option']
+                        columnsDef : ['id','created_at','company_name','email','category','approval','updated_at','option']
                     }
 
                 },
@@ -309,40 +317,35 @@
                     { data: 'comapany_name' },
                     { data: 'email' },
                     { data: 'category' },
-                    { data: 'status'},
+                    { data: 'approval'},
                     { data: 'updated_at'},
-                    {data: 'option'}
+                    {data: 'option'},
+                    {data: 'select'}
                 ],
                 columnDefs : [
                     {
-                        targets: -1,
+                        targets: 7,
                         data: null,
                         orderable: true,
                         render: function (data, type, row) {
                             return `
-                                <a href="${data.view}" class="btn btn-icon btn-bg-light btn-active-color-warning btn-sm me-1"> 
+                                <a href="${data.view}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"> 
                                     <span class="svg-icon svg-icon-3">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
-                                            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
-                                            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path opacity="0.3" d="M21.4 8.35303L19.241 10.511L13.485 4.755L15.643 2.59595C16.0248 2.21423 16.5426 1.99988 17.0825 1.99988C17.6224 1.99988 18.1402 2.21423 18.522 2.59595L21.4 5.474C21.7817 5.85581 21.9962 6.37355 21.9962 6.91345C21.9962 7.45335 21.7817 7.97122 21.4 8.35303ZM3.68699 21.932L9.88699 19.865L4.13099 14.109L2.06399 20.309C1.98815 20.5354 1.97703 20.7787 2.03189 21.0111C2.08674 21.2436 2.2054 21.4561 2.37449 21.6248C2.54359 21.7934 2.75641 21.9115 2.989 21.9658C3.22158 22.0201 3.4647 22.0084 3.69099 21.932H3.68699Z" fill="currentColor"></path>
+                                            <path d="M5.574 21.3L3.692 21.928C3.46591 22.0032 3.22334 22.0141 2.99144 21.9594C2.75954 21.9046 2.54744 21.7864 2.3789 21.6179C2.21036 21.4495 2.09202 21.2375 2.03711 21.0056C1.9822 20.7737 1.99289 20.5312 2.06799 20.3051L2.696 18.422L5.574 21.3ZM4.13499 14.105L9.891 19.861L19.245 10.507L13.489 4.75098L4.13499 14.105Z" fill="currentColor"></path>
                                         </svg>
-                                    </span>
+                                    </span>  
                                 </a>
                             `;
                         },
                     },
                     {
-                        targets: 5,
+                        targets: -1,
                         data: null,
                         orderable: false,
                         render: function (data, type, row) {
-                            return `
-                                <select name="" id="" class="form-select" onchange='status(this)' data-control="select2">
-                                    <option ${(row.dropdown.select == 1)?'selected':''} value="${row.dropdown.ped}">Pending</option>
-                                    <option ${(row.dropdown.select == 2)?'selected':''} value="${row.dropdown.acc}">Approval</option>
-                                    <option ${(row.dropdown.select == 3)?'selected':''} value="${row.dropdown.dec}">Decline</option>
-                                </select>
-                            `;
+                            return `<input  class="typecheck" type="checkbox" value='${row.id}' >`;
                         },
 
                     }
@@ -360,37 +363,55 @@
                 $('#kt_subheader_search_form').val('');
                table.search($('#kt_subheader_search_form').val()).draw();   
             });
+
+            $('body').on('click','.typecheck',function(e){
+                var alreadyCheck = checked.includes(e.target.value);
+                if(e.currentTarget.checked==true && !alreadyCheck){ 
+                    checked.push(e.target.value); 
+                }
+                else{
+                    checked = arrayRemove(checked,e.target.value );
+                    function arrayRemove(arr, value) { 
+                        return arr.filter(function(ele){ 
+                            return ele != value; 
+                        });
+                    }
+                }
+            })
+
         });
 
-    function status(obj){
-        value = obj.value;
-        
-        $.ajax({
-            url: value,
-            method:"post",
-            data:{
-                "_token": "{{ csrf_token() }}",
-                changeValue:value,
-            },
-            success:function(data){
-            if(data.msg){
-                Switealert(data.msg,'success')
-                
-            }else{
-                var Ptag = "";
-                for(var error in data.errors) { Ptag += data.errors[error]+', '; };
-                // Switealert(Ptag,'error')
-            }
-            
-        },
-        error:function(erroe){
-            console.log(erroe);
-            window.scrollTo({top:0,behavior:'smooth'});
-            alert("Something is wrong");
-        }
-                
-        })
-
+    function update_approval(e){
+       
+       if(e.value == 1){
+           var status = "Decline";
+       }
+       else{
+           var status = "Approve";
+       }
+       
+       if(checked.length !=0 ){
+           $.ajax({
+               url: "{{ route('approval.firm.status')}}",
+               method:"post",
+               data:{
+                   "_token": "{{ csrf_token() }}",
+                   status:status,
+                   id:checked,
+               },
+               success:function(data){
+                    if(data.msg){
+                        checked = [];
+                        Switealert(data.msg,'success')
+                        table.draw()
+                    }else{
+                        var Ptag = "";
+                        for(var error in data.errors) { Ptag += data.errors[error]+', '; };
+                        Switealert(Ptag,'error')
+                    }
+               }
+           })
+       }
     }
     
     function Switealert(Msg,status){

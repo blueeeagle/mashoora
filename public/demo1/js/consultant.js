@@ -33,7 +33,7 @@ function image_show(images) {
          image += `<div class="image_container d-flex justify-content-center position-relative">
                   <img src="${baseURl}/demo1/pdf.png"  alt="Image">
                   <span class="position-absolute" onclick="delete_image(` + images.indexOf(i) + `)">&times;</span><div></div>
-              </div>`;  
+              </div>`;
         }else{
         image += `<div class="image_container d-flex justify-content-center position-relative">
                   <img src="` + i.url + `"  alt="Image">
@@ -114,11 +114,11 @@ function Insurance(type){
 const poofTemplate = function (text) {
 
     let div = document.createElement('div')
-    
+
     let div2 = document.createElement('div')
     let lable = document.createElement('label')
     let input = document.createElement('input')
-    
+
     div.classList.add('fv-row', 'mb-10','col-md-6')
     div2.classList.add('card-body', 'd-flex', 'flex-wrap', 'justify-content-start')
     lable.classList.add('required', 'form-label', 'fs-6', 'mb-2')
@@ -137,10 +137,43 @@ const poofTemplate = function (text) {
     return div
 }
 
+const catetemplate = (vat,sub) => {
+    let templatereturn =  `<span class="d-block fw-bold text-start" style="margin-bottom: 25px;">
+    <span class="text-dark fw-bolder d-block fs-3">${vat}</span>`
+
+    for (var keyone in sub) {
+        templatereturn += subcatloop(keyone,sub[keyone])
+    }
+    return templatereturn += `</span>`;
+}
+const subcatloop = (keyone,sub) => {
+    return ` <span class="text-dark fw-bolder d-block fs-3" style="margin-left: 30px;">${keyone}</span> ${specloop(sub)}`
+}
+
+const specloop = (specArray) => {
+    let templatereturn = ''
+    specArray.forEach(element => {
+        templatereturn += `<span class="text-muted fw-bold fs-6" style="margin-left: 60px;">
+        <input class="form-check-input" type="checkbox" name="specialization_id[]" value="${element.id}" id="flexCheckChecked${element.id}">
+													<label class="form-check-label" for="flexCheckChecked${element.id}">${element.title}</label>
+                                                    </span>`
+    });
+    return templatereturn;
+}
+
+const specTemplate = function (specDatas) {
+    let html = "";
+    for (var key in specDatas) {
+        html += catetemplate(key,specDatas[key])
+    }
+    if(html == '') html = `<span class="text-muted fw-bold fs-6" style="margin-left: 60px;">NO Specialized</span>`
+    return html;
+}
+
 com_con_amount.addEventListener('keyup', function (event) {
     let com_con_type = document.querySelector('input[name="com_con_type"]:checked').value
     let AmountFlat = parseFloat(event.target.value)
-    let AmountFlatcurrency = admin_country.currency.price * consultant_country.currency.price *AmountFlat
+    let AmountFlatcurrency = admin_country.currency.price * (AmountFlat/consultant_country.currency.price)
     updateAmount(event.target, com_con_type)
     let voice = document.querySelector('input[name=voice]')
     let direct = document.querySelector('input[name=direct]')
@@ -159,31 +192,31 @@ com_con_amount.addEventListener('keyup', function (event) {
 
     if(video.checked) {
         let value = parseFloat(document.querySelector('input[name=video_amount]').value)
-        let basepriceconvert = admin_country.currency.price * consultant_country.currency.price * value
+        let basepriceconvert = admin_country.currency.price * (value/consultant_country.currency.price)
 
-        video_current.innerText = `${value} ( ${ (com_con_type == 1)? ((value/100)*value) + value : value+AmountFlat} )`
-        video_base.innerText = `${ Number(basepriceconvert).toFixed(2)} ( ${ (com_con_type == 1)? (((basepriceconvert/100)*basepriceconvert)+basepriceconvert).toFixed(2) : (basepriceconvert+AmountFlatcurrency).toFixed(2)} )`
+        video_current.innerText = `${value} ( ${ (com_con_type == 1)? ((value/100)*AmountFlat) + value : value+AmountFlat} )`
+        video_base.innerText = `${ Number(basepriceconvert).toFixed(2)} ( ${ (com_con_type == 1)? (((basepriceconvert/100)*AmountFlat)+basepriceconvert).toFixed(2) : (basepriceconvert+AmountFlatcurrency).toFixed(2)} )`
     }
     if(voice.checked) {
         let value = parseFloat(document.querySelector('input[name=voice_amount]').value)
-        let basepriceconvert = admin_country.currency.price * consultant_country.currency.price * value
+        let basepriceconvert = admin_country.currency.price * (value/consultant_country.currency.price)
 
-        voice_current.innerText = `${value} ( ${ (com_con_type == 1)? ((value/100)*value) + value  : value+AmountFlat} )`
-        voice_base.innerText = `${ Number(basepriceconvert).toFixed(2)} ( ${ (com_con_type == 1)? (((basepriceconvert/100)*basepriceconvert)+basepriceconvert).toFixed(2) : (basepriceconvert+AmountFlatcurrency).toFixed(2)} )`
+        voice_current.innerText = `${value} ( ${ (com_con_type == 1)? ((value/100)*AmountFlat) + value  : value+AmountFlat} )`
+        voice_base.innerText = `${ Number(basepriceconvert).toFixed(2)} ( ${ (com_con_type == 1)? (((basepriceconvert/100)*AmountFlat)+basepriceconvert).toFixed(2) : (basepriceconvert+AmountFlatcurrency).toFixed(2)} )`
     }
     if(text.checked) {
         let value = parseFloat(document.querySelector('input[name=text_amount]').value)
-        let basepriceconvert = admin_country.currency.price * consultant_country.currency.price * value
+        let basepriceconvert = admin_country.currency.price * (value/consultant_country.currency.price)
 
-        text_current.innerText =`${value} ( ${ (com_con_type == 1)? ((value/100)*value) + value  : value+AmountFlat} )`
-        text_base.innerText = `${ Number(basepriceconvert).toFixed(2)} ( ${ (com_con_type == 1)? (((basepriceconvert/100)*basepriceconvert)+basepriceconvert).toFixed(2) : (basepriceconvert+AmountFlatcurrency).toFixed(2)} )`
+        text_current.innerText =`${value} ( ${ (com_con_type == 1)? ((value/100)*AmountFlat) + value  : value+AmountFlat} )`
+        text_base.innerText = `${ Number(basepriceconvert).toFixed(2)} ( ${ (com_con_type == 1)? (((basepriceconvert/100)*AmountFlat)+basepriceconvert).toFixed(2) : (basepriceconvert+AmountFlatcurrency).toFixed(2)} )`
     }
     if(direct.checked) {
         let value = parseFloat(document.querySelector('input[name=direct_amount]').value)
-        let basepriceconvert = admin_country.currency.price * consultant_country.currency.price * value
+        let basepriceconvert = admin_country.currency.price * (value/consultant_country.currency.price)
 
-        direact_current.innerText = `${value} ( ${ (com_con_type == 1)? ((value/100)*value) + value  : value+AmountFlat} )`
-        direact_base.innerText = `${ Number(basepriceconvert).toFixed(2)} ( ${ (com_con_type == 1)? (((basepriceconvert/100)*basepriceconvert)+basepriceconvert).toFixed(2) : (basepriceconvert+AmountFlatcurrency).toFixed(2)} )`
+        direact_current.innerText = `${value} ( ${ (com_con_type == 1)? ((value/100)*AmountFlat) + value  : value+AmountFlat} )`
+        direact_base.innerText = `${ Number(basepriceconvert).toFixed(2)} ( ${ (com_con_type == 1)? (((basepriceconvert/100)*AmountFlat)+basepriceconvert).toFixed(2) : (basepriceconvert+AmountFlatcurrency).toFixed(2)} )`
     }
 
 });
@@ -204,7 +237,7 @@ document.querySelectorAll('input[name="com_pay_type"]').forEach(e => e.addEventL
 }))
 
 function courencyconveter() {
-    event.target.parentElement.lastElementChild.innerText = `Base Amount ${(admin_country.currency.price * consultant_country.currency.price * Number(event.target.value)).toFixed(2)}  ${admin_country.currency.currencycode}`
+    event.target.parentElement.lastElementChild.innerText = `Base Amount ${(admin_country.currency.price * Number(event.target.value/consultant_country.currency.price)).toFixed(2)}  ${admin_country.currency.currencycode}`
 }
 
 function enabledisable(input){
@@ -220,14 +253,14 @@ function CourencyFlatconveter(type) {
     const parentNode = event.target.parentNode.parentNode
     const inputvalue = parentNode.children[4].children[1]
     if (type == 0) {
-        parentNode.children[4].children[2].innerText = `Base Amount ${(admin_country.currency.price * consultant_country.currency.price * Number(inputvalue.value)).toFixed(2)}  ${admin_country.currency.currencycode}`
+        parentNode.children[4].children[2].innerText = `Base Amount ${(admin_country.currency.price *Number(inputvalue.value/consultant_country.currency.price)).toFixed(2)}  ${admin_country.currency.currencycode}`
     } else {
         parentNode.children[4].children[2].innerText = `%`
     }
 }
 
 const sub_category_id = $('#sub_category_id');
-const specialization_id = $('#specialization_id');
+// const specialization_id = $('#specialization_id');
 
 $("#category_id").on('select2:select', function (e) {
     var data = e.params.data;
@@ -408,22 +441,39 @@ $(document).ready(function () {
             }
         })
     })
-    $("#firm_choose").on('select2:select', function (e) {
-        var data = e.params.data;
-        if (data.id == 'other') document.getElementById('other').removeAttribute('hidden')
-        else document.getElementById('other').setAttribute('hidden', true)
-    })
+
 })
 
 var KTCreateAccount = function () {
     var e, t, i, o, s, r, k, a = [],
-        showSkip = [1, 2, 3, 4, 7, 8, 9, 10, 11],
-        showpreview = [],
+        showSkip = [1, 2, 3, 4,10,11],
+        showpreview = [2],
+        skippreviewsteps = [],
         funsave = [],
         funprev = [],
+        bankshowoff,
         triggervalue = [];
     return {
         init: function () {
+            bankshowoff = document.getElementById('bankshowoff')
+            bankshowoff.addEventListener('change', function(event){
+                if(event.target.checked) {
+                    $('#bankdivshowonoff').show(500)
+                    a[10].addField('account_number')
+                    a[10].addField('account_name')
+                    a[10].addField('ifsc_code')
+                    a[10].addField('bank_name')
+                    a[10].addField('branch')
+                }else{
+                    $('#bankdivshowonoff').hide(500)
+                    a[10].removeField('account_number')
+                    a[10].removeField('account_name')
+                    a[10].removeField('ifsc_code')
+                    a[10].removeField('bank_name')
+                    a[10].removeField('branch')
+                }
+
+            }),
             (e = document.querySelector("#kt_modal_create_account")) && new bootstrap.Modal(e),
                 t = document.querySelector("#kt_create_account_stepper"),
                 i = t.querySelector("#kt_create_account_form"),
@@ -441,10 +491,30 @@ var KTCreateAccount = function () {
                     t ? t.validate().then((function (t) {
                         console.log("validated!"), "Valid" == t ? (typeof funsave[e.getCurrentStepIndex() - 1] === 'function' ? funsave[e.getCurrentStepIndex() - 1]().then(function (data) {
                             if (data?.step && data?.next) {
-                                e.goTo(data.step + 1);
+
+                                if(typeof data?.skipprevarraty != 'undefined'){
+                                    if(data.skipprevarraty == false){
+                                        if(!skippreviewsteps.includes(data.step)){ skippreviewsteps.push(data.step); }
+                                        e.goTo(data.step + 1);KTUtil.scrollTop();
+                                    }else if(data.skipprevarraty == true){
+                                        if(skippreviewsteps.includes(r.currentStepIndex+1)){
+                                            skippreviewsteps = skippreviewsteps.filter(function(value, index, arr){
+                                                return value > r.currentStepIndex+1;
+                                            });
+                                        }
+                                        e.goNext();
+                                        KTUtil.scrollTop()
+                                    }
+                                }else{
+                                    if(skippreviewsteps.includes(r.currentStepIndex+1)){
+                                        skippreviewsteps = skippreviewsteps.filter(function(value, index, arr){
+                                            return value > r.currentStepIndex+1;
+                                        });
+                                    }
+                                    showpreview.push(data.step+1);
+                                    e.goTo(data.step + 1);
+                                }
                                 KTUtil.scrollTop();
-                                pr.classList.add('d-none');
-                                showpreview.push(data.step);
                             } else {
                                 if (data) {
                                     e.goNext();
@@ -468,12 +538,13 @@ var KTCreateAccount = function () {
                             e.goNext();
                             KTUtil.scrollTop()
                         }
-                    }) : e.goNext(), KTUtil.scrollTop())
+                    }) :
+                    e.goNext(), KTUtil.scrollTop())
                 })), r.on("kt.stepper.previous", (function (e) {
                     console.log("stepper.previous"),
                         typeof funprev[e.getCurrentStepIndex() - 1] === 'function' ? funprev[e.getCurrentStepIndex() - 1]().then(function (t) {
                             e.goPrevious(), KTUtil.scrollTop()
-                        }) : e.goPrevious(), KTUtil.scrollTop()
+                        }) : (skippreviewsteps.includes(r.currentStepIndex - 1))?(e.goTo(r.currentStepIndex -2), KTUtil.scrollTop()):(e.goPrevious(), KTUtil.scrollTop())
                 })), r.on("kt.stepper.skip", (function (e) {
                     console.log("stepper.skip"), e.goNext(), KTUtil.scrollTop()
                 })),
@@ -802,16 +873,13 @@ var KTCreateAccount = function () {
                         .then(response => response.json())
                         .then((response) => {
                             if (response.next) {
-
                                 consultant_country = response.country
+                                proofappend(response.Document);
+                                assainconsulatantvalue(response.consultant)
                                 consultantcurrnect.forEach(e => {
                                     e.innerText = consultant_country.currency.currencycode
                                 })
-                                response.Document?.forEach(e => proof_clone.appendChild(poofTemplate(e.title)))
-                                if (response?.tree) {
-                                    $('#kt_docs_jstree_checkable1').jstree(true).settings.core.data = response.tree;
-                                    $('#kt_docs_jstree_checkable1').jstree(true).refresh();
-                                }
+                                loadbasdata({'firm':response.firm,'insurance':response.insurance})
                                 return response
                             }
                             return false
@@ -871,7 +939,7 @@ var KTCreateAccount = function () {
                     data['step'] = 2
                     data['phone_no'] = document.getElementById('phone_no').value
                     data['c_code'] = document.getElementById('c-code').value
-                    let picture = document.getElementById('picture')
+                    let picture = document.querySelector('input[name=picture]')
                     if (picture.value == '') {
                         Swal.fire({
                             text: "Choose Profile Image",
@@ -887,7 +955,7 @@ var KTCreateAccount = function () {
                     for (var key in triggervalue[2]) {
                         data[key] = triggervalue[2][key].value
                     }
-                    data['language'] = $('#language').val().toString()
+                    data['picture'] = picture.value;
                     return await fetch(consultantsave, {
                             method: 'POST', // or 'PUT'
                             headers: {
@@ -936,6 +1004,20 @@ var KTCreateAccount = function () {
                         })
                 }),
                 funsave.push(async function () {    //Profession
+
+                if(categorie_id.value == ''){
+                    Swal.fire({
+                            text: "Select Profession",
+                            icon: "error",
+                            buttonsStyling: !1,
+                            confirmButtonText: "Ok, got it!",
+                            customClass: {
+                                confirmButton: "btn btn-light"
+                            }
+                        })
+                        return false
+                }
+
                     var data = {
                         _token: csrf
                     };
@@ -966,9 +1048,10 @@ var KTCreateAccount = function () {
                     var data = {
                         _token: csrf
                     };
+                    let spec = document.querySelectorAll('input[name="specialization_id[]"]:checked');
                     data['step'] = 5
                     data['phone_no'] = document.getElementById('phone_no').value
-                    data['specialized'] = specialized.value
+                    data['specialized'] = [...spec].map(e => { return e.value })
                     data['c_code'] = document.getElementById('c-code').value
 
                     return await fetch(consultantsave, {
@@ -981,6 +1064,11 @@ var KTCreateAccount = function () {
                         .then(response => response.json())
                         .then((response) => {
                             if (response.next) {
+                                if(!isinsuranves){
+                                    return { 'step':7,'next':true,'skipprevarraty':false };
+                                }else{
+                                    return { 'step':7,'next':true,'skipprevarraty':true }
+                                }
                                 return true
                             }
                             return false
@@ -997,18 +1085,7 @@ var KTCreateAccount = function () {
                     data['phone_no'] = document.getElementById('phone_no').value
                     data['insurance_id'] = $('#insurance_id').val();
                     data['c_code'] = document.getElementById('c-code').value
-                    if(document.querySelector('input[name="insurancecheckbox"]:checked').value == 1 && $('#insurance_id').val().length == 0){
-                        Swal.fire({
-                            text: "Select insurance",
-                            icon: "error",
-                            buttonsStyling: !1,
-                            confirmButtonText: "Ok, got it!",
-                            customClass: {
-                                confirmButton: "btn btn-light"
-                            }
-                        })
-                        return false
-                    }
+
                     return await fetch(consultantsave, {
                             method: 'POST', // or 'PUT'
                             headers: {
@@ -1040,6 +1117,7 @@ var KTCreateAccount = function () {
                         if (triggervalue[7][key].type == 'checkbox') data[key] = (triggervalue[7][key].checked) ? 1 : 0
                         else data[key] = triggervalue[7][key].value
                     }
+                    data['preferre_slot'] = document.querySelector('[name=preferre_slot]:checked').value
                     return await fetch(consultantsave, {
                             method: 'POST', // or 'PUT'
                             headers: {
@@ -1050,6 +1128,7 @@ var KTCreateAccount = function () {
                         .then(response => response.json())
                         .then((response) => {
                             if (response.next) {
+                                proofappend(response.Document);
                                 return true
                             }
                             return false
@@ -1080,7 +1159,8 @@ var KTCreateAccount = function () {
                         })
                         return false
                     }
-                    Node.forEach(e => e.files.forEach((i, d) => formdata.append(`proof[${d}]`, i)))
+                    let j = 0;
+                    Node.forEach(e => e.files.forEach((i, d) => { formdata.append(`proof[${j}]`, i); j++; }))
 
                     formdata.append("phone_no", document.getElementById('phone_no').value);
                     formdata.append("c_code", document.getElementById('c-code').value);
@@ -1126,9 +1206,6 @@ var KTCreateAccount = function () {
                         .then(response => response.json())
                         .then((response) => {
                             if (response.next) {
-                                setTimeout(() => {
-                                    window.location.href = indexConsultant
-                                }, 1000)
                                 return true;
                             }
                             return false
@@ -1145,10 +1222,11 @@ var KTCreateAccount = function () {
                     data['step'] = 10
                     data['phone_no'] = document.getElementById('phone_no').value
                     data['c_code'] = document.getElementById('c-code').value
-                    for (var key in triggervalue[7]) {
+                    for (var key in triggervalue[10]) {
                         if (triggervalue[10][key].type == 'checkbox') data[key] = (triggervalue[10][key].checked) ? 1 : 0
-                        else data[key] = triggervalue[7][key].value
+                        else data[key] = triggervalue[10][key].value
                     }
+
                     return await fetch(consultantsave, {
                             method: 'POST', // or 'PUT'
                             headers: {
@@ -1159,6 +1237,7 @@ var KTCreateAccount = function () {
                         .then(response => response.json())
                         .then((response) => {
                             if (response.next) {
+                                
                                 return true
                             }
                             return false
@@ -1194,7 +1273,8 @@ var KTCreateAccount = function () {
         }
     }
 }();
-
+const div_specialized = document.getElementById('specialized')
+var isinsuranves = false;
 var KTJSTreeCheckable = {
     init: function () {
         $("#kt_docs_jstree_checkable")
@@ -1210,10 +1290,11 @@ var KTJSTreeCheckable = {
                         categorie_id: categorie_id.value
                     },
                     success: function (data) {
-                        $('#kt_docs_jstree_checkable1').jstree(true).settings.core.data = data.tree;
-                        $('#kt_docs_jstree_checkable1').jstree(true).refresh();
-                        proof_clone.innerHTML = ''
-                        data.Document.forEach(e => proof_clone.appendChild(poofTemplate(e.title)))
+                        proofappend(data.Document);
+                        div_specialized.innerHTML = ''
+                        div_specialized.innerHTML = specTemplate(data.spec_data)
+                        isinsuranves = data.insutance
+
                     }
                 })
             })
@@ -1227,13 +1308,7 @@ var KTJSTreeCheckable = {
                 },
 
             })
-        $("#kt_docs_jstree_checkable1")
-            .on('changed.jstree', function (e, data) {
-                let temparray = $("#kt_docs_jstree_checkable1").jstree("get_selected")
-                specialized.value = temparray.join(',');
-            }).jstree({
-                plugins: ["wholerow", "checkbox"]
-            })
+
     }
 }
 
@@ -1256,26 +1331,45 @@ function funerror() {
     }))
 }
 var country_id = $("#country_id");
+$("#country_id").select2({disabled:'readonly'});
 var state = $("#state_id")
 var city = $("#city_id")
 var stateDiv = $('#stateDiv')
 var phone_no = $('#c-code')
 var landline = $('#landline')
+
 $("#country_code").select2({
     templateResult: formatState,
     width: 'resolve'
 });
-$("#firm_choose").select2({
-    templateResult: insuransetemplate,
-    templateSelection: insuransetemplate
-});
-$("#insurance_id").select2({
-    templateResult: insuransetemplate,
-    templateSelection: insuransetemplate
-});
+function loadbasdata(data){
+    $.each(data.firm, function(key, value) {
+        $('#firm_choose').append(`<option data-image="${baseURl}/storage/${value.logo}" "${(key == 0)?'selected':'' }"
+        value="${value.id}">${value.comapany_name }</option>`);
+   })
+   $.each(data.insurance, function(key, value) {
+        $('#insurance_id').append(`<option data-image="${baseURl}/storage/${value.logo}" "${(key == 0)?'selected':'' }"
+        value="${value.id}">${value.comapany_name }</option>`);
+    })
+
+    $("#firm_choose").select2({
+        templateResult: insuransetemplate,
+        templateSelection: insuransetemplate
+    });
+    $("#insurance_id").select2({
+        templateResult: insuransetemplate,
+        templateSelection: insuransetemplate
+    });
+    $("#firm_choose").on('select2:select', function (e) {
+        var data = e.params.data;
+        if (data.id == 'other') document.getElementById('other').removeAttribute('hidden')
+        else document.getElementById('other').setAttribute('hidden', true)
+    })
+}
+
 function insuransetemplate(state){
     if (!state.id) return state.text;
-    
+
    var imag = $(state.element).data('image');
     var $state = $(
         `<span><img style="width:25px;" onerror="this.onerror=null;this.remove()" src="${imag}" class="img-flag" />${state.text}</span>`
@@ -1292,8 +1386,23 @@ function formatState(state) {
     return $state;
 };
 
-$("#country_code").change(function (e) {
+const proofappend = (document)=> {
+    proof_clone.innerHTML = ''
+    document.forEach(e => proof_clone.appendChild(poofTemplate(e.title)))
+}
+const assainconsulatantvalue = (consultant) => {
+    document.querySelector('input[name=video_amount]').value = consultant.video_amount ?? 0
+    document.querySelector('input[name=voice_amount]').value = consultant.voice_amount ?? 0
+    document.querySelector('input[name=text_amount]').value = consultant.text_amount ?? 0
+    document.querySelector('input[name=direct_amount]').value = consultant.direct_amount ?? 0
 
+    document.querySelector('input[name=voice]').checked = (consultant.voice == 1)?true:false
+    document.querySelector('input[name=direct]').checked = (consultant.direct == 1)?true:false
+    document.querySelector('input[name=text]').checked = (consultant.text == 1)?true:false
+    document.querySelector('input[name=video]').checked = (consultant.video == 1)?true:false
+
+}
+$("#country_code").change(function (e) {
     var id = e.currentTarget.options[e.currentTarget.options.selectedIndex].value;
     let has_state = e.currentTarget.options[e.currentTarget.options.selectedIndex].dataset.has_state;
     if (has_state != "0") {

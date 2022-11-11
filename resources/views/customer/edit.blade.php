@@ -66,15 +66,17 @@
                                 <div class="rounded border p-10">
                                     <div class="fv-row mb-10">
                                         <div class="col-10">
-                                            <div class="input-group">
+                                            <div class="input-group" >
                                                 {{-- <label class="input-group-text">Country Code</label> --}}
-                                                <select class="form-select w-0" name="country_code" id="country_code" style="max-width:10%;">
-                                                    <option>--</option>
-                                                    @foreach($countrys as $data)
-                                                        <option value="{{$data->id}}" data-has_state='{{ $data->has_state }}' {{ ($customer->country_id ==  $data->id)?'selected':'' }}>{{$data->country_code}}</option>
-                                                    @endforeach
+                                                <select class="form-select w-0" name="country_code" id="country_code" style="max-width:10%;" disabled="true">
+                                                <option>--</option>
+                                                  @foreach($countrys as $data)
+                                                       <option value="{{$data->id}}" data-has_state='{{ $data->has_state }}' {{ ($customer->country_id ==  $data->id)?'selected':'' }}>{{$data->country_code}}</option>
+                                                   @endforeach
                                                 </select>
-                                                <input type="text" name="phone_no" id="phone_no" value="{{ $customer->phone_no }}" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Name" required />
+                                              
+                                                <input class="input-group-text form-control-solid" name="dialing" id="dialing" readonly style="width: 100px" value="{{ $customer->dialing }}">
+                                                <input type="text" name="phone_no" id="phone_no" value="{{ $customer->phone_no }}" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Name" required readonly/>
                                             </div>
 
                                         </div>
@@ -160,9 +162,7 @@
                 minYear: 1901,
                 maxYear: parseInt(moment().format("YYYY"),10),
                 maxDate : formatDate(yesterday),
-                locale: {
-                        format: '{{ strtoupper($companeySetting->date_format) }}'
-                    }
+                
             }, function(start, end, label) {}
         )
 

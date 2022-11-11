@@ -10,6 +10,23 @@ SearchSubmit?.addEventListener('click',search)
 SearchSubmit_two?.addEventListener('click',search)
 resetSubmit?.addEventListener('click',reset)
 
+$("#formreset").click(function(){
+    $('select').val("").trigger( "change" );
+})
+
+  // Edit Form Reset
+$("#formEditReset").click(function(){
+    $('select').val("").trigger( "change" );
+    
+    let form = document.querySelector('#formEdit')
+    form.querySelectorAll("input[type='text'] ,div[id='kt_docs_jstree_checkable'],textarea,input[type='radio'] ,input[name='tags'] ,input[type='number'],input[type='email'],input[type='time'],input[type='file'],input[type='hidden'][name='img'],img[class='file-preview'], input[type='checkbox']")
+        .forEach(e=>{
+            if(e.type=='text'||e.name=='tags'||e.type=='hidden'||e.type=='textarea'||e.type=='number'||e.type=='time'){ e.value = ''; }
+            if(e.type=='checkbox') {e.checked=false;}
+            if(e.src){e.src = ''}
+            if(e.id=='kt_docs_jstree_checkable'){ $('#kt_docs_jstree_checkable').jstree("deselect_all");}
+        })  
+})
 
 function search(event){
     event.preventDefault()
@@ -156,16 +173,17 @@ function reset(event){
             }).then((function (t) {
                 if(t.value){
                     let route = e.srcElement.getAttribute('href')
-                    let data = { _token: _token }
+                    let data = { _token: _token,_method:'DELETE' }
+                   
                     fetch(route,{
                         method: 'DELETE',
-                        headers: { 'Content-Type': 'application/json', },
+                        headers: { 'Content-Type': 'application/json','Accept':'application/json' },
                         body: JSON.stringify(data)
                     })
                     .then(response => response.json())
                     .then(data => {
                         table.ajax.reload(null, false);
-                        Switealert((data.status)?data.msg:'error',(data.status)?'success':'error')
+                        Switealert((data.status)?data.msg:data.error,(data.status)?'success':'error')
                     });
                 }
             }))

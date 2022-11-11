@@ -7,6 +7,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\State;
 use App\Models\City;
+use App\Models\Customer;
+use App\Models\Companysetting;
+use App\Models\User;
+use App\Models\Firm;
+use App\Models\Insurance;
+use App\Models\Consultant;
 use Auth;
 use Validator;
 use Illuminate\Support\Facades\Input;
@@ -17,7 +23,7 @@ class StateController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('Permissions:State_View',['only'=>['index']]);
+        $this->middleware('Permissions:State_View',['only' => ['index','datatables']]);
         $this->middleware('Permissions:State_Create',['only'=>['create']]);
         $this->middleware('Permissions:State_Edit',['only'=>['edit']]);
         $this->middleware('Permissions:State_delete',['only'=>['destroy']]);
@@ -38,7 +44,7 @@ class StateController extends Controller
         ->when($search[2],function($query,$search){
             return $query->where('states.state_name','LIKE',"%{$search}%");
         })
-        ->orderBy('states.id','desc')->select('states.*','countries.country_name as country_name')->get();
+        ->orderBy('countries.country_name','ASC')->select('states.*','countries.country_name as country_name')->get();
 
         return DataTables::of($datas)
             ->addIndexColumn()
@@ -52,6 +58,10 @@ class StateController extends Controller
             ->addColumn('action', function(State $data){
                 return ['Delete'=> \route('master.state.destroy',$data->id),'edit'=> \route('master.state.edit',$data->id)];
             })
+             ->editColumn('created_at', function(State $datas) {
+                                $date=date_create($datas->created_at);
+                                 return  date_format($date,"d-m-Y");
+                            })
             ->rawColumns(['status','action'])
             ->toJson();
         }
@@ -64,7 +74,7 @@ class StateController extends Controller
 	}
 
 	public function create(){
-		$data=Country::where('status','1')->get();
+		$data=Country::where('status','1')->orderBy('country_name','asc')->get();
 		return view('state.create',['data'=>$data,'bread'=>[]]);
 	}
 
@@ -129,6 +139,27 @@ class StateController extends Controller
 
     public function destroy(State $state)
     {
+        $City = City::where('state_id',$state->id)->exists();
+        $User = User::where('state_id',$state->id)->exists();
+        $Firm = Firm::where('state_id',$state->id)->exists();
+        $Customer = Customer::where('state_id',$state->id)->exists();
+        $Companysetting = Companysetting::where('state_id',$state->id)->exists();
+        $Insurance = Insurance::where('state_id',$state->id)->exists();
+        $Consultant = Consultant::where('state_id',$state->id)->exists();
+      
+        if($City || $User || $Firm || $Customer || $Companysetting || $Insurance || $Consultant ){
+            $temp = ($City)?'City,':'';
+            $temp .= ($User)?' User, ':'';
+            $temp .= ($Firm)?' Firm,':'';
+            $temp .= ($Customer)?' Customer, ':'';
+            $temp .= ($Companysetting)?' Company Setting, ':'';
+            $temp .= ($Insurance)?' Insurance,':'';
+            $temp .= ($Consultant)?' Consultant, ':'';
+            $data1['error'] = 'State is Mapped with ' .$temp. 'so cannot delete';
+           
+            $data1['status'] = false;
+            return response()->json($data1);
+        }
         $state->delete();
         $data1['msg'] = 'Data Deleted Successfully.';
         $data1['status'] = true;

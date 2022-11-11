@@ -60,9 +60,7 @@ class ArticleController extends Controller
     }
 
     public function edit(Article $article){
-
         return response()->json(['article'=>$article] ,200);
-
     }
 
     public function update(Request $Request, Article $article)

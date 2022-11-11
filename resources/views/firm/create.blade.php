@@ -1,229 +1,205 @@
-<x-base-layout>
+<x-base-layout>  
     @section('styles')
     <link href="{{ URL::asset(theme()->getDemo().'/plugins/custom/jstree/jstree.bundle.css')}}" rel="stylesheet" type="text/css" />
     @endsection
-    <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+    <div class="d-flex flex-column flex-column-fluid">
         <!--begin::Toolbar-->
-        <div class="toolbar" id="kt_toolbar">
+        <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
             <!--begin::Container-->
-            <div id="kt_toolbar_container" class="container-fluid d-flex flex-stack">
+            <div id="kt_app_toolbar_container" class="app-container container-xxl d-flex flex-stack">
                 <!--begin::Page title-->
-                <div data-kt-swapper="true" data-kt-swapper-mode="prepend" data-kt-swapper-parent="{default: '#kt_content_container', 'lg': '#kt_toolbar_container'}" class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
+                <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
                     <!--begin::Title-->
-                    <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">Firms</h1>
+                    <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">Create Firm</h1>
                     <!--end::Title-->
-                    <!--begin::Separator-->
-                    <span class="h-20px border-gray-300 border-start mx-4"></span>
-                    <!--end::Separator-->
                     <!--begin::Breadcrumb-->
-                    <ul class="breadcrumb breadcrumb-separatorless fw-bold fs-7 my-1">
+                    <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
                         <!--begin::Item-->
                         <li class="breadcrumb-item text-muted">
-                            <a href="" class="text-muted text-hover-primary">Home</a>
+                            <a href="#" class="text-muted text-hover-primary">Home</a>
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
                         <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-300 w-5px h-2px"></span>
+                            <span class="bullet bg-gray-400 w-5px h-2px"></span>
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
                         <li class="breadcrumb-item text-muted">User</li>
-                        <!--end::Item-->
-                        <!--begin::Item-->
                         <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-300 w-5px h-2px"></span>
+                            <span class="bullet bg-gray-400 w-5px h-2px"></span>
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
-                        <li class="breadcrumb-item text-muted"><a href="{{ route('user.firms.index') }}" class="text-muted text-hover-primary">Firms</a></li>
-                        <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-300 w-5px h-2px"></span>
-                        </li>
-                        <li class="breadcrumb-item text-muted">Create Firm</li>
+                        <li class="breadcrumb-item text-muted">Firm</li>
+                        <!--end::Item-->
                     </ul>
                     <!--end::Breadcrumb-->
+                </div>
+                <div class="d-flex align-items-center gap-2 gap-lg-3">
+                    <a href="{{ route('user.firms.index') }}" class="btn btn-sm btn-secondary" ><i class="fas fa-arrow-left "></i></a>
                 </div>
                 <!--end::Page title-->
             </div>
             <!--end::Container-->
         </div>
-        <!--end::Toolbar-->
-        <!--begin::Post-->
         <div class="post d-flex flex-column-fluid" id="kt_post">
             <!--begin::Container-->
             <div id="kt_content_container" class="container-xxl">
                 <!--begin::Products-->
                 <div class="card card-flush">
                     <!--begin::Card body-->
-                    <div class="card-body rounded border pt-0">
+                    <div class="card-body pt-0">
                         <form action="{{ route('user.firms.store') }}" method="post" id="formCreate">
                             <input type="hidden" name="categorie_id" id="categorie_id">
                             @csrf
                             <div class="py-5">
-                                <div class="tabs effect-1">
-			<!-- tab-title -->
-			<input type="radio" id="tab-1" name="tab-effect-1" checked="checked">
-			<span>About</span>
-
-			<input type="radio" id="tab-2" name="tab-effect-1">
-			<span> Address</span>
-
-			<input type="radio" id="tab-3" name="tab-effect-1">
-			<span>Category / Sub Category</span>
-
-			<input type="radio" id="tab-4" name="tab-effect-1">
-			<span>Bank Account Details</span>
-
-			<input type="radio" id="tab-5" name="tab-effect-1">
-			<span>Login Details</span>
-
-	<input type="radio" id="tab-6" name="tab-effect-1">
-			<span style="width: 10%;"> Gallery</span>
-				<input type="radio" id="tab-7" name="tab-effect-1">
-			<span>Working Hours</span>
-				<input type="radio" id="tab-8" name="tab-effect-1">
-			<span>Contact</span>
-			<!-- tab-content -->
-			<div class="tab-content">
-				<section id="tab-item-1">
-					<div class="p-10">
+                                <h4>About</h4>
+                                <div class="rounded border p-10">
                                     <div class="form-group row">
-                                    <div class="fv-row mb-10 col-md-6">
-                                        <label class="required form-label fs-6 mb-2" >Company Name</label>
-                                        <input type="text" name="comapany_name" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Company Name" required />
-                                    </div>
-                                    <div class="fv-row mb-10 col-md-6">
-                                        <label class="required form-label fs-6 mb-2" >Legal Name</label>
-                                        <input type="text" name="legal_name" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Legal Name" required />
-                                    </div>
-                                    <div class="fv-row mb-10 col-md-6 firm-yn">
-                                        <label class="required form-label fs-6 mb-2" >Do you have tax?</label>
-                                        <div class="form-check form-check-custom form-check-solid mb-5">
-                                            <input class="form-check-input me-3" name="have_tax" type="radio" value="1" checked id="have_tax_Yes" />
-                                            <label class="form-check-label" for="have_tax_Yes">
-                                                <div class="fw-bolder text-gray-800">Yes</div>
-                                            </label>
+                                        <div class="col-md-6">
+                                            <label class="required form-label fs-6 mb-4" >Company Name</label>
+                                            <input type="text" name="comapany_name" class="form-control mb-4" placeholder="Company Name" required />
                                         </div>
-                                        <div class="form-check form-check-custom form-check-solid mb-5">
-                                            <input class="form-check-input me-3" name="have_tax" type="radio" value="0" id="have_tax_no" />
-                                            <label class="form-check-label" for="have_tax_no">
-                                                <div class="fw-bolder text-gray-800">No</div>
-                                            </label>
+                                        <div class="col-md-6">
+                                            <label class="required form-label fs-6 mb-4" >Legal Name</label>
+                                            <input type="text" name="legal_name" class="form-control  mb-4" placeholder="Legal Name" required />
                                         </div>
                                     </div>
-                                    <div class="fv-row mb-10 col-md-6" id="taxation_number_div">
-                                        <label class="required form-label fs-6 mb-2" >Taxation Number</label>
-                                        <input type="number" id="taxation_number" name="taxation_number" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Taxation Number" required />
+                                    
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            <label class="required form-label fs-6 mb-4" >Do you have tax?</label>
+                                            <div class="form-check form-check-custom form-check-solid mb-3">
+                                                <input class="form-check-input " name="have_tax" type="radio" value="1" checked id="have_tax_Yes" />
+                                                <label class="form-check-label me-3" for="have_tax_Yes">
+                                                    <div class="fw-bolder text-gray-800">Yes</div>
+                                                </label>
+                                            
+                                                <input class="form-check-input" name="have_tax" type="radio" value="0" id="have_tax_no" />
+                                                <label class="form-check-label " for="have_tax_no">
+                                                    <div class="fw-bolder text-gray-800">No</div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6" id="taxation_number_div">
+                                            <label class="required form-label fs-6 mb-4" >Taxation Number</label>
+                                            <input type="number" id="taxation_number" name="taxation_number" class="form-control mb-4" placeholder="Taxation Number" required />
+                                        </div>
                                     </div>
-                                    <div class="fv-row mb-10 col-md-6">
-                                        <label class="required form-label fs-6 mb-2" >Company Registered On</label>
-                                        <input class="form-control form-control-solid" name="register_on" placeholder="Pick date rage" id="kt_daterangepicker_3" required/>
+                                  
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            <label class="required form-label fs-6 mb-4" >Company Registered On</label>
+                                            <input class="form-control mb-4" name="register_on" placeholder="Pick date rage" id="kt_daterangepicker_3" required/>
+                                        </div> 
+                                        <div class="col-md-1">
+                                            <label class="form-label fs-6 mb-4" >Logo</label>
+                                        </div>
+                                        <div class="col-md-3"> 
+                                         @include('components.imagecrop',['name'=>'logo'])
+                                        </div> 
                                     </div>
 
-                                    <div class="fv-row mb-10 col-md-6">
-                                        <label class="form-label fs-6 mb-2" >Logo</label>
-                                  
-                                    <div class="fv-row mb-10">
-                                       
-                                        @include('components.imagecrop',['name'=>'logo'])
-                                    </div>
-                                      </div>
-                                     </div>
-                                    <div class="fv-row mb-10">
-                                        <label class="required form-label fs-6 mb-2" >About Us</label>
-                                        <textarea id="about_us" name="about_us" class="tox-target"></textarea>
+                                    <div class="form-group row">
+                                        <div class="col-md-12">
+                                            <label class="required form-label fs-6 mb-2" >About Us</label>
+                                            <textarea id="about_us" name="about_us" class="tox-target"></textarea>
+                                        </div>
                                     </div>
                                 </div>
-				</section>
-				<section id="tab-item-2">
-				  <div class="p-10">
-                                    
-                                    <div class="p-10">
+                                
+                                <h4>Address</h4>
+                                <div class="rounded border p-10">
+                                    <div class="rounded border p-10">
                                     @include('components.addressComponent',['register_address'=>'','page'=>'create','countrys'=>$countrys,'state'=>$state,'city'=>$city])
                                     </div>
-                                
-                               
                                 </div>
-				</section>
-				<section id="tab-item-3">
-				 <div class="p-10">
+                                @include('components.contact')
+                                <h4>Category / Sub Category</h4>
+                                <div class="rounded border p-10">
                                     <div id="kt_docs_jstree_checkable"></div>
                                 </div>
-				</section>
-				<section id="tab-item-4">
-				 <div class="p-10">
+                                <h4>Bank Account Details</h4>
+                                <div class="rounded border p-10">
                                     <div class="form-group row">
-                                    <div class="fv-row mb-10 col-md-6">
-                                        <label class="required form-label fs-6 mb-2" >Account Number</label>
-                                        <input type="number" name="account_number" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Account Number" required />
+                                        <div class="col-md-6">
+                                            <label class="required form-label fs-6 mb-2" >Account Number</label>
+                                            <input type="number" name="account_number" class="form-control  mb-4" placeholder="Account Number" required />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="required form-label fs-6 mb-2" >Account Name</label>
+                                            <input type="text" name="account_name" class="form-control  mb-4" placeholder="Account Name" required />
+                                        </div>
                                     </div>
-                                    <div class="fv-row mb-10 col-md-6">
-                                        <label class="required form-label fs-6 mb-2" >Account Name</label>
-                                        <input type="text" name="account_name" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Account Name" required />
-                                    </div>
-                                    <div class="fv-row mb-10 col-md-6">
-                                        <label class="required form-label fs-6 mb-2" >IBAN Code / IFSC Code</label>
-                                        <input type="text" name="ifsc_code" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="IBAN Code / IFSC Code" required />
-                                    </div>
-                                    <div class="fv-row mb-10 col-md-6">
-                                        <label class="required form-label fs-6 mb-2" >Bank Name</label>
-                                        <input type="text" name="bank_name" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Bank Name" required />
-                                    </div>
-                                    <div class="fv-row mb-10 col-md-6">
-                                        <label class="required form-label fs-6 mb-2" >Branch</label>
-                                        <input type="text" name="branch" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Branch" required />
-                                    </div>
-                                    </div>
-                                   <!-- <div class="fv-row mb-10">
-                                        <div class="form-check form-check-custom form-check-solid mb-5">
-                                            <input class="form-check-input me-3" name="bank_status" type="checkbox" value="1" id="bank_status" />
-                                            <label class="form-check-label" for="bank_status">
-                                                <div class="fw-bolder text-gray-800">Status</div>
-                                            </label>
-                                        </div>-->
-                                    </div>
-            
-				</section>
-				<section id="tab-item-5">
-				    <div class="p-10">
+                                    
                                     <div class="form-group row">
-                                    <div class="fv-row mb-10 col-md-6">
-                                        <label class="required form-label fs-6 mb-2" >Email ID</label>
-                                        <input type="email" name="email" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="email" required />
+                                        <div class="col-md-6">
+                                            <label class="required form-label fs-6 mb-4" >IBAN Code / IFSC Code</label>
+                                            <input type="text" name="ifsc_code" class="form-control mb-4 " placeholder="IBAN Code / IFSC Code" required />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="required form-label fs-6 mb-4" >Bank Name</label>
+                                            <input type="text" name="bank_name" class="form-control  mb-4 " placeholder="Bank Name" required />
+                                        </div>
                                     </div>
-                                    <div class="fv-row mb-10 col-md-6">
-                                        <label class="required form-label fs-6 mb-2" >User Name</label>
-                                        <input type="text" name="user_name" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="User Name" required />
-                                    </div>
-                                    </div>
-                                    <!--<div class="fv-row mb-10">-->
-                                    <!--    <label class="required form-label fs-6 mb-2" >Role</label>-->
-                                    <!--    <input type="text" name="role" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Role" required />-->
-                                    <!--</div>-->
-                                    <div class="fv-row mb-10">
-                                        <div class="form-check form-check-custom form-check-solid mb-5">
-                                            <input class="form-check-input me-3" name="login_status" type="checkbox" value="1" id="login_status" />
-                                            <label class="form-check-label" for="login_status">
-                                                <div class="fw-bolder text-gray-800">Status</div>
-                                            </label>
+                                    
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            <label class="required form-label fs-6 mb-2" >Branch</label>
+                                            <input type="text" name="branch" class="form-control  mb-4" placeholder="Branch" required />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="col-md-6">
+                                                <div class="form-check form-check-custom form-check-solid mb-5">
+                                                    <input class="form-check-input me-3" name="bank_status" type="checkbox" value="1" id="bank_status" />
+                                                    <label class="form-check-label" for="bank_status">
+                                                        <div class="fw-bolder text-gray-800">Status</div>
+                                                    </label>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-				</section>
-				<section id="tab-item-6">
-					       <div class="p-10">
+                                
+                                <h4>Login Details</h4>
+                                <div class="rounded border p-10">
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            <label class="required form-label fs-6 mb-2" >Email ID</label>
+                                            <input type="email" name="email" class="form-control  mb-4" placeholder="email" required />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="required form-label fs-6 mb-2" >User Name</label>
+                                            <input type="text" name="user_name" class="form-control  mb-4" placeholder="User Name" required />
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            <div class="form-check form-check-custom form-check-solid mb-5">
+                                                <input class="form-check-input me-3" name="login_status" type="checkbox" value="1" id="login_status" />
+                                                <label class="form-check-label" for="login_status">
+                                                    <div class="fw-bolder text-gray-800">Status</div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h4>Gallary</h4>
+                                <div class="rounded border p-10">
                                     <div class="fv-row mb-10">
                                         <label class="required form-label fs-6 mb-2" >Upload Image</label>
-                                        <input type="file" name="gallery[]" id="image" multiple onchange="image_select()" class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Image" required >
+                                        <input type="file" name="gallery[]" id="image" multiple onchange="image_select()" class="form-control" placeholder="Image" required >
                                         <div class="card-body d-flex flex-wrap justify-content-start" id="container"></div>
                                     </div>
                                 </div>
-					</section>
-				<section id="tab-item-7">
-							          <div class="p-10">
-                                    <div class="form-group row">
-                                    <div class="mb-10 col-md-6">
+                                
+                                <h4>Working Hours</h4>
+                                <div class="rounded border p-10">
+                                    <div class="mb-10">
                                         <div class="kt_docs_repeater_nested">
                                             <div class="form-group">
                                                 <div data-repeater-list="kt_docs_repeater_nested_outer">
@@ -235,18 +211,18 @@
                                                                     <input class='form-check-input checkboxOnOff'  name='day' type='checkbox'checked value='Sunday' />
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-9">
+                                                            <div class="col-md-8">
                                                                 <div class="inner-repeater">
                                                                     <div data-repeater-list="kt_docs_repeater_nested_inner" class="mb-5">
                                                                         <div data-repeater-item>
                                                                             <div class="form-group row">
-                                                                            <div class="col-md-6">
+                                                                            <div class="col-md-4">
                                                                             <label class="form-label">From :</label>
                                                                             <div class="input-group mb-3">
                                                                                 <input type="time" name="sunday_from" class="form-control" placeholder="Enter contact number" required />
                                                                             </div>
                                                                             </div>
-                                                                            <div class="col-md-6">
+                                                                            <div class="col-md-4">
                                                                             <label class="form-label">To :</label>
                                                                             <div class="input-group mb-3">
                                                                                 <input type="time" name="sunday_to" class="form-control" placeholder="Enter contact number" required />
@@ -259,7 +235,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <button class="btn btn-sm btn-light-primary" data-repeater-create type="button">
-                                                                        <i class="la la-plus"></i> Add Number
+                                                                        <i class="la la-plus"></i> Add
                                                                     </button>
                                                                 </div>
                                                             </div>
@@ -269,7 +245,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="mb-10 col-md-6">
+                                    <div class="mb-10">
                                         <div class="kt_docs_repeater_nested">
                                             <div class="form-group">
                                                 <div data-repeater-list="kt_docs_repeater_nested_outer">
@@ -281,18 +257,18 @@
                                                                     <input class='form-check-input checkboxOnOff' name='day' type='checkbox' checked value='Monday' />
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-9">
+                                                            <div class="col-md-8">
                                                                 <div class="inner-repeater">
                                                                     <div data-repeater-list="kt_docs_repeater_nested_inner" class="mb-5">
                                                                         <div data-repeater-item>
                                                                             <div class="form-group row">
-                                                                            <div class="col-md-6">
+                                                                            <div class="col-md-4">
                                                                             <label class="form-label">From :</label>
                                                                             <div class="input-group mb-3">
                                                                                 <input type="time" name="monday_from" class="form-control" placeholder="Enter contact number" required />
                                                                             </div>
                                                                             </div>
-                                                                            <div class="col-md-6">
+                                                                            <div class="col-md-4">
                                                                             <label class="form-label">To :</label>
                                                                             <div class="input-group mb-3">
                                                                                 <input type="time" name="monday_to" class="form-control" placeholder="Enter contact number"  required/>
@@ -305,7 +281,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <button class="btn btn-sm btn-light-primary" data-repeater-create type="button">
-                                                                        <i class="la la-plus"></i> Add Number
+                                                                        <i class="la la-plus"></i> Add
                                                                     </button>
                                                                 </div>
                                                             </div>
@@ -315,7 +291,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="mb-10 col-md-6">
+                                    <div class="mb-10">
                                         <div class="kt_docs_repeater_nested">
                                             <div class="form-group">
                                                 <div data-repeater-list="kt_docs_repeater_nested_outer">
@@ -327,18 +303,18 @@
                                                                     <input class='form-check-input checkboxOnOff' name='day' type='checkbox' checked value='Tuesday' />
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-9">
+                                                            <div class="col-md-8">
                                                                 <div class="inner-repeater">
                                                                     <div data-repeater-list="kt_docs_repeater_nested_inner" class="mb-5">
                                                                         <div data-repeater-item>
                                                                             <div class="form-group row">
-                                                                            <div class="col-md-6">
+                                                                            <div class="col-md-4">
                                                                             <label class="form-label">From :</label>
                                                                             <div class="input-group mb-3">
                                                                                 <input type="time" name="tuesday_from" class="form-control" placeholder="Enter contact number"  required/>
                                                                             </div>
                                                                             </div>
-                                                                            <div class="col-md-6">
+                                                                            <div class="col-md-4">
                                                                             <label class="form-label">To :</label>
                                                                             <div class="input-group mb-3">
                                                                                 <input type="time" name="tuesday_to" class="form-control" placeholder="Enter contact number" required />
@@ -351,7 +327,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <button class="btn btn-sm btn-light-primary" data-repeater-create type="button">
-                                                                        <i class="la la-plus"></i> Add Number
+                                                                        <i class="la la-plus"></i> Add
                                                                     </button>
                                                                 </div>
                                                             </div>
@@ -361,30 +337,30 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="mb-10 col-md-6">
+                                    <div class="mb-10">
                                         <div class="kt_docs_repeater_nested">
                                             <div class="form-group">
                                                 <div data-repeater-list="kt_docs_repeater_nested_outer">
                                                     <div data-repeater-item>
                                                         <div class="form-group row mb-5">
-                                                            <div class="col-md-3">
+                                                            <div class="col-md-2">
                                                                 <label class="form-label">Wednesday</label>
                                                                 <div class='form-check form-switch form-check-custom form-check-solid'>
                                                                     <input class='form-check-input checkboxOnOff' name='day' type='checkbox' checked value='Wednesday' />
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-9">
+                                                            <div class="col-md-8">
                                                                 <div class="inner-repeater">
                                                                     <div data-repeater-list="kt_docs_repeater_nested_inner" class="mb-5">
                                                                         <div data-repeater-item>
                                                                             <div class="form-group row">
-                                                                            <div class="col-md-6">
+                                                                            <div class="col-md-4">
                                                                             <label class="form-label">From :</label>
                                                                             <div class="input-group mb-3">
                                                                                 <input type="time" name="wednesday_from" class="form-control" placeholder="Enter contact number" required />
                                                                             </div>
                                                                             </div>
-                                                                            <div class="col-md-6">
+                                                                            <div class="col-md-4">
                                                                             <label class="form-label">To :</label>
                                                                             <div class="input-group mb-3">
                                                                                 <input type="time" name="wednesday_to" class="form-control" placeholder="Enter contact number" required />
@@ -397,7 +373,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <button class="btn btn-sm btn-light-primary" data-repeater-create type="button">
-                                                                        <i class="la la-plus"></i> Add Number
+                                                                        <i class="la la-plus"></i> Add
                                                                     </button>
                                                                 </div>
                                                             </div>
@@ -407,30 +383,30 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="mb-10 col-md-6">
+                                    <div class="mb-10">
                                         <div class="kt_docs_repeater_nested">
                                             <div class="form-group">
                                                 <div data-repeater-list="kt_docs_repeater_nested_outer">
                                                     <div data-repeater-item>
                                                         <div class="form-group row mb-5">
-                                                            <div class="col-md-3">
+                                                            <div class="col-md-2">
                                                                 <label class="form-label">Thursday</label>
                                                                 <div class='form-check form-switch form-check-custom form-check-solid'>
                                                                     <input class='form-check-input checkboxOnOff' name='day' type='checkbox' checked value='Thursday' />
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-9">
+                                                            <div class="col-md-8">
                                                                 <div class="inner-repeater">
                                                                     <div data-repeater-list="kt_docs_repeater_nested_inner" class="mb-5">
                                                                         <div data-repeater-item>
                                                                             <div class="form-group row">
-                                                                            <div class="col-md-6">
+                                                                            <div class="col-md-4">
                                                                             <label class="form-label">From :</label>
                                                                             <div class="input-group mb-3">
                                                                                 <input type="time" name="thursday_from" class="form-control" placeholder="Enter contact number" required />
                                                                             </div>
                                                                             </div>
-                                                                            <div class="col-md-6">
+                                                                            <div class="col-md-4">
                                                                             <label class="form-label">To :</label>
                                                                             <div class="input-group mb-3">
                                                                                 <input type="time" name="thursday_to" class="form-control" placeholder="Enter contact number" required/>
@@ -443,7 +419,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <button class="btn btn-sm btn-light-primary" data-repeater-create type="button">
-                                                                        <i class="la la-plus"></i> Add Number
+                                                                        <i class="la la-plus"></i> Add
                                                                     </button>
                                                                 </div>
                                                             </div>
@@ -453,7 +429,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="mb-10 col-md-6">
+                                    <div class="mb-10">
                                         <div class="kt_docs_repeater_nested">
                                             <div class="form-group">
                                                 <div data-repeater-list="kt_docs_repeater_nested_outer">
@@ -470,13 +446,13 @@
                                                                     <div data-repeater-list="kt_docs_repeater_nested_inner" class="mb-5">
                                                                         <div data-repeater-item>
                                                                             <div class="form-group row">
-                                                                            <div class="col-md-6">
+                                                                            <div class="col-md-4">
                                                                             <label class="form-label">From :</label>
                                                                             <div class="input-group mb-3">
                                                                                 <input type="time" name="friday_from" class="form-control" placeholder="Enter contact number" required />
                                                                             </div>
                                                                             </div>
-                                                                            <div class="col-md-6">
+                                                                            <div class="col-md-4">
                                                                             <label class="form-label">To :</label>
                                                                             <div class="input-group mb-3">
                                                                                 <input type="time" name="friday_to" class="form-control" placeholder="Enter contact number" required />
@@ -489,7 +465,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <button class="btn btn-sm btn-light-primary" data-repeater-create type="button">
-                                                                        <i class="la la-plus"></i> Add Number
+                                                                        <i class="la la-plus"></i> Add
                                                                     </button>
                                                                 </div>
                                                             </div>
@@ -499,7 +475,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="mb-10 col-md-6">
+                                    <div class="mb-10">
                                         <div class="kt_docs_repeater_nested">
                                             <div class="form-group">
                                                 <div data-repeater-list="kt_docs_repeater_nested_outer">
@@ -522,7 +498,7 @@
                                                                                 <input type="time" name="saturday_from" class="form-control" placeholder="Enter contact number" required />
                                                                             </div>
                                                                             </div>
-                                                                            <div class="col-md-6">
+                                                                            <div class="col-md-4">
                                                                             <label class="form-label">To :</label>
                                                                             <div class="input-group mb-3">
                                                                                 <input type="time" name="saturday_to" class="form-control" placeholder="Enter contact number" required />
@@ -535,7 +511,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <button class="btn btn-sm btn-light-primary" data-repeater-create type="button">
-                                                                        <i class="la la-plus"></i> Add Number
+                                                                        <i class="la la-plus"></i> Add
                                                                     </button>
                                                                 </div>
                                                             </div>
@@ -545,45 +521,19 @@
                                             </div>
                                         </div>
                                     </div>
+                                    
                                     </div>
-                                    </div>
-							    </section>
-							    <section id="tab-item-8">
-							        <div class="p-10">
-							     @include('components.contact')
-							     </div>
-							    </section>
-			</div>
-		</div>
-                               
-                                
-                               
-                             
-                                
-                              
-                     
-                            
-                                    <div class="fv-row mb-10">
-                                        {{-- <label class="required fw-bold fs-6 mb-5"></label> --}}
-                                        <div class="form-check form-check-custom form-check-solid mb-5">
-                                      
-                                            <input class="form-check-input me-3" name="status" type="checkbox" value="1" id="status" />
-                                         
-
                                    
-                                            <label class="form-check-label" for="status">
-                                                <div class="fw-bolder text-gray-800">Status</div>
-                                            </label>
-                                     
+                                    <div class="form-group row" style="float:right" >
+                                        <div class="col-md-6">
+                                            <button type="reset" id="formreset" class="btn btn-secondary btn-hover-rise me-5 ">Reset</button>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button type="submit" class="btn btn-primary btn-hover-rise">Save</button>
                                         </div>
                                     </div>
-                                    <div class="form-group row" style="float:right;">
-                                    <div class="mb-10">
-                                        <button type="submit" class="btn btn-primary btn-hover-rise me-5">Submit</button>
-                                    </div>
-                                    </div>
                                 </div>
-                            </div>
+                            <!--</div>-->
                         </form>
                     </div>
                     <!--end::Card body-->
@@ -708,14 +658,17 @@
             showDropdowns: true,
             minYear: 1901,
             maxYear: parseInt(moment().format("YYYY"),10),
-            locale: {
-                        format: '{{ strtoupper($companeySetting->date_format) }}'
-                    }
+            // locale: {
+            //             format: '{{ strtoupper($companeySetting->date_format) }}'
+            //         }
+
+            dateFormat: "mm-dd-yy"
         }, function(start, end, label) {
             // var years = moment().diff(start, "years");
             // alert("You are " + years + " years old!");
         }
     );
+
     $('.kt_docs_repeater_nested').repeater({
         repeaters: [{
             selector: '.inner-repeater',
@@ -736,6 +689,7 @@
             $(this).slideUp(deleteElement);
         }
     });
+    
     var KTJSTreeCheckable = {
         init: function () {
             $("#kt_docs_jstree_checkable")
@@ -832,21 +786,7 @@
             }
         })
     });
-    $('#kt_docs_repeater_basic').repeater({
-        initEmpty: false,
-
-        defaultValues: {
-            'text-input': 'foo'
-        },
-
-        show: function () {
-            $(this).slideDown();
-        },
-
-        hide: function (deleteElement) {
-            $(this).slideUp(deleteElement);
-        }
-    });
+   
     KTUtil.onDOMContentLoaded((function () {
         KTJSTreeCheckable.init()
     }));

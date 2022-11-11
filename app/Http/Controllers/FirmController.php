@@ -12,6 +12,10 @@ use DataTables;
 use App\Models\Country;
 use Validator;
 use App\Models\Currency;
+use App\Models\Consultant;
+use App\Models\Offer;
+use App\Models\Article;
+use App\Models\Video;
 use Illuminate\Support\Facades\Storage;
 
 class FirmController extends Controller
@@ -37,17 +41,17 @@ class FirmController extends Controller
         }
 
         $datas = Firm::with('country')->with('state')->with('city')
-        ->when($search[1],function($query,$search){ return $query->where('comapany_name','like',"%{$search}%");   })
-        ->when($search[2],function($query,$search){ return $query->where('have_tax',$search);   })
-        ->when($search[3],function($query,$search){ return $query->where('taxation_number','like',"%{$search}%");   })
-        // ->when($search[4],function($query,$search){ return $query->where('comapany_name','like',"%{$search}%");   })
-        ->when($search[5],function($query,$search){ return $query->where('about_us','like',"%{$search}%");   })
-        // ->when($search[6],function($query,$search){ return $query->where('comapany_name','like',"%{$search}%");   })
-        ->when($search[7],function($query,$search){ return $query->where('register_address','like',"%{$search}%");   })
-        ->when($search[8],function($query,$search){ return $query->where('country_id',$search);   })
-        ->when($search[9],function($query,$search){ return $query->where('state_id',$search);   })
-        ->when($search[10],function($query,$search){ return $query->where('city_id',$search);   })
-        ->when($search[11],function($query,$search){ return $query->where('zipcode','like',"%{$search}%");   })
+        // ->when($search[1],function($query,$search){ return $query->where('comapany_name','like',"%{$search}%");   })
+        // ->when($search[2],function($query,$search){ return $query->where('have_tax',$search);   })
+        // ->when($search[3],function($query,$search){ return $query->where('taxation_number','like',"%{$search}%");   })
+        // // ->when($search[4],function($query,$search){ return $query->where('comapany_name','like',"%{$search}%");   })
+        // ->when($search[5],function($query,$search){ return $query->where('about_us','like',"%{$search}%");   })
+        // // ->when($search[6],function($query,$search){ return $query->where('comapany_name','like',"%{$search}%");   })
+        // ->when($search[7],function($query,$search){ return $query->where('register_address','like',"%{$search}%");   })
+        // ->when($search[8],function($query,$search){ return $query->where('country_id',$search);   })
+        // ->when($search[9],function($query,$search){ return $query->where('state_id',$search);   })
+        // ->when($search[10],function($query,$search){ return $query->where('city_id',$search);   })
+        // ->when($search[11],function($query,$search){ return $query->where('zipcode','like',"%{$search}%");   })
         // ->when($search[12],function($query,$search){ return $query->where('cname','like',"%{$search}%");   })
         // ->when($search[13],function($query,$search){ return $query->where('ctitle','like',"%{$search}%");   })
         // ->when($search[14],function($query,$search){ return $query->where('cemail','like',"%{$search}%");   })
@@ -74,7 +78,7 @@ class FirmController extends Controller
         // ->when($search[1],function($query,$search){ return $query->where('comapany_name','like',"%{$search}%");   })
         // ->when($search[1],function($query,$search){ return $query->where('comapany_name','like',"%{$search}%");   })
         // ->when($search[1],function($query,$search){ return $query->where('comapany_name','like',"%{$search}%");   })
-        ->orderBy('id','desc')->get();
+        ->orderBy('comapany_name','ASC')->get();
         return DataTables::of($datas)
                 			->addIndexColumn()
                             ->editColumn('have_tax', function(Firm $data){
@@ -120,10 +124,15 @@ class FirmController extends Controller
                                         </div>";
                             })
                             ->editColumn('logo', function(Firm $data){
-                                $exists = Storage::disk('public_custom')->exists($data->logo);
-                                if($exists) return asset("storage/$data->logo");
+                                // $exists = Storage::disk('public_custom')->exists($data->logo);
+                                // if($exists) return asset("storage/$data->logo");
                                 return "";
                             })
+                            ->editColumn('approval', function(Firm $data){
+                                if($data->approval == 2){ return $temp = "<span class='badge badge-success'>Approved</span>";}
+                                if($data->approval == 3){ return $temp = "<span class='badge badge-success'>Declined</span>";}
+                              return 'Pending';
+                            }) 
                             // ->editColumn('gallery', function(Firm $data){
                             //     $exists = Storage::disk('public_custom')->exists($data->gallery);
                             //     if($exists) return "<img width = 120 height = 150 src='".asset("storage/$data->gallery")."' alter='$data->gallery' />";
@@ -132,10 +141,25 @@ class FirmController extends Controller
                             ->editColumn('action', function(Firm $data){
                                 return ['Delete'=> \route('user.firms.destroy',$data->id),'edit'=> \route('user.firms.edit',$data->id)];
                             })
-                            ->rawColumns(['status','action','about_us','register_address','bank_status','login_status','logo','gallery'])
+                            ->rawColumns(['status','action','about_us','register_address','bank_status','approval','login_status','logo','gallery'])
                             ->toJson(); //--- Returning Json Data To Client Side
     }
     public function destroy(Firm $firm){
+        $Consultant = Consultant::where('firm_choose',$firm->id)->exists();
+        $Offer = Offer::where('firm_id',$firm->id)->exists();
+        $Video = Video::where('firm_id',$firm->id)->exists();
+        $Article = Article::where('firm_id',$firm->id)->exists();
+      
+        if($Consultant || $Offer || $Video || $Article){
+            $temp = ($Consultant)?'Consultant':'';
+            $temp .= ($Offer)?'Offer':'';
+            $temp .= ($Video)?'Video':'';
+            $temp .= ($Article)?'Article':'';
+            $data1['error'] = 'Document is Mapped with ' .$temp. ', so cannot delete';
+            $data1['status'] = false;
+            return response()->json($data1);
+        }
+        
         $firm->delete();
         $data1['msg'] = 'Data Deleted Successfully.';
         $data1['status'] = true;
@@ -169,17 +193,27 @@ class FirmController extends Controller
     }
     public function update(Request $Request , Firm $firm){
         // dd($Request->taxation_number);
+        if($Request->have_tax == 1){
+            $rules=[
+    			'taxation_number' => "unique:firms,taxation_number,".$firm->id,
+    			'email' => "unique:firms,email,".$firm->id,
+    		];
+    
+    		$customs=[
+    			'taxation_number.unique'=> 'Taxation Number Already Taken',
+    			'email.unique'=> 'E-mail Already Taken',
+    		];
+        }
+        else{
+            $rules=[
+    			'email' => "unique:firms,email,".$firm->id,
+    		];
+    
+    		$customs=[
+    			'email.unique'=> 'E-mail Already Taken',
+    		];
+        }
         
-        $rules=[
-			'taxation_number' => "unique:firms,taxation_number,".$firm->id,
-			'email' => "unique:firms,email,".$firm->id,
-		];
-
-		$customs=[
-			'taxation_number.unique'=> 'Taxation Number Already Taken',
-			'email.unique'=> 'E-mail Already Taken',
-		];
-
         $validator = Validator::make($Request->all(), $rules,$customs);
         if ($validator->fails()) {
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
@@ -244,13 +278,13 @@ class FirmController extends Controller
         if(isset($Request->gallerys)) $gallery = array_merge($Request->gallerys,$gallery);
        
         $Request->register_on = date("Y-m-d H:i:s", strtotime($Request->register_on));
-        $Request->status = (isset($Request->status)?1:0);
         $Request->login_status = (isset($Request->login_status)?1:0);
         $Request->bank_status = (isset($Request->bank_status)?1:0);
 
         $firm->fill($Request->all());
         $firm->gallery = \implode(',',$gallery);
         $firm->logo = $Request->logo;
+        $firm->is_new = 0;
         $firm->update();
 
        return response()->json(['msg'=>'updated']);
@@ -309,28 +343,41 @@ class FirmController extends Controller
             $data['cphone'] = $cphone[$key];
             $Contact[] = $data;
         }
-        // $Days=[];
+        $Days=[];
         foreach ($day as $key => $value) {
             # code...
-            foreach ($value as $data => $value) {
-
-                $Days[] = $value->day;
-            }
+            if($value){
+                foreach ($value as $data => $value) {
+                    $Days[] = $value->day;
+                }
+            }   
+            
         }
        
         return \view('firm.edit',['firm'=>$firm,'day'=>$day,'Days'=>$Days,'countrys'=>$countrys,'tree'=>$tree,'state'=>$state,'city'=>$city,'contact'=>$Contact,'gallery'=>$gallery]);
     }
     public function store(Request $Request){
-        // dd($Request);
-        $rules=[
-			'taxation_number' => 'unique:firms,taxation_number,'.$Request->taxation_number,
-			'email' => "unique:firms,email,".$Request->email,
-		];
-
-		$customs=[
-			'taxation_number.unique'      	=> 'Taxation Number Already Taken',
-			'email.unique'      	=> 'Email Already Taken',
-		];
+        //  dd($Request);
+        if($Request->have_tax == 1){
+            $rules=[
+    			'taxation_number' => 'unique:firms,taxation_number,'.$Request->taxation_number,
+    			'email' => "unique:firms,email,".$Request->email,
+    		];
+    
+    		$customs=[
+    			'taxation_number.unique'      	=> 'Taxation Number Already Taken',
+    			'email.unique'      	=> 'Email Already Taken',
+    		];
+        }
+        else{
+             $rules=[
+    			'email' => "unique:firms,email,".$Request->email,
+    		];
+    
+    		$customs=[
+    			'email.unique'      	=> 'Email Already Taken',
+    		];
+        }
 
         $validator = Validator::make($Request->all(), $rules,$customs);
         if ($validator->fails()) {
@@ -394,7 +441,7 @@ class FirmController extends Controller
         }
 
         $Request->register_on = date("Y-m-d H:i:s", strtotime($Request->register_on));
-        $Request->status = (isset($Request->status)?1:0);
+        $Request->status = 1;
         $Request->login_status = (isset($Request->login_status)?1:0);
         $Request->bank_status = (isset($Request->bank_status)?1:0);
 

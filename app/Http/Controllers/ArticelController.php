@@ -74,14 +74,14 @@ class ArticelController extends Controller
     }
 
     public function create(){
-          $firm = Firm::where('status',1)->get();
+        $firm = Firm::where('status',1)->where('approval',2)->get();
         $consultant = Consultant::where('status',1)->get();
         $user = User::get();
 
         return \view('article.create',['firm'=>$firm,'consultant'=>$consultant,'user'=>$user]);
     }
     public function edit(Article $article ){
-         $firm = Firm::where('status',1)->get();
+        $firm = Firm::where('status',1)->where('approval',2)->get();
         $consultant = Consultant::where('status',1)->get();
         $user = User::get();
 

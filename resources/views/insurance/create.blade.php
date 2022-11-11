@@ -62,10 +62,21 @@
                         <form action="{{ route('user.insurance.store') }}" method="post" id="formCreate">
                             @csrf
                             <div class="py-5">
-                                <hr>
-                                <h4 class="com-head">About</h4>
-                                <hr>
-                                <div class="p-10">
+                                 <div class="tabs effect-1 company">
+			<!-- tab-title -->
+			<input type="radio" id="tab-1" name="tab-effect-1" checked="checked">
+			<span>About</span>
+
+			<input type="radio" id="tab-2" name="tab-effect-1">
+			<span> Address</span>
+
+			<input type="radio" id="tab-3" name="tab-effect-1">
+			<span>Contact</span>
+
+			<!-- tab-content -->
+			<div class="tab-content">
+				<section id="tab-item-1">
+					 <div class="p-10">
                                     <div class="form-group row">
                                     <div class="fv-row mb-10 col-md-6">
                                         <label class="required form-label fs-6 mb-2" >Company Name</label>
@@ -131,16 +142,26 @@
                                     </div>
                                      </div>
                                 </div>
-                                <hr>
-                                <h4 class="com-head">Address</h4>
-                                <hr>
+				</section>
+				<section id="tab-item-2">
+				  
                                 <div class="p-10">
                                     @include('components.addressComponent',['page'=>'create','countrys'=>$countrys])
                                 </div>
- <hr>
-                                <h4 class="com-head">Contact</h4>
-                                <hr>
-                                @include('components.contact')
+				</section>
+				<section id="tab-item-3">
+				     <div class="p-10">
+				     @include('components.contact')
+				     </div>
+				</section>
+				
+			</div>
+		</div>
+                              
+                               
+                               
+ 
+                            
                                     <div class="fv-row mb-10">
                                         {{-- <label class="required fw-bold fs-6 mb-5"></label> --}}
                                         <div class="form-check form-check-custom form-check-solid mb-5">

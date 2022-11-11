@@ -16,13 +16,15 @@ use Illuminate\Support\Facades\Storage;
 use DB;
 use App\Models\Companysetting;
 use App\Models\Language;
+use Auth;
 
 
 class helperController extends Controller
 {
     public function getcountry(){
         $Country  = Country::where('status','1')->get();
-        return response()->json(array('Country' => $Country));
+        return DataTables::of($Country)->addIndexColumn()->toJson();
+        // return response()->json(array('Country' => $Country));
     }
     public function getState(Request $request){
 
@@ -64,7 +66,11 @@ class helperController extends Controller
     	return response()->json($Companysetting);
     }
 public function firm(){
-        $Firm = Firm::where('status',1)->get();
+        if(Auth::guard('consultant')->check()){
+            $Firm = Firm::where('status',1)->where('approval',2)->where('country_id',Auth::guard('consultant')->user()->country->id)->get();
+            return response()->json(['firm'=>$Firm]);
+        }
+        $Firm = Firm::where('status',1)->where('approval',2)->get();
         return response()->json(['firm'=>$Firm]);
     }
     public function language(){

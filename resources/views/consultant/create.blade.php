@@ -22,7 +22,7 @@
         <div class="d-flex flex-column flex-root">
 			<div class="d-flex flex-column flex-lg-row flex-column-fluid stepper stepper-pills stepper-column" id="kt_create_account_stepper">
 				<div class="d-flex flex-column flex-lg-row-auto w-xl-500px bg-lighten shadow-sm">
-					<div class="d-flex flex-column position-xl-fixed top-0 bottom-0 w-xl-500px scroll-y">
+					<div class="d-flex flex-column top-0 bottom-0 w-xl-500px">
 						<div class="d-flex flex-row-fluid flex-column flex-center p-10 pt-lg-20">
 							@include('consultant.layouts.nav')
 						</div>
@@ -73,8 +73,8 @@
 										<!--end::Svg Icon-->Previous</button>
 									</div>
 									<div>
-										<button type="button" class="btn btn-lg btn-primary" data-kt-stepper-action="submit">
-											<span class="indicator-label">Submit
+										<button type="button" class="btn btn-lg btn-primary" onclick="window.location.href = indexConsultant" data-kt-stepper-action="submit">
+											<span class="indicator-label">Go to List
 											<!--begin::Svg Icon | path: icons/duotune/arrows/arr064.svg-->
 											<span class="svg-icon svg-icon-4 ms-2">
 												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">

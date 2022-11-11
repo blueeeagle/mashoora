@@ -19,7 +19,7 @@ class Country extends Model
      */
     public function currency()
     {
-        return $this->belongsTo(Currency::class, 'country_name','countryname');
+        return $this->belongsTo(Currency::class, 'country_code','countrycode');
     }
     public function getCurrencyAttribute()
     {

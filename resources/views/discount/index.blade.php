@@ -1,5 +1,10 @@
 <x-base-layout>
-
+    @if (\Session::has('errors'))
+        <div class="alert alert-danger alert-dismissible fade show">
+            <strong>{!! \Session::get('errors') !!}</strong> 
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
     <div id="kt_engage_demos" class="bg-body" data-kt-drawer="true" data-kt-drawer-name="explore" data-kt-drawer-activate="true" data-kt-drawer-overlay="true" data-kt-drawer-width="{default:'350px', 'lg': '475px'}" data-kt-drawer-direction="end" data-kt-drawer-toggle="#kt_engage_demos_toggle" data-kt-drawer-close="#kt_engage_demos_close">
         <!--begin::Card-->
         <div class="card shadow-none rounded-0 w-100">
@@ -33,7 +38,7 @@
                             <option value="no">No of Coupons</option>
                             <option value="amount">Amount</option>
                             <option value="cat">Category</option>
-                            <option value="spec">Specialization</option>                            
+                            <!--<option value="spec">Specialization</option>                            -->
                         </select>
                     </div>
                     <div class="row">
@@ -51,21 +56,21 @@
                     <div class="row">
                         <div class="col-xxl-4" data-id-filter="promo" hidden>
                             <label class="fs-6 form-label fw-bolder text-dark">Promo Title</label>
-                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='2' />
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='3' />
 
                         </div>                        
                     </div>
                     <div class="row">
                         <div class="col-xxl-4" data-id-filter="promo_code" hidden>
                             <label class="fs-6 form-label fw-bolder text-dark">Promo Code</label>
-                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='3' />
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='4' />
 
                         </div>                        
                     </div>
                     <div class="row">
                         <div class="col-xxl-4" data-id-filter="no" hidden>
                             <label class="fs-6 form-label fw-bolder text-dark">No of Coupons</label>
-                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='4' />
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='5' />
 
                         </div>                        
                     </div>
@@ -73,28 +78,17 @@
                     <div class="row">
                         <div class="col-xxl-4" data-id-filter="amount" hidden>
                             <label class="fs-6 form-label fw-bolder text-dark">Amount</label>
-                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='7' />
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='6' />
 
                         </div>                        
                     </div>
                     <div class="row">
                         <div class="col-xxl-4" data-id-filter="cat" hidden>
                             <label class="fs-6 form-label fw-bolder text-dark">Category</label>
-                            <select name="" id="" class="datatable-input" data-col-index='10'>
+                            <select name="" id="" class="datatable-input" data-col-index='8'>
                                 <option value=""></option>
                                 @foreach($category as $category)
                                     <option  value="{{$category->id}}">{{$category->name}}</option>
-                                @endforeach
-                            </select>
-                        </div>                        
-                    </div>
-                    <div class="row">
-                        <div class="col-xxl-4" data-id-filter="spec" hidden>
-                            <label class="fs-6 form-label fw-bolder text-dark">Specialization</label>
-                            <select name="" id="" class="datatable-input" data-col-index='11'>
-                                <option value=""></option>
-                                @foreach($specialization as $specialization)
-                                    <option  value="{{$specialization->id}}">{{$specialization->title}}</option>
                                 @endforeach
                             </select>
                         </div>                        
@@ -142,12 +136,12 @@
                             <option selected value="3">Promo Code</option>
                             <option selected value="4">No of Coupons</option>
                             <option selected value="5">Image</option>
-                            <option selected value="5">Flat or Percentage</option>
+                            <!--<option selected value="5">Flat or Percentage</option>-->
                             <option selected value="6">Amount</option>
                             <option selected value="7">Validity From Date</option>
                             <option selected value="8">Validity To Date</option>
                             <option selected value="9">Category</option>
-                            <option selected value="10">Specialization</option>
+                            <!--<option selected value="10">Specialization</option>-->
                             <option selected value="11">Applicable For</option>
                             <option selected value="12">Action</option>
                         </select>
@@ -281,12 +275,12 @@
                                             <th>Promo Title</th>
                                             <th>Promo Code</th>
                                             <th>No of Coupons</th>
-                                            <th>Flat or Percentage</th>
+                                            <!--<th>Flat or Percentage</th>-->
                                             <th>Amount</th>
-                                            <th>Validity From Date</th>
-                                            <th>Validity To Date</th>
+                                            <th>Validity</th>
+                                            <!--<th>Validity To Date</th>-->
                                             <th>Category</th>
-                                            <th>Specialization</th>
+                                            <!--<th>Specialization</th>-->
                                             <th>status</th>
                                             <th>Action</th>
                                         </tr>
@@ -354,7 +348,7 @@
                     type: 'POST',
                     data: {
                         "_token": "{{ csrf_token() }}",
-                        columnsDef : ['id','consultantID','iamge','promo_title','promo_code','no_of_coupons','flat_percentage','amount','from_date','to_date','categoryID','specializationID','status','action']
+                        columnsDef : ['id','consultantID','iamge','promo_title','promo_code','no_of_coupons','amount','from_date','categoryID','status','action']
                     }
                 },
                 columns: [
@@ -364,12 +358,12 @@
                     { data: 'promo_title'},
                     { data: 'promo_code'},
                     { data: 'no_of_coupons'},
-                    { data: 'flat_percentage'},
+                    // { data: 'flat_percentage'},
                     { data: 'amount'},
                     { data: 'from_date'},
-                    { data: 'to_date'},
+                    // { data: 'to_date'},
                     { data: 'categoryID'},
-                    { data: 'specializationID'},
+                    // { data: 'specializationID'},
                     { data: 'status'},
                     { data: 'action'}
                 ],
@@ -410,6 +404,36 @@
                             return '';
 
                             
+                        },
+                    },
+                    {
+                        targets: 6,
+                        data: null,
+                        orderable: true,
+                        render: function (data, type, row) {
+                            return `${data} ${(row.flat_percentage == 0)?row?.consultant?.country.currency.currencycode:'%'} `
+
+                            
+                        },
+                    },
+                    {
+                        targets: 7,
+                        data: null,
+                        orderable: true,
+                        render: function (data, type, row) {
+                            return `From : ${data} <br>  To : ${row.to_date}`
+                        },
+                    },
+                    {
+                        targets: 8,
+                        data: null,
+                        orderable: true,
+                        render: function (data, type, row) {
+                            $temp = `<span class='badge badge-success'>${data.category?.name}</span><br/>`;
+                            data.subcategoey.forEach(element => {
+                                $temp += `<span class='badge badge-success'>${element?.name}</span><br/>`;
+                            });
+                            return $temp;
                         },
                     },
                     

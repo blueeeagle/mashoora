@@ -50,11 +50,11 @@
                                 <div class="form-group row">
                                     <div class="col-md-6">
                                         <label for="" class="form-label fs-6 mb-4">Country Name<span class="text-danger">*</span></label>
-                                        <input type="text" name="country_name" class="form-control mb-4" placeholder="Title" value="{{ $country->country_name }}" required/>
+                                        <input type="text" name="country_name" class="form-control mb-4" required placeholder="Title" value="{{ $country->country_name }}" required/>
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="" class="form-label fs-6 mb-4">Country Code (ISO 3 Code) <span class="text-danger">*</span></label>
-                                        <input type="text" name="country_code" class="form-control mb-4" placeholder="Code" value="{{ $country->country_code }}" required/>
+                                        <label for="" class="form-label fs-6 mb-4">Country Code (ISO 2 Code) <span class="text-danger">*</span></label>
+                                        <input type="text" name="country_code" class="form-control mb-4" required placeholder="Code" value="{{ $country->country_code }}" required/>
                                     </div>
                                 </div>
                                     
@@ -63,7 +63,7 @@
                                 <div class="form-group row">
                                     <div class="col-md-6">
                                         <label for="" class="form-label fs-6 mb-4">Dialing<span class="text-danger">*</span></label>
-                                        <input type="text" oninput="this.value = this.value.replace(/[A-Z a-z]+/g, '').replace(/(\..*)\./g, '$1');"  name="dialing" class="form-control mb-4" placeholder="Title" value="{{ $country->dialing }}" required/>
+                                        <input type="text" required oninput="this.value = this.value.replace(/[A-Z a-z]+/g, '').replace(/(\..*)\./g, '$1');"  name="dialing" class="form-control mb-4" placeholder="Title" value="{{ $country->dialing }}" required/>
 
                                     </div>
                                     <div class="col-md-6">
@@ -97,7 +97,8 @@
                                     <br>
                                 <div class="form-group row" style="float:right" >
                                     <div class="col-md-6">
-                                        <button type="button" class="btn btn-secondary btn-hover-rise me-5 ">Reset</button>
+                                       <button type="button" id="formEditReset" class="btn btn-secondary btn-hover-rise me-5 ">Reset</button>
+
                                     </div>
                                     <div class="col-md-6">
                                         <button type="submit" class="btn btn-primary btn-hover-rise me-5">Save</button>

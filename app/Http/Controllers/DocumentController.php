@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Input;
 use DataTables;
 use Illuminate\Support\Collection;
 use Validator;
+use App\Models\Category;
 
 class DocumentController extends Controller
 {
@@ -32,7 +33,7 @@ class DocumentController extends Controller
 
         $datas = Document::when($search[1],function($query,$search){
             return $query->where('title','LIKE',"%{$search}%");
-        })->orderBy('id','desc')->get();
+        })->orderBy('title','ASC')->get();
 
 
         return DataTables::of($datas)
@@ -110,6 +111,12 @@ class DocumentController extends Controller
     }
 
     public function destroy(Document $document){
+        $Category = Category::where('document_id',$document->id)->exists();
+        if($Category){
+            $data1['error'] = 'Document is Mapped with Category , so cannot delete';
+            $data1['status'] = false;
+            return response()->json($data1);
+        }
         $document->delete();
         $data1['msg'] = 'Data Deleted Successfully.';
         $data1['status'] = true;

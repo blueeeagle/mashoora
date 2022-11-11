@@ -18,8 +18,13 @@ class Permissions
     public function handle(Request $request, Closure $next,$data)
     {
         if (Auth::guard('web')->check()) {
-                if(!Auth::guard('web')->user()->checkPermission($data))
-                return redirect()->back()->with('errors',["Access Denied"]);
+                if(!Auth::guard('web')->user()->checkPermission($data)){
+                    if($request->expectsJson()) {
+                        return response()->json(['error' =>"Access Denied"]);
+                    }else{
+                        return redirect()->back()->with('errors',"Access Denied");   
+                    }
+                }
             return $next($request);
         }
 

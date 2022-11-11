@@ -37,5 +37,14 @@ class Category extends Model
     public function spec(){
         return $this->belongsTo(Consultantcategory::class,'id','categorie_id');
     }
+    
+    // 
+    public function parent(){
+        return $this->belongsTo(Category::class, 'categories_id','id')->where('status',1);
+    }
+    
+    public function childForCreate(){
+        return $this->belongsTo(Category::class, 'categories_id')->where('status',1);
+    }
 }
 // Storage::disk('public_custom')->delete($category->img);

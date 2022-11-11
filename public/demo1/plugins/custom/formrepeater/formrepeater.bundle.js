@@ -851,6 +851,9 @@
         if($self.find('[data-repeater-title]') && title.title){
             $self.find('[data-repeater-title]')[0].innerHTML = title.title
         }
+        if($self.find('[data-repeater-dialle]') && typeof REPEAT_dialing !== "undefined"){
+            $self.find('[data-repeater-dialle]').each(e => $self.find('[data-repeater-dialle]')[e].innerHTML = REPEAT_dialing )
+        }
         return $self
     }
     $.fn.inputOnChange = function (callback) {

@@ -216,35 +216,35 @@
         }
  
       
-        // $('#firm_id').select2({
-        //     ajax: {
-        //         url: '{{ route('other.articel.search') }}',
-        //         type: 'POST',
-        //         data: function (params) {
-        //         var query = {
-        //             search: params.term,
-        //             "_token": "{{ csrf_token() }}",
-        //             }
-        //             return query;
-        //         },
-        //         processResults: function (data) {
-        //             return {
-        //             results:  $.map(data, function (item) {
-        //                     return {
-        //                         text: item.title,
-        //                         children: $.map(item.children, function (data) { return { id:`${data.id}`,text : data.text} })
-        //                     }
-        //                 })
-        //             };
-        //         },
-        //         cache: true
-        //     },
+        $('#firm_id').select2({
+            ajax: {
+                url: '{{ route('other.article.search') }}',
+                type: 'POST',
+                data: function (params) {
+                var query = {
+                    search: params.term,
+                    "_token": "{{ csrf_token() }}",
+                    }
+                    return query;
+                },
+                processResults: function (data) {
+                    return {
+                    results:  $.map(data, function (item) {
+                            return {
+                                text: item.title,
+                                children: $.map(item.children, function (data) { return { id:`${data.id}`,text : data.text} })
+                            }
+                        })
+                    };
+                },
+                cache: true
+            },
 
-        // })
+        })
 
         $('#consultant_id').select2({
             ajax: {
-                url: '{{ route('other.articel.consultantSearch') }}',
+                url: '{{ route('other.article.consultantSearch') }}',
                 type: 'POST',
                 data: function (params) {
                 var query = {
@@ -269,7 +269,7 @@
         })
         $('#admin_id').select2({
             ajax: {
-                url: '{{ route('other.articel.userSearch') }}',
+                url: '{{ route('other.article.userSearch') }}',
                 type: 'POST',
                 data: function (params) {
                 var query = {
@@ -292,30 +292,32 @@
             },
 
         })
-        
-         var optionFormat = function(item) {
+
+        var optionFormat = function(item) {
             if ( !item.id ) {
                 return item.text;
             }
             
-    
+
             var span = document.createElement('span');
             var imgUrl = item.element.getAttribute('data-image');
             var template = '';
             // debugger;
-    
-            template += '<img src="' + imgUrl + '" class="rounded-circle h-30px me-2" alt="image"/>';
+
+            template += '<img src="' + imgUrl + '" class="rounded-circle h-40px me-2" alt="image"/>';
             template += item.text;
-    
+
             span.innerHTML = template;
-    
+
             return $(span);
         }
-    
+
+        // Init Select2 --- more info: https://select2.org/
         $('#firm_id').select2({
             templateSelection: optionFormat,
             templateResult: optionFormat,
         });
+    
     
     </script>
     @endsection

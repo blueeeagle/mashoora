@@ -77,56 +77,25 @@
                     <div class="fv-row mb-12">
                         <select class="form-select" id="toogleColum" data-control="select2" data-placeholder="Toggle column" multiple="multiple">
                             <option></option>
-                            <option selected value="0">Sno</option>
-                            <option selected value="1">Phone No</option>
-                            <option selected value="2">Name</option>
-                            <option value="3">Email</option>
-                            <option value="4">Bio Data</option>
-                            <option value="5">Date of Biroption</option>
-                            <option value="6">Expriance</option>
-                            <option value="7">landline</option>
-                            <option value="8">Language</option>
-                            <option value="9">Address</option>
-                            <option value="10">Country</option>
-                            <option value="11">State</option>
-                            <option value="12">City</option>
-                            <option value="13">Zip Code</option>
-                            <option value="14">Firm Type</option>
-                            <option value="15">specialized</option>
-                            <option value="16">Category</option>
-                            <option value="17">preferre Slot</option>
-                            <option value="18">Video</option>
-                            <option value="19">video Amount</option>
-                            <option value="20">voice</option>
-                            <option value="21">voice amount</option>
-                            <option value="22">Text</option>
-                            <option value="23">Text amount</option>
-                            <option value="24">Direct</option>
-                            <option value="25">Direct Amount</option>
-                            <option value="26">Account name</option>
-                            <option value="27">Account number</option>
-                            <option value="28">Bank name</option>
-                            <option value="29">Branch</option>
-                            <option value="30">IFCS code</option>
-                            <option value="31">Bank status</option>
-                            <option value="32">proof</option>
-                            <option value="33">Insurance</option>
-                            <option value="34">Commission Consultant Type</option>
-                            <option value="35">Commission Consultant Amount</option>
-                            <option value="36">Commission Offers Type</option>
-                            <option value="37">Commission Offers Amount</option>
-                            <option value="38">Commission Payout Type</option>
-                            <option  value="39">Commission Payout Amount</option>
-                            <option selected value="40">status</option>
-                            <option selected value="41">Action</option>
+                            <option value="0">#</option>
+                            {{-- <option value="1">Profile</option> --}}
+                            <option selected value="2">Phone No</option>
+                            <option selected value="3">Name</option>
+                            <option selected value="4">Email</option>
+                            <option selected value="5">Date of Birth</option>
+                            <option selected value="6">Gender</option>
+                            <option selected value="7">Category</option>
+                            <option selected value="9">Address</option>
+                            <option selected value="10">status</option>
+                            <option selected value="11">Action</option>
                         </select>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
     </div>
-    
+
 
     <div class="d-flex flex-column flex-column-fluid">
         <!--begin::Toolbar-->
@@ -152,7 +121,7 @@
                         <!--end::Item-->
                         <!--begin::Item-->
                         <li class="breadcrumb-item text-muted">Consultant</li>
-                        
+
                         <!--end::Item-->
                     </ul>
                     <!--end::Breadcrumb-->
@@ -187,7 +156,7 @@
         <!--end::Toolbar-->
         <!--begin::Content-->
 
-        
+
         <div id="kt_app_content" class="app-content flex-column-fluid">
             <!--begin::Content container-->
             <div id="kt_app_content_container" class="app-container container-xxl">
@@ -213,10 +182,10 @@
                             <div class="d-flex align-items-center p-10">
                                 <!--<button type="button" id="search" class="btn btn-primary me-5">Search</button>-->
                                 <button type="button" id="reset" class="btn btn-primary btn-xs me-5">Reset</button>
-                                
+
                             </div>
 
-                            <!--end::Search-->                                   
+                            <!--end::Search-->
                         </div>
                        <!--begin::Card toolbar-->
                         <div class="card-toolbar" data-select2-id="select2-data-131-2zax">
@@ -246,57 +215,27 @@
                                     <thead>
                                         <tr class="fw-semibold fs-6 text-gray-800">
                                             <th>#</th>
-                                            <th>Phone No</th>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                            <th>Bio Data</th>
-                                            <!--<th>Date of Birth</th>-->
-                                            <!--<th>Expriance</th>-->
-                                            <!--<th>landline</th>-->
-                                            <!--<th>Language</th>-->
-                                            <!--<th>Address</th>-->
-                                            <!--<th>Country</th>-->
-                                            <!--<th>State</th>-->
-                                            <!--<th>City</th>-->
-                                            <!--<th>Zip Code</th>-->
-                                            <!--<th>Firm Type</th>-->
-                                            <!--<th>specialized</th>-->
-                                            <!--<th>Category</th>-->
-                                            <!--<th>preferre Slot</th>-->
-                                            <!--<th>Video</th>-->
-                                            <!--<th>video Amount</th>-->
-                                            <!--<th>voice</th>-->
-                                            <!--<th>voice amount</th>-->
-                                            <!--<th>Text</th>-->
-                                            <!--<th>Text amount</th>-->
-                                            <!--<th>Direct</th>-->
-                                            <!--<th>Direct Amount</th>-->
-                                            <!--<th>Account name</th>-->
-                                            <!--<th>Account number</th>-->
-                                            <!--<th>Bank name</th>-->
-                                            <!--<th>Branch</th>-->
-                                            <!--<th>IFCS code</th>-->
-                                            <!--<th>Bank status</th>-->
-                                            <!--<th>proof</th>-->
-                                            <!--<th>Insurance</th>-->
-                                            <!--<th>Commission Consultant Type</th>-->
-                                            <!--<th>Commission Consultant Amount</th>-->
-                                            <!--<th>Commission Offers Type</th>-->
-                                            <!--<th>Commission Offers Amount</th>-->
-                                            <!--<th>Commission Payout Type</th>-->
-                                            <!--<th>Commission Payout Amount</th>-->
-                                            <th>status</th>
+                                            <th>Profile</th>
+                                            <th>Mobile No</th>
+                                            <th>Details</th>
+                                            <!--<th>E-mail</th>-->
+                                            <th>Gender</th>
+                                            {{-- <th>Date Of Birth</th> --}}
+                                            <th>Category</th>
+                                            <th>Address</th>
+                                            <th>Approval</th>
+                                            <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                 </table>
-                                
+
                             </div>
-                            
+
                         </div>
                     </div>
                     <!--end::Card body-->
-                </div> 
+                </div>
             </div>
             <!--end::Content container-->
         </div>
@@ -353,94 +292,34 @@
                         "_token": "{{ csrf_token() }}",
                         columnsDef : [
                             'DT_RowIndex',
-                            'phone_no',
+                            'picture',
+                            'phone_no' ,
                             'name' ,
-                            'email' ,
-                            'bio_data' ,
+                            // 'email' ,
+                            'gender' ,
                             // 'dob' ,
-                            // 'exp_year' ,
-                            // 'landline' ,
-                            // 'language' ,
-                            // 'register_address' ,
-                            // 'country_id' ,
-                            // 'state_id' ,
-                            // 'city_id' ,
-                            // 'zipcode' ,
-                            // 'type' ,
-                            // 'specialized' ,
-                            // 'categorie_id' ,
-                            // 'preferre_slot' ,
-                            // 'video' ,
-                            // 'video_amount' ,
-                            // 'voice' ,
-                            // 'voice_amount' ,
-                            // 'text' ,
-                            // 'text_amount' ,
-                            // 'direct' ,
-                            // 'direct_amount' ,
-                            // 'account_name' ,
-                            // 'account_number' ,
-                            // 'bank_name' ,
-                            // 'branch' ,
-                            // 'ifsc_code' ,
-                            // 'bank_status' ,
-                            // 'proof' ,
-                            // 'insurance_id' ,
-                            // 'com_con_type' ,
-                            // 'com_con_amount' ,
-                            // 'com_off_type' ,
-                            // 'com_off_amount' ,
-                            // 'com_pay_type' ,
-                            // 'com_pay_amount',
-                            'status',
+                            'categorie_id' ,
+                            'address' ,
+                            'approval',
+                            'status' ,
                             'action'
                         ]
                     }
 
                 },
                 columns: [
-                    { data : 'DT_RowIndex'},
-                    { data : 'phone_no'},
+                    { data : 'DT_RowIndex' },
+                    { data : 'picture' },
+                    { data : 'phone_no' },
                     { data : 'name' },
-                    { data : 'email' },
-                    { data : 'bio_data' },
+                    // { data : 'email' },
+                    { data : 'gender' },
                     // { data : 'dob' },
-                    // { data : 'exp_year' },
-                    // { data : 'landline' },
-                    // { data : 'language' },
-                    // { data : 'register_address' },
-                    // { data : 'country_id' },
-                    // { data : 'state_id' },
-                    // { data : 'city_id' },
-                    // { data : 'zipcode' },
-                    // { data : 'type' },
-                    // { data : 'specialized' },
-                    // { data : 'categorie_id' },
-                    // { data : 'preferre_slot' },
-                    // { data : 'video' },
-                    // { data : 'video_amount' },
-                    // { data : 'voice' },
-                    // { data : 'voice_amount' },
-                    // { data : 'text' },
-                    // { data : 'text_amount' },
-                    // { data : 'direct' },
-                    // { data : 'direct_amount' },
-                    // { data : 'account_name' },
-                    // { data : 'account_number' },
-                    // { data : 'bank_name' },
-                    // { data : 'branch' },
-                    // { data : 'ifsc_code' },
-                    // { data : 'bank_status' },
-                    // { data : 'proof' },
-                    // { data : 'insurance_id' },
-                    // { data : 'com_con_type' },
-                    // { data : 'com_con_amount' },
-                    // { data : 'com_off_type' },
-                    // { data : 'com_off_amount' },
-                    // { data : 'com_pay_type' },
-                    // { data : 'com_pay_amount' },
-                    { data: 'status'},
-                    { data: 'action'}
+                    { data : 'categorie_id' },
+                    { data : 'address' },
+                    { data : 'approval' },
+                    { data : 'status' },
+                    { data : 'action' },
                 ],
                 columnDefs : [
                     {
@@ -449,7 +328,7 @@
                         orderable: true,
                         render: function (data, type, row) {
                             return `
-                                <a href="${data.view}" class="btn btn-icon btn-bg-light btn-active-color-warning btn-sm me-1"> 
+                                <a href="${data.view}" class="btn btn-icon btn-bg-light btn-active-color-warning btn-sm me-1">
                                     <span class="svg-icon svg-icon-3">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
                                             <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
@@ -457,34 +336,96 @@
                                         </svg>
                                     </span>
                                 </a>
-                                
+
                                 <a href="${data.Delete}" delete class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm">
                                     <i href="${data.Delete}" delete class="las la-trash fs-2 me-2"></i></a>
 								</a>
                             `;
                         },
                     },
+                    {
+                        targets: 5,
+                        data: null,
+                        orderable: true,
+                        render: function (data, type, row) {
+                            let cat = `<a href="#" class="btn btn-sm btn-light-success fw-bolder ms-2 fs-8 py-1 px-3"data-bs-toggle="modal">${data.cat }</a><br>`
+                            let sub = ``
+                            data.sub.forEach(e => sub += `<a href="#" class="btn btn-sm btn-light-success fw-bolder ms-2 fs-8 py-1 px-3"data-bs-toggle="modal">${e}</a>`)
+                            return cat+sub;
+                        },
+                    },
+                    {
+                        targets: 6,
+                        data: null,
+                        orderable: true,
+                        render: function (data, type, row) {
+                            return `<div class="fs-6 fw-bold text-gray-600">
+                                ${row.city?.city_name || ''}
+								,<br>${row.state?.state_name}
+								,<br>${row.addcountry?.country_name}
+                                ,<br> Zipcode : ${row.zipcode}
+                            </div>`
+                        },
+                    },
+                    {
+                        targets: 7,
+                        data: null,
+                        orderable: true,
+                        render: function (data, type, row) {
+                            if(data == 2) return `<a href="#" class="btn btn-sm btn-light-sucess fw-bolder ms-2 fs-8 py-1 px-3"data-bs-toggle="modal">Approved</a>`
+                            if(data == 1) return `<a href="#" class="btn btn-sm btn-light-danger fw-bolder ms-2 fs-8 py-1 px-3"data-bs-toggle="modal">Approval Decline</a>`
+                            return `<a href="#" class="btn btn-sm btn-light-warning fw-bolder ms-2 fs-8 py-1 px-3"data-bs-toggle="modal">Waiting for Approval</a>`
+                        },
+                    },
+                    {
+                        targets: 1,
+                        data: null,
+                        orderable: true,
+                        render: function (data, type, row) {
+                            if(data){
+                                return `<div class="d-flex align-items-center">
+                                        <div class="symbol symbol-40 symbol-sm flex-shrink-0">
+                                            <img class="rounded-circle z-depth-2" src="${data}">
+                                        </div>
+                                    </div>`;
+                            }
+                            return '';
+                            // return `<div class="d-flex align-items-center">
+                            //             <div class="symbol symbol-40 symbol-sm flex-shrink-0">
+                            //                 <img class="rounded-circle z-depth-2" src={{asset('storage/uploadFiles/default_image.png')}}>
+                            //             </div>
+                            //         </div>`;
+                        },
+                    },
+                    {
+                        targets: 4,
+                        data: null,
+                        orderable: true,
+                        render: function (data, type, row) {
+                            if(data==0){ return `Male`; }
+                            return 'Female';
+                        },
+                    },
                 ],
                 drawCallback : function( settings ) { }
             });
 
-            
+
             const filterSearch = document.querySelector('[data-kt-docs-table-filter="search"]');
             filterSearch.addEventListener('keyup', function (e) {
                 table.search(e.target.value).draw();
             });
-            
+
 
             // $('#kt_subheader_search_form').keyup(function(){
             //     table.search($(this).val()).draw();
-            // }) 
+            // })
             $( "#reset" ).click(function() {
                 $('#kt_subheader_search_form').val('');
-               table.search($('#kt_subheader_search_form').val()).draw();   
+               table.search($('#kt_subheader_search_form').val()).draw();
             });
         });
 
     </script>
 @endsection
 </x-base-layout>
-

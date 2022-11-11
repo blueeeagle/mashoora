@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -39,6 +38,68 @@ class ConsultantController extends Controller
 	}
 
     public function datatable(Request $request){
+
+        $search=[];
+        $columns=$request->columns;
+        foreach($columns as $colum){
+            $search[] = $colum['search']['value'];
+        }
+
+        $datas = Consultant::with('Addcountry','state','city')
+        // ->when($search[1],function($query,$search){ return $query->where('comapany_name','like',"%{$search}%");   })
+        // ->when($search[1],function($query,$search){ return $query->where('comapany_name','like',"%{$search}%");   })
+        // ->when($search[1],function($query,$search){ return $query->where('comapany_name','like',"%{$search}%");   })
+        // ->when($search[1],function($query,$search){ return $query->where('comapany_name','like',"%{$search}%");   })
+        ->orderBy('id','desc')->get();
+
+        return DataTables::of($datas)
+            ->addIndexColumn()
+            // ->editColumn('country_id', function(Consultant $data){
+            //     $country = $data->country;
+            //     return ($country)?$country->country_name : '';
+            // })
+            // ->editColumn('state_id', function(Consultant $data){
+            //     $state = $data->state;
+            //     return ($state)?$state->state_name : '';
+            // })
+            // ->editColumn('city_id', function(Consultant $data){
+            //     $city = $data->city;
+            //     return ($city)?$city->city_name : '';
+            // })
+            ->editColumn('status', function(Consultant $data) {
+                $status = ($data->status == 1)?'checked':'' ;
+                $route = \route('consultant.consultant.status',$data->id);
+                    return "<div class='form-check form-switch form-check-custom form-check-solid'>
+                            <input class='form-check-input' type='checkbox' status data-url='$route' value='' $status />
+                        </div>";
+            })
+            ->editColumn('picture', function(Consultant $data){
+                if(!isset($data->picture)) return "";
+                $exists = Storage::disk('public_custom')->exists($data->picture);
+                if($exists) return asset("storage/$data->picture");
+                return "";
+            })
+            ->editColumn('phone_no', function(Consultant $data){
+                return $data->country->dialing." ".$data->phone_no;
+            })
+            ->editColumn('name', function(Consultant $data){
+                return "Name : ".$data->name."<br/> Email : ".$data->email;
+            })
+            ->editColumn('categorie_id', function(Consultant $data){
+                $category = $data->parentcat();
+                $subCategory = $data->subcat()->pluck('name')->toArray();
+                return ['cat'=>$category->name ?? '','sub'=>$subCategory];
+            })
+            ->addColumn('address', function (Consultant $data){
+                return html_entity_decode($data->register_address);
+            })
+            ->editColumn('action', function(Consultant $data){
+                return ['Delete'=> \route('consultant.consultant.destroy',$data->id),'view'=> \route('consultant.consultant.view',$data->id),'edit'=> \route('consultant.consultant.edit',$data->id)];
+            })
+            ->rawColumns(['action','status','categorie_id','address','name'])
+            ->toJson();
+    }
+    public function datatable_old(Request $request){
 
         $search=[];
         $columns=$request->columns;
@@ -87,15 +148,9 @@ class ConsultantController extends Controller
 
 	public function create(){
         $countrys = Country::where('status',1)->get();
-        $state = State::where('status',1)->get();
-        $city = City::where('status',1)->get();
         $Category = Category::with('child','childCategory')->where('status',1)->where('type',0)->get();
-        $Speclize = Consultantcategory::with('Category')->with('SubCategory')->where('status',1)->get();
-        $Insurance = Insurance::where('status',1)->get();
         $Language = Language::where('status',1)->get();
-        $firm = Firm::where('status',1)->get();
-        $tree = []; $tree1 = [];
-        // dd($Category);
+        $tree = [];
 
         foreach ($Category as $key => &$value) {
             # code...
@@ -105,7 +160,6 @@ class ConsultantController extends Controller
                 'id' => $value->id,
                 'text' => $value->name,
             ];
-            // $tree1 = [];
             $Category = Category::where('status',1)->where('categories_id',$value->id)->where('type',1)->get();
             foreach ($Category as $key1 => $value1) {
                 # code...
@@ -113,67 +167,40 @@ class ConsultantController extends Controller
                     'id' => $value1->id,
                     'text' => $value1->name,
                 ];
-
-                $temp1 = [
-                    'text' => "$value->name - $value1->name"
-                ];
-                $Consultantcategory = Consultantcategory::where('status',1)->where('categorie_id',$value->id)->where('subcategorie_id',$value1->id)->get();
-                foreach ($Consultantcategory as $key2 => $value2) {
-                    $temp1['children'][] = [
-                        'id' => $value2->id,
-                        'text' => $value2->title,
-                    ];
-                }
-                $tree1[] = $temp1;
             }
-            // dd($tree1);
             $tree[] = $temp;
         }
-        //  dd($tree);
 
-		return view('consultant.create',['countrys' => $countrys,
-                'state'=> $state,'city'=>$city,'tree'=>$tree,
-                'tree1'=>$tree1,'Insurance'=>$Insurance,
-                'firm'=>$firm,'Language'=>$Language,
-                'Categorys'=>$Category,
-            ]);
+		return view('consultant.create',['countrys' => $countrys,'tree'=>$tree,'Language'=>$Language,'Categorys'=>$Category]);
 	}
 
-    function getName($data){
-        
-        $text ='';
-        if(isset($data->Category)) $text = $data->Category->name;
-        if(isset($data->SubCategory)){ 
-            $t = $data->SubCategory->name;
-            $text = "$text -- $t"; 
-            
-        }
-        return $text;
-    }
+
     public function subCategory(Request $request){
 
-        $Category = Category::where('status',1)->whereIn('id',explode(",",$request->categorie_id))->get();
-        $tree = [];
-        $tree1 = [];
-        $documents_id = [];
+        $Consultantcategory = Consultantcategory::with('Category','SubCategory')->whereIn('categorie_id',explode(",",$request->categorie_id))->orwhereIn('subcategorie_id',explode(",",$request->categorie_id))
+        ->orwhereIn('categorie_id',explode(",",$request->categorie_id))->whereNull('subcategorie_id')
+        ->get()->groupBy(['CategoryAlter.name','SubCategoryAlter.name']);
+
+        $Category = Category::where('status',1)->whereIn('id',explode(",",$request->categorie_id))->orwhereIn('categories_id',explode(",",$request->categorie_id))->get();
+
         $ids = [];
+        foreach($Category as $key => $data){
+            if($data->type == 0){
+                $ids[] = $data->id;
+            }else{
+               $ids[] = (int)$data->categories_id;
+            }
+        }
+        
+        $insurancs = Category::where('status',1)->where('insurance',1)->whereIn('id',$ids)->count();
+       
+        $documents_id = [];
         foreach ($Category as $key => &$value) {
             $documents_id = array_merge($documents_id,\explode(',',$value->document_id));
-            $ids[] = $value->id;
-            
         }
-        $Consultantcategory = Consultantcategory::with('Category','SubCategory')->where('status',1)->whereIn('subcategorie_id',$ids)->get();
-        
-        foreach ($Consultantcategory as $key2 => $value2) {
-            $text = $this->getName($value2);
-                    $tree1[] = [
-                        'id' => $value2->id,
-                        'text' => "$value2->title ( $text )",
-                    ];
-                }
-                
+
         $Document = Document::whereIn('id',$documents_id)->where('status',1)->get();
-        return response()->json(['tree'=>$tree1,'Document'=>$Document]);
+        return response()->json(['spec_data'=>$Consultantcategory,'Document'=>$Document,'insutance'=>($insurancs > 0)?true:false]);
     }
 
 
@@ -254,57 +281,52 @@ class ConsultantController extends Controller
     }
 
     public function save(Request $request){
-        $phone_no = $request->c_code.''.$request->phone_no;
         switch($request->step){
             case '0':
-                $consultant = Consultant::where('phone_no',$phone_no)->first();
+                $consultant = Consultant::where('phone_no',$request->phone_no)->first();
                 if($consultant){
-                    $country = Country::where('id',$consultant->country_code)->first();
-                    if($consultant->step > 5){
-                        $Category = Category::where('status',1)->whereIn('id',\explode(',',$consultant->categorie_id))->get();
-                        $ids = [];
-                        $consultant_id = [];
-                        foreach ($Category as $key => $value) {
-                            # code...
-                            $ids = array_merge($ids,\explode(',',$value->document_id));
-                            $consultant_id[] = $value->id;
-                        }
-                        $Document = Document::whereIn('id',$ids)->where('status',1)->get();
-                        $tree = [];
-
-                        $Consultantcategory = Consultantcategory::where('status',1)->whereIn('subcategorie_id',$consultant_id)->get();
-                        foreach ($Consultantcategory as $key2 => $value2) {
-                            $tree[] = [
-                                'id' => $value2->id,
-                                'text' => $value2->title,
-                            ];
-                        }
-                        return response()->json(['next' => true,'step'=>$consultant->step,'country'=>$country,'Document'=>$Document,'tree'=>$tree]);
+                    $country = Country::where('country_code',$consultant->country_code)->first();
+                    $firm = Firm::where('country_id',$country->id)->where('status',1)->where('approval',2)->get();
+                    $insurance = Insurance::where('country_id',$country->id)->where('status',1)->get();
+                    $Category = Category::where('status',1)->whereIn('id',explode(",",$consultant->categorie_id))->orwhereIn('categories_id',explode(",",$consultant->categorie_id))->get();
+                    $documents_id = [];
+                    foreach ($Category as $key => &$value) {
+                        $documents_id = array_merge($documents_id,\explode(',',$value->document_id));
                     }
-                    return response()->json(['next' => true,'step'=>$consultant->step,'country'=>$country,]);
-
+                    $Document = Document::whereIn('id',$documents_id)->where('status',1)->get();
+                    return response()->json(['next' => true,'step'=>$consultant->step,'country'=>$country,'firm'=>$firm,'insurance'=>$insurance,'Document'=>$Document,'consultant'=>$consultant]);
                 }
                 $rules=[
-                    'phone_no' => 'required|unique:consultants,phone_no,'.$phone_no,
+                    'phone_no' => 'required|unique:consultants,phone_no,'.$request->phone_no,
                 ];
 
                 $customs=[
                     'phone_no.required'  => 'Phone number Name should be filled',
                     'phone_no.unique'      	=> 'Phone number Name already taken',
                 ];
-                $validator = Validator::make(['phone_no'=>$phone_no], $rules,$customs);
+                $validator = Validator::make(['phone_no'=>$request->phone_no], $rules,$customs);
                 if($validator->fails()){
                     return response()->json(['next' => false,'errors' => $validator->getMessageBag()->toArray()]);
                 }
+                $country = Country::where('id',$request->country_code)->first();
                 $consultant = new Consultant;
-                $consultant->phone_no = $phone_no;
-                $consultant->country_code = $request->country_code;
+                $consultant->phone_no = $request->phone_no;
+                $consultant->country_code = $country->country_code;
+                $consultant->mobile_reg = 0;
                 $consultant->save();
-                $country = Country::where('id',$consultant->country_code)->first();
-                return response()->json(['next' => true,'country'=>$country]);
+                
+                $firm = Firm::where('country_id',$country->id)->where('status',1)->where('approval',2)->get();
+                $insurance = Insurance::where('country_id',$country->id)->where('status',1)->get();
+                $Category = Category::where('status',1)->whereIn('id',explode(",",$consultant->categorie_id))->orwhereIn('categories_id',explode(",",$consultant->categorie_id))->get();
+                $documents_id = [];
+                foreach ($Category as $key => &$value) {
+                    $documents_id = array_merge($documents_id,\explode(',',$value->document_id));
+                }
+                $Document = Document::whereIn('id',$documents_id)->where('status',1)->get();
+                return response()->json(['next' => true,'country'=>$country,'firm'=>$firm,'insurance'=>$insurance,'Document'=>$Document,'consultant'=>$consultant]);
             break;
-case '1':
-                $Consultant = Consultant::where('phone_no',$phone_no)->first();
+            case '1':
+                $Consultant = Consultant::where('phone_no',$request->phone_no)->first();
                 $Consultant->other = $request->other;
                 $Consultant->type = $request->type;
                 $Consultant->firm_choose = $request->firm_choose;
@@ -314,8 +336,8 @@ case '1':
             break;
 
             case '2':
-                $Consultant = Consultant::where('phone_no',$phone_no)->first();
-                $picture = Storage::disk('public_custom')->move("/uploadFiles/temp/$request->picture","/uploadFiles/constant/$request->picture");
+                $Consultant = Consultant::where('phone_no',$request->phone_no)->first();
+                $picture = Storage::disk('public_custom')->move("/uploadFiles/temp/$request->picture","/uploadFiles/consultant/$request->picture");
                 $Consultant->picture = "/uploadFiles/consultant/".$request->picture;
                 $Consultant->bio_data = $request->bio_data;
                 $Consultant->dob = $request->dob;
@@ -331,7 +353,7 @@ case '1':
             break;
 
             case '3':
-                $Consultant = Consultant::where('phone_no',$phone_no)->first();
+                $Consultant = Consultant::where('phone_no',$request->phone_no)->first();
                 $Consultant->register_address = $request->register_address;
                 $Consultant->country_id = $request->country_id;
                 $Consultant->state_id = $request->state_id;
@@ -343,9 +365,11 @@ case '1':
             break;
 
             case '4':
-                $Consultant = Consultant::where('phone_no',$phone_no)->first();
-                $Category = Category::where('status',1)->whereIn('id',\explode(",",$request->categorie_id))->where('type',1)->get();
+                $Consultant = Consultant::where('phone_no',$request->phone_no)->first();
+                $Category = Category::where('status',1)->whereIn('id',\explode(",",$request->categorie_id))->get();
+                
                 $ids = [];
+
                 foreach ($Category as $key => $value) {
                     # code...
                     $ids[] = $value->id;
@@ -354,21 +378,22 @@ case '1':
                     }
                 }
                 $Consultant->categorie_id = \implode(',',$ids);
-                $Consultant->step = 5;
+                // $Consultant->step = 5;
                 $Consultant->update();
                 return response()->json(['next' => true]);
             break;
 
             case '5':
-                $Consultant = Consultant::where('phone_no',$phone_no)->first();
-                $Consultant->specialized = $request->specialized;
-                $Consultant->step = 6;
+                $Consultant = Consultant::where('phone_no',$request->phone_no)->first();
+                $Consultant->specialized = implode(',',$request->specialized);
+                $Consultant->insurance_id  = '';
+                // $Consultant->step = 6;
                 $Consultant->update();
                 return response()->json(['next' => true]);
             break;
 
             case '6':
-                $Consultant = Consultant::where('phone_no',$phone_no)->first();
+                $Consultant = Consultant::where('phone_no',$request->phone_no)->first();
                 $Consultant->insurance_id = implode(',',$request->insurance_id);
                 $Consultant->step = 7;
                 $Consultant->update();
@@ -377,7 +402,7 @@ case '1':
 
 
             case '7':
-                $Consultant = Consultant::where('phone_no',$phone_no)->first();
+                $Consultant = Consultant::where('phone_no',$request->phone_no)->first();
                 $Consultant->direct = $request->direct;
                 $Consultant->direct_amount = $request->direct_amount;
                 $Consultant->preferre_slot = $request->preferre_slot;
@@ -389,15 +414,22 @@ case '1':
                 $Consultant->voice_amount = $request->voice_amount;
                 $Consultant->step = 8;
                 $Consultant->update();
-                return response()->json(['next' => true]);
+                $Category = Category::where('status',1)->whereIn('id',explode(",",$Consultant->categorie_id))->orwhereIn('categories_id',explode(",",$Consultant->categorie_id))->get();
+                
+                $documents_id = [];
+                foreach ($Category as $key => &$value) {
+                    $documents_id = array_merge($documents_id,\explode(',',$value->document_id));
+                }
+                $Document = Document::whereIn('id',$documents_id)->where('status',1)->get();
+                return response()->json(['next' => true,'Document'=>$Document]);
             break;
 
             case '8':
-                $Consultant = Consultant::where('phone_no',$phone_no)->first();
+                $Consultant = Consultant::where('phone_no',$request->phone_no)->first();
                 $proof = [];
                 foreach ($request->file('proof') as $key => $value) {
                     $IMGname = $value->getClientOriginalName();
-                    $path = $value->store("public/uploadFiles/proof/$request->phone_no/",'public_custom');
+                    $path = $value->store("uploadFiles/proof/$request->phone_no/",'public_custom');
                     $proof[] = $path;
                 }
                 $Consultant->proof = \implode(',',$proof);
@@ -407,21 +439,20 @@ case '1':
             break;
 
             case '9':
-                $Consultant = Consultant::where('phone_no',$phone_no)->first();
+                $Consultant = Consultant::where('phone_no',$request->phone_no)->first();
                 $Consultant->com_con_type = $request->com_con_type;
                 $Consultant->com_off_type = $request->com_off_type;
                 $Consultant->com_pay_type = $request->com_pay_type;
                 $Consultant->com_con_amount = $request->com_con_amount;
                 $Consultant->com_off_amount = $request->com_off_amount;
                 $Consultant->com_pay_amount  = $request->com_pay_amount;
-
                 $Consultant->step = 10;
                 $Consultant->update();
                 return response()->json(['next' => true]);
             break;
 
             case '10':
-                $Consultant = Consultant::where('phone_no',$phone_no)->first();
+                $Consultant = Consultant::where('phone_no',$request->phone_no)->first();
                 $Consultant->account_number = $request->account_number;
                 $Consultant->account_name = $request->account_name;
                 $Consultant->ifsc_code = $request->ifsc_code;
@@ -440,58 +471,95 @@ case '1':
         $Consultant = Consultant::where('phone_no',$request->phone_no)->first();
         return response()->json(['data' => $Consultant]);
     }
-    
-    public function view(Consultant $consultant){
-        $consultant = Consultant::with('country','state','city','firm.state','firm.city','appointment.customer','appointment_completed','appointment.transaction','wallet','offer_historys.offer','offer_historys.customer','wallet_trans','reviewForView.customer','currency')->where('id',$consultant->id)->first();
+
+    public function modelcategory(Request $request){
+
+        $subcategory = [];
+        $category = Category::whereIn('id',$request->categorie_id)->where('status',1)->first();
         
+        $Consultantcategory = Consultantcategory::with('Category','SubCategory')->whereIn('categorie_id',$request->categorie_id)->orwhereIn('subcategorie_id',$request->categorie_id)
+        ->orwhereIn('categorie_id',$request->categorie_id)->whereNull('subcategorie_id')
+        ->get()->groupBy(['CategoryAlter.name','SubCategoryAlter.name']);
+        // if(isset($request->parent)){
+            $subcategory = Category::where('categories_id',$request->categorie_id)->where('status',1)->get();
+        // }
+        $Category = Category::whereIn('id',$request->categorie_id)->where('status',1)->get();
+
+        $documents_id = [];
+        foreach ($Category as $key => &$value) {
+            $documents_id = array_merge($documents_id,\explode(',',$value->document_id));
+        }
+
+        $Document = Document::whereIn('id',$documents_id)->where('status',1)->get();
+
+        $isinsurance = Category::where('insurance',1)->whereIn('id',$request->categorie_id)->count();
+
+        return response()->json(['Document'=>$Document,'subcategory'=>$subcategory,'Consultantcategory'=>$Consultantcategory,'isinsurance'=>$isinsurance]);
+    }
+
+    public function view(Consultant $consultant){
+        // dd($consultant);
+        $consultant = Consultant::with('country','state','city','firm.state','firm.city','appointment.customer','appointment_completed','appointment.transaction','wallet','offer_historys.offer','offer_historys.customer','wallet_trans','reviewForView.customer','currency')->where('id',$consultant->id)->first();
         $companySetting_country_price = Companysetting::with('country.currency')->get()->first();
         $consultant_country = Country::with('currency')->where('id',$consultant->country_code)->first();
-        
         $countrys = Country::where('status',1)->get();
-        $state = State::where('status',1)->get();
-        $city = City::where('status',1)->get();
-        $firm = Firm::where('status',1)->get();
-        $app_completed =  count($consultant->appointment_completed);
-        $insurance = Insurance::where('status',1)->get();
+        $state = State::where('status',1)->where('country_id',$consultant->country->id)->get();
+        $city = City::where('status',1);
+        if($consultant->country->has_state == 1) $city = $city->where('state_id',$consultant->state_id);
+        else $city = $city->where('country_id',$consultant->country->id);
+        $city = $city->get();
         $language = Language::where('status',1)->get();
-        
+
+        $firm = Firm::where('status',1)->where('country_id',$consultant->country->id)->where('approval',2)->get();
+        // dd($firm);
+        $app_completed =  count($consultant->appointment_completed);
+
+        $insurance = Insurance::where('status',1)->where('country_id',$consultant->country->id)->get();
+        $Category = Category::where('status',1)->where('type',0)->get();
+
+        $subcaregory = Category::where('status',1)->where('type',1)->whereIn('categories_id',\explode(',',$consultant->categorie_id))->get();
+
+        $Consultantcategory = Consultantcategory::with('Category','SubCategory')->whereIn('categorie_id',explode(",",$consultant->categorie_id))->orwhereIn('subcategorie_id',explode(",",$consultant->categorie_id))
+        ->orwhereIn('categorie_id',explode(",",$consultant->categorie_id))->whereNull('subcategorie_id')
+        ->get()->groupBy(['CategoryAlter.name','SubCategoryAlter.name']);
+        // dd($Consultantcategory);
+
         $consultant_category = explode(',',$consultant->categorie_id);
         $consultant_specialized = explode(',',$consultant->specialized);
-        $Category = Category::where('status',1)->where('type',0)->get();
-       
+
         $reviews = $consultant->reviewForView;
         $rating = 0;
         if(is_array($reviews)){
-            
+
             $sum = 0;
             foreach ($reviews as  $review) {
                 $sum += $review->rating;
             }
             $rating = $sum/count($reviews);
-            
+
         }
-     
-        
+
+
         $temp = null;
         $temp1 = null;
         $tree = [];
         $tree1 = [];
         foreach ($Category as $key => &$value) {
             # code...
-           
+
             $temp = [
                 'id' => $value->id,
-                'text' => $value->name,                
+                'text' => $value->name,
             ];
             $is_select_all = \in_array($value->id, $consultant_category);
-           
+
             $subCategory = Category::where('status',1)->where('categories_id',$value->id)->where('type',1)->get();
-            
+
             foreach ($subCategory as $key1 => $value1) {
                 # code...
                 if(\in_array($value1->id, $consultant_category)) $is_select_all = true;
                 else $is_select_all = false;
-               
+
                 $temp['children'][]= [
                     'id' => $value1->id,
                     'text' => $value1->name,
@@ -503,77 +571,101 @@ case '1':
             $temp['state'] = [ 'selected' => $is_select_all ];
             $tree[] = $temp;
         }
-       
+
         //Specialization
         $Specialization = ConsultantCategory::where('status',1)->whereIn('id',explode(',',$consultant->specialized))->get();
 
         foreach ($Specialization as $key => &$value2) {
             $cat = Category::where('status',1)->where('type',0)->where('id',$value2->categorie_id)->get()->first();
             $sub = Category::where('status',1)->where('type',1)->where('id',$value2->subcategorie_id)->get()->first();
-           
+
             $temp1 = [
                 'id' => $value2->id,
-                'text' => "$cat->name - $value2->title",    
+                'text' => "$cat->name - $value2->title",
                 'state' => [
                     'selected' => \in_array($value2->id, $consultant_specialized)  //'selected' does NOT take effect after refresh
-                ]          
+                ]
             ];
 
             if(!is_null($sub)){
                 $temp1 = [
                     'id' => $value2->id,
-                    'text' => "$cat->name - $sub->name - $value2->title",    
+                    'text' => "$cat->name - $sub->name - $value2->title",
                     'state' => [
                         'selected' => \in_array($value2->id, $consultant_specialized)  //'selected' does NOT take effect after refresh
-                    ]          
+                    ]
                 ];
             }
-        
-           
+
+
             $tree1[] = $temp1;
         }
+        $isinsurance = Category::where('insurance',1)->whereIn('id',explode(',',$consultant->categorie_id))->count();
 
-        
         // dd($tree1);
-        return \view('consultant.view',['consultant'=>$consultant,'firm'=>$firm,'rating'=>$rating,'consultant_country'=>$consultant_country,'companySetting_country_price'=>$companySetting_country_price,'tree'=>$tree,'tree1'=>$tree1,'insurance'=>$insurance,'language'=>$language,'app_completed'=>$app_completed,'countrys'=>$countrys,'state'=>$state,'city'=>$city]);
+        return \view('consultant.view',['isinsurance'=>$isinsurance,'Consultantcategory'=>$Consultantcategory,'subcaregory'=>$subcaregory,'Category'=>$Category,'insurance'=>$insurance,'consultant'=>$consultant,'firm'=>$firm,'rating'=>$rating,'consultant_country'=>$consultant_country,'companySetting_country_price'=>$companySetting_country_price,'tree'=>$tree,'tree1'=>$tree1,'insurance'=>$insurance,'language'=>$language,'app_completed'=>$app_completed,'countrys'=>$countrys,'state'=>$state,'city'=>$city]);
     }
-    
-    public function update(Request $Request)
+
+    public function update(Request $Request,Consultant $consultant)
     {
-        $consultant = Consultant::where('id',$Request->id)->first();
-      
         if($Request->form =="personal"){
-            // $phone_no = $Request->data['dial_code'].' '. $Request->data['phone_no'];
-           
-            // $consultant->phone_no = $phone_no;
-            $consultant->gender = $Request->data['gender'];
-            $consultant->exp_year = $Request->data['exp_year'];
-            $consultant->register_address = $Request->data['register_address'];
-            $consultant->country_id = $Request->data['country_id'];
-            $consultant->state_id = $Request->data['state_id'];
-            $consultant->city_id = $Request->data['city_id'];
-            $consultant->zipcode = $Request->data['zipcode'];
-            $consultant->bio_data = $Request->data['bio_data'];
+            $consultant->gender = $Request->gender;
+            $consultant->exp_year = $Request->exp_year;
+            $consultant->name = $Request->name;
+            $consultant->email = $Request->email;
+            $consultant->landline = $Request->landline;
+            $consultant->bio_data = $Request->bio_data;
+            $consultant->dob = $Request->dob;
+            $consultant->language = \implode(",",$Request->language);
+            $consultant->register_address = $Request->register_address;
+            $consultant->country_id = ($consultant->country_id)?$consultant->country_id:$consultant->country->id;
+            $consultant->state_id = $Request->state_id;
+            $consultant->city_id = $Request->city_id;
+            $consultant->zipcode = $Request->zipcode;
+            if($Request->firm_choose == 0) $consultant->firm_choose = "";
+            else $consultant->firm_choose = $Request->firm_choose;
             $consultant->update();
-            return response()->json(['msg' =>"Personal Details Updated"]);
+
+            $consultant->Addcountry;
+            $consultant->country;
+            $consultant->state;
+            $consultant->city;
+            $consultant->firm;
+            return response()->json(['msg' =>"Personal Details Updated",'status'=>true,'consultant'=>$consultant,'language'=>\implode(", ",$consultant->getLanguage()->pluck('title')->toArray())]);
+        }
+        if($Request->form =="bank_details"){
+
+            $consultant->account_number = $Request->account_number;
+            $consultant->account_name = $Request->account_name;
+            $consultant->ifsc_code = $Request->ifsc_code;
+            $consultant->bank_name = $Request->bank_name;
+            $consultant->branch = $Request->branch;
+            $consultant->bank_status = ($Request->bank_status)?1:0;
+            $consultant->update();
+            return response()->json(['msg' =>"Bank Details Updated",'status'=>true,'consultant'=>$consultant]);
         }
         if($Request->form =="consultant_amount"){
-            $consultant->video = $Request->data['video'];
-            $consultant->video_amount = $Request->data['video_amount'];
-            $consultant->voice = $Request->data['voice'];
-            $consultant->voice_amount = $Request->data['voice_amount'];
-            $consultant->text = $Request->data['text'];
-            $consultant->text_amount = $Request->data['text_amount'];
-            $consultant->direct = $Request->data['direct'];
-            $consultant->direct_amount = $Request->data['direct_amount'];
-            $consultant->com_con_type = $Request->data['com_con_type'];
-            $consultant->com_con_amount = $Request->data['com_con_amount'];
-            $consultant->com_off_type = $Request->data['com_off_type'];
-            $consultant->com_off_amount = $Request->data['com_off_amount'];
-            $consultant->com_pay_type = $Request->data['com_pay_type'];
-            $consultant->com_pay_amount = $Request->data['com_pay_amount'];
+            $consultant->video = ($Request->video)?1:0;
+            $consultant->video_amount = ($Request->video)?$Request->video_amount:0;
+            $consultant->voice = ($Request->voice)?1:0;
+            $consultant->voice_amount = ($Request->voice)?$Request->voice_amount:0;
+            $consultant->text = ($Request->text)?1:0;
+            $consultant->text_amount = ($Request->text)?$Request->text_amount:0;
+            $consultant->direct = ($Request->direct)?1:0;
+            $consultant->direct_amount = ($Request->direct)?$Request->direct_amount:0;
+
+            $consultant->preferre_slot = $Request->preferre_slot;
+
+            $consultant->com_con_type = $Request->com_con_type;
+            $consultant->com_con_amount = $Request->com_con_amount;
+            $consultant->com_off_type = $Request->com_off_type;
+            $consultant->com_off_amount = $Request->com_off_amount;
+            $consultant->com_pay_type = $Request->com_pay_type;
+            $consultant->com_pay_amount = $Request->com_pay_amount;
             $consultant->update();
-            return response()->json(['msg' =>"Consultant Amount Details Updated"]);
+            $consultant->Addcountry;
+            $consultant->country;
+            return response()->json(['msg' =>"Consultant Amount Details Updated",'status'=>true,'consultant'=>$consultant]);
         }
 
         if($Request->form =="firm_individual"){
@@ -585,11 +677,27 @@ case '1':
         }
 
         if($Request->form =="category"){
-           
-            $consultant->categorie_id = $Request->data['categorie_id'];
-            $consultant->specialized = $Request->data['specialized'];
+
+            $consultant->categorie_id = \implode(',',$Request->categorie_id);
+            $consultant->specialized = (isset($Request->specialization_id))?\implode(',',$Request->specialization_id):'';
+            $consultant->insurance_id = (isset($Request->insurance_id))?\implode(',',$Request->insurance_id):'';
+                $gallery = [];
+                if($Request->has('gallery')){
+                    foreach ($Request->file('gallery') as $key => $value) {
+                        $IMGname = $value->getClientOriginalName();
+                        $path = $value->store('uploadFiles/proof','public_custom');
+                        $gallery[] = $path;
+                    }
+                    $consultant->proof = \implode(',',$gallery);
+                }
             $consultant->update();
-            return response()->json(['msg' =>"Category/Specialization Updated"]);
+            $Consultantcategory = Consultantcategory::with('Category','SubCategory')->whereIn('categorie_id',explode(",",$consultant->categorie_id))->orwhereIn('subcategorie_id',explode(",",$consultant->categorie_id))
+                ->orwhereIn('categorie_id',explode(",",$consultant->categorie_id))->whereNull('subcategorie_id')
+                ->get()->groupBy(['CategoryAlter.name','SubCategoryAlter.name']);
+            $insurance = insurance::whereIn('id',\explode(',',$consultant->insurance_id))->get()->pluck('comapany_name')->toArray();
+
+            return response()->json(['status'=>true,'consultant'=>$consultant,'Consultantcategory'=>$Consultantcategory,'subcaregory'=>$consultant->subcat()->pluck('name')->toArray(),
+            'spec'=>\implode(", ",$consultant->getspec()->pluck('title')->toArray()),'Category'=>$consultant->parentcat(),'insurance'=>$insurance]);
         }
 
         if($Request->form =="others"){
