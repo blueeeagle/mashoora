@@ -93,7 +93,7 @@
                                                         <th><input class="form-check-input" id="edit_check" type="checkbox" /> Edit </th>
                                                         <th><input class="form-check-input" id="view_check" type="checkbox" /> View </th>
                                                         <th><input class="form-check-input" id="delete_check" type="checkbox" /> Delete </th>
-                                                        <th><input class="form-check-input" id="download_check" type="checkbox" /> Download </th>
+                                                        <th hidden><input class="form-check-input" id="download_check" type="checkbox" /> Download </th>
                                                     </tr>
 
                                                 </thead>
@@ -104,21 +104,21 @@
                                                         <td ><input class="form-check-input" data-head data-edit ame="permession[]" type="checkbox" value="Admin_Edit" /></td>
                                                         <td ><input class="form-check-input" data-head data-view ame="permession[]" type="checkbox" value="Admin_View" /></td>
                                                         <td ><input class="form-check-input" data-head data-delete ame="permession[]" type="checkbox" value="Admin_delete" /></td>
-                                                        <td><input class="form-check-input"  data-head data-download ame="permession[]"  type="checkbox" value="Admin_download" /></td>
+                                                        <td hidden><input class="form-check-input"  data-head data-download ame="permession[]"  type="checkbox" value="Admin_download" /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" id="Currency" name="permession[]" value="Currency" type="checkbox" /> Currency</td>
                                                         <td colspan="2"></td>
                                                         <td></td>
                                                         <td><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Currency_View" /></td>
-                                                        <td><input class="form-check-input" data-head data-download name="permession[]" type="checkbox" value="Currency_download" /></td>
+                                                        <td hidden><input class="form-check-input" data-head data-download name="permession[]" type="checkbox" value="Currency_download" /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" id="Country" name="permession[]" value="Country" type="checkbox" /> Country</td>
                                                         <td colspan="2"></td>
                                                         <td><input class="form-check-input" data-head data-view name="permession[]" value="Country_View" type="checkbox" /></td>
                                                         <td></td>
-                                                        <td><input class="form-check-input" data-head data-download name="permession[]" value="Country_Download" type="checkbox" /></td>
+                                                        <td hidden><input class="form-check-input" data-head data-download name="permession[]" value="Country_Download" type="checkbox" /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" id="State" name="permession[]" value="State" type="checkbox" /> State</td>
@@ -126,7 +126,7 @@
                                                         <td ><input class="form-check-input" data-head data-admin data-edit name="permession[]" type="checkbox" value="State_Edit" /></td>
                                                         <td ><input class="form-check-input" data-head data-admin data-view name="permession[]" type="checkbox" value="State_View" /></td>
                                                         <td ><input class="form-check-input" data-head  data-admin data-delete name="permession[]" type="checkbox" value="State_delete" /></td>
-                                                        <td><input class="form-check-input"  data-head data-admin data-download name="permession[]" type="checkbox" value="State_download" /></td>
+                                                        <td hidden><input class="form-check-input"  data-head data-admin data-download name="permession[]" type="checkbox" value="State_download" /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" id="City" name="permession[]" value="City" type="checkbox" /> City</td>
@@ -134,7 +134,7 @@
                                                         <td ><input class="form-check-input"data-head  data-edit name="permession[]" type="checkbox" value="City_Edit"/></td>
                                                         <td ><input class="form-check-input"data-head  data-view name="permession[]" type="checkbox" value="City_View" /></td>
                                                         <td ><input class="form-check-input"data-head  data-delete name="permession[]" type="checkbox" value="City_delete" /></td>
-                                                        <td><input class="form-check-input" data-head data-download name="permession[]" type="checkbox" value="City_download" /></td>
+                                                        <td hidden><input class="form-check-input" data-head data-download name="permession[]" type="checkbox" value="City_download" /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" id="Document" name="permession[]" value="Document" type="checkbox" /> Document</td>
@@ -142,7 +142,7 @@
                                                         <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Document_Edit" /></td>
                                                         <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Document_View"  /></td>
                                                         <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Document_delete"  /></td>
-                                                        <td><input class="form-check-input" data-head data-download name="permession[]" type="checkbox" value="Document_download"  /></td>
+                                                        <td hidden><input class="form-check-input" data-head data-download name="permession[]" type="checkbox" value="Document_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" id="Language" name="permession[]" value="Language" type="checkbox" /> Language</td>
@@ -150,7 +150,7 @@
                                                         <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Language_Edit" /></td>
                                                         <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Language_View"  /></td>
                                                         <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Language_delete"  /></td>
-                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Language_download"  /></td>
+                                                        <td hidden><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Language_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" id="Tax" name="permession[]" value="Tax" type="checkbox" /> Tax</td>
@@ -158,7 +158,7 @@
                                                         <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Tax_Edit" /></td>
                                                         <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Tax_View"  /></td>
                                                         <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Tax_delete"  /></td>
-                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Tax_download"  /></td>
+                                                        <td hidden><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Tax_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" id="Category"  name="permession[]" value="Category" type="checkbox" /> Category</td>
@@ -166,7 +166,7 @@
                                                         <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Categoty_Edit" /></td>
                                                         <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Categoty_View"  /></td>
                                                         <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Categoty_delete"  /></td>
-                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Categoty_download"  /></td>
+                                                        <td hidden><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Categoty_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" id="Specialization" name="permession[]" value="Specialization" type="checkbox" /> Specialization</td>
@@ -174,14 +174,14 @@
                                                         <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Specialization_Edit" /></td>
                                                         <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Specialization_View"  /></td>
                                                         <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Specialization_delete"  /></td>
-                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Specialization_download"  /></td>
+                                                        <td hidden><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Specialization_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" id="Company_Settings" name="permession[]" value="Company_Settings" type="checkbox" /> Company Settings</td>
                                                         <td colspan="2"></td>
                                                         <td><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Company_Settings_View" /></td>
                                                         <td></td>
-                                                        <td><input class="form-check-input" data-head data-download name="permession[]" type="checkbox" value="Company_Settings_download" /></td>
+                                                        <td hidden><input class="form-check-input" data-head data-download name="permession[]" type="checkbox" value="Company_Settings_download" /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" id="Firm" name="permession[]" value="Firm" type="checkbox" /> Firm</td>
@@ -189,15 +189,15 @@
                                                         <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Firm_Edit" /></td>
                                                         <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Firm_View"  /></td>
                                                         <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Firm_delete"  /></td>
-                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Firm_download"  /></td>
-                                                    </tr> 
+                                                        <td hidden><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Firm_download"  /></td>
+                                                    </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" id="Insurance" name="permession[]" value="Insurance" type="checkbox" /> Insurance</td>
                                                         <td ><input class="form-check-input" data-head data-create name="permession[]" type="checkbox" value="Insurance_Create" /></td>
                                                         <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Insurance_Edit" /></td>
                                                         <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Insurance_View"  /></td>
                                                         <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Insurance_delete"  /></td>
-                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Insurance_download"  /></td>
+                                                        <td hidden><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Insurance_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" id="Customer" name="permession[]"  value="Customer" type="checkbox" /> Customer</td>
@@ -205,7 +205,7 @@
                                                         <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Customer_Edit" /></td>
                                                         <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Customer_View"  /></td>
                                                         <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Customer_delete"  /></td>
-                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Customer_download"  /></td>
+                                                        <td hidden><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Customer_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" id="Article" name="permession[]" value="Article" type="checkbox" /> Article</td>
@@ -213,7 +213,7 @@
                                                         <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Article_Edit" /></td>
                                                         <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Article_View"  /></td>
                                                         <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Article_delete"  /></td>
-                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Article_download"  /></td>
+                                                        <td hidden><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Article_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" id="Video" name="permession[]" value="Video" type="checkbox" /> Video</td>
@@ -221,7 +221,7 @@
                                                         <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Video_Edit" /></td>
                                                         <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Video_View"  /></td>
                                                         <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Video_delete"  /></td>
-                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Video_download"  /></td>
+                                                        <td hidden><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Video_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" id="Offer" name="permession[]" value="Offer" type="checkbox" /> Offer</td>
@@ -229,7 +229,7 @@
                                                         <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Offer_Edit" /></td>
                                                         <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Offer_View"  /></td>
                                                         <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Offer_delete"  /></td>
-                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Offer_download"  /></td>
+                                                        <td hidden><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Offer_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" id="Discount" name="permession[]" value="Discount" type="checkbox" /> Discount</td>
@@ -237,14 +237,14 @@
                                                         <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Discount_Edit" /></td>
                                                         <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Discount_View"  /></td>
                                                         <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Discount_delete"  /></td>
-                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Discount_download"  /></td>
+                                                        <td hidden><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Discount_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" id="Communication" name="permession[]" value="Communication" type="checkbox" /> Communication</td>
                                                         <td colspan="2"><input class="form-check-input" data-head data-create name="permession[]" type="checkbox" value="Communication_Create" /></td>
                                                         <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Communication_View"  /></td>
                                                         <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Communication_delete"  /></td>
-                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Communication_download"  /></td>
+                                                        <td hidden><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Communication_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" id="Consultant" name="permession[]" value="Consultant" type="checkbox" /> Consultant</td>
@@ -252,7 +252,7 @@
                                                         <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Consultant_Edit" /></td>
                                                         <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Consultant_View"  /></td>
                                                         <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Consultant_delete"  /></td>
-                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Consultant_download"  /></td>
+                                                        <td hidden><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Consultant_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" id="Schedule" name="permession[]" value="Schedule" type="checkbox" /> Schedule</td>
@@ -260,7 +260,7 @@
                                                         <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Schedule_Edit" /></td>
                                                         <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Schedule_View"  /></td>
                                                         <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Schedule_delete"  /></td>
-                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Schedule_download"  /></td>
+                                                        <td hidden><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Schedule_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" id="Config" name="permession[]" value="Config" type="checkbox" /> Config</td>
@@ -268,7 +268,7 @@
                                                         <td ><input class="form-check-input" data-head data-edit name="permession[]" type="checkbox" value="Config_Edit" /></td>
                                                         <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Config_View"  /></td>
                                                         <td ><input class="form-check-input" data-head data-delete name="permession[]" type="checkbox" value="Config_delete"  /></td>
-                                                        <td><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Config_download"  /></td>
+                                                        <td hidden><input class="form-check-input"  data-head data-download name="permession[]" type="checkbox" value="Config_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" id="Consultant_Approval" name="permession[]" value="Consultant_Approval" type="checkbox" /> Consultant Approval</td>
@@ -276,7 +276,7 @@
                                                         <td ></td>
                                                         <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Consultant_Approval_View"  /></td>
                                                         <td ></td>
-                                                        <td><input class="form-check-input" data-head data-download name="permession[]" type="checkbox" value="Consultant_Approval_download"  /></td>
+                                                        <td hidden><input class="form-check-input" data-head data-download name="permession[]" type="checkbox" value="Consultant_Approval_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" id="firm_approval" name="permession[]" value="Firm_Approval" type="checkbox" /> Firm Approval</td>
@@ -284,7 +284,7 @@
                                                         <td ></td>
                                                         <td ><input class="form-check-input" data-head data-view name="permession[]" type="checkbox" value="Firm_Approval_View"  /></td>
                                                         <td ></td>
-                                                        <td><input class="form-check-input" data-head data-download name="permession[]" type="checkbox"  value="Firm_Approval_download"  /></td>
+                                                        <td hidden><input class="form-check-input" data-head data-download name="permession[]" type="checkbox"  value="Firm_Approval_download"  /></td>
                                                     </tr>
 
                                                 </tbody>

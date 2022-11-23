@@ -10,6 +10,7 @@ use Illuminate\Support\Collection;
 use Validator;
 use App\Models\Category;
 use App\Models\Consultant;
+use App\Models\Companysetting;
 use App\Models\Discount;
 
 class ConsultantCategoryController extends Controller
@@ -29,6 +30,7 @@ class ConsultantCategoryController extends Controller
     }
 
     public function datatable(Request $request){
+        $Companysetting = Companysetting::where('id',1)->first();
         $search=[];
         $columns=$request->columns;
         foreach($columns as $colum){
@@ -52,6 +54,20 @@ class ConsultantCategoryController extends Controller
         ->editColumn('subcategorie_id', function(Consultantcategory $data){
             if($data->SubCategory) return $data->SubCategory->name;
             return '';
+        })
+        ->editColumn('created_at', function(Consultantcategory $data) use($Companysetting){
+           if($data->created_at){
+                    $temp = $Companysetting->custom_date_time($data->created_at);
+                    return $temp;
+                }
+                return '-';
+           
+        })->editColumn('updated_at', function(Consultantcategory $data) use($Companysetting){
+            if($data->updated_at){
+                    $temp = $Companysetting->custom_date_time($data->updated_at);
+                    return $temp;
+                }
+                return '-';
         })
         ->editColumn('status', function(Consultantcategory $data) {
             $status = ($data->status == 1)?'checked':'' ;

@@ -48,10 +48,12 @@
         <label class="required form-label fs-6 mb-4" >Country</label>
         <select class="form-select mb-4" id="country_id" name="country_id" data-control="select2" data-placeholder="Select an Country" required>
             <option></option>
+            @php
+                $stateDiv = true;
+            @endphp
             @foreach($countrys as $country)
                 <option value="{{$country->id}}" data-dialing="{{ $country->dialing }}" data-has_state='{{ $country->has_state }}' {{ ($country_id == $country->id)?'selected':'' }}>{{$country->country_name}}</option>
                 @php
-                    $stateDiv = true;
                     if($country_id == $country->id){
                         $stateDiv = ($country->has_state)?true : false;
                         $dialing = $country->dialing;
@@ -59,7 +61,6 @@
                 @endphp
             @endforeach
         </select>
-
         <div id="stateDiv" style="{{ (!$stateDiv)?'display:none':'' }}">
             <label class="required form-label fs-6 mb-4" >State</label>
             <select class="form-select mb-4" name="state_id" id="state_id" data-control="select2" data-placeholder="Select an State">

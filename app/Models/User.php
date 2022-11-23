@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\Country;
+use App\Models\State;
+use App\Models\City;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -96,5 +99,14 @@ class User extends Authenticatable implements MustVerifyEmail
      
         $permission = explode(',',$this->permission);
         return in_array($data,$permission);
+    }
+    public function country(){
+        return $this->belongsTo(Country::class);
+    }
+    public function state(){
+        return $this->belongsTo(State::class);
+    }
+    public function city(){
+        return $this->belongsTo(City::class);
     }
 }

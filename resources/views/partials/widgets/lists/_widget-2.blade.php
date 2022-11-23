@@ -316,59 +316,59 @@ $chartHeight = $chartHeight ?? '175px';
             drawCallback : function( settings ) { }
         });
 
-        table3 = $("#kt_datatable3").DataTable({
-            // initComplete: function(settings, json) {
-            //     const select = ToogleColum.val()
-            //     table.columns().every(function (index) {
-            //         if(!select.includes(index.toString())){
-            //             var column =  table.column(index)
-            //             column.visible(false)
-            //         }else{
-            //             var column =  table.column(index)
-            //             column.visible(true)
-            //         }
-            //     })
-            // },
-            responsive: true,
-            buttons: [
-                    'print',
-                    'copyHtml5',
-                    'excelHtml5',
-                    'csvHtml5',
-                    'pdfHtml5',
-                ],
-            // Pagination settings
-            dom: `<'row'<'col-sm-12'tr>>
-            <'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>`,
-            // read more: https://datatables.net/examples/basic_init/dom.html
-            lengthMenu: [5, 10, 25, 100],
-                lengthChange: false,
-            pageLength: 10,
-                searchDelay: 500,
-                processing: false,
-                serverSide: true,
-            ajax: {
-                url : "{{route('history.appointment.datatable')}}",
-                type: 'POST',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    columnsDef : ['id','customer_id','mobile','email','booking_id','consultant_id','appointment_date','status']
-                }
+        // table3 = $("#kt_datatable3").DataTable({
+        //     // initComplete: function(settings, json) {
+        //     //     const select = ToogleColum.val()
+        //     //     table.columns().every(function (index) {
+        //     //         if(!select.includes(index.toString())){
+        //     //             var column =  table.column(index)
+        //     //             column.visible(false)
+        //     //         }else{
+        //     //             var column =  table.column(index)
+        //     //             column.visible(true)
+        //     //         }
+        //     //     })
+        //     // },
+        //     responsive: true,
+        //     buttons: [
+        //             'print',
+        //             'copyHtml5',
+        //             'excelHtml5',
+        //             'csvHtml5',
+        //             'pdfHtml5',
+        //         ],
+        //     // Pagination settings
+        //     dom: `<'row'<'col-sm-12'tr>>
+        //     <'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>`,
+        //     // read more: https://datatables.net/examples/basic_init/dom.html
+        //     lengthMenu: [5, 10, 25, 100],
+        //         lengthChange: false,
+        //     pageLength: 10,
+        //         searchDelay: 500,
+        //         processing: false,
+        //         serverSide: true,
+        //     ajax: {
+        //     {{--    url : "{{route('history.appointment.datatable')}}",--}}
+        //         type: 'POST',
+        //         data: {
+        //             "_token": "{{ csrf_token() }}",
+        //             columnsDef : ['id','customer_id','mobile','email','booking_id','consultant_id','appointment_date','status']
+        //         }
 
-            },
-            columns: [
-                { data: 'DT_RowIndex'},
-                { data: 'customer_id',defaultContent:'-'},
-                { data: 'mobile',defaultContent:'-'},
-                { data: 'email',defaultContent:'-'},
-                { data: 'booking_id',defaultContent:'-'},
-                { data: 'consultant_id',defaultContent:'-'},
-                { data: 'appointment_date',defaultContent:'-'},
-                { data: 'status'}
-            ],
+        //     },
+        //     columns: [
+        //         { data: 'DT_RowIndex'},
+        //         { data: 'customer_id',defaultContent:'-'},
+        //         { data: 'mobile',defaultContent:'-'},
+        //         { data: 'email',defaultContent:'-'},
+        //         { data: 'booking_id',defaultContent:'-'},
+        //         { data: 'consultant_id',defaultContent:'-'},
+        //         { data: 'appointment_date',defaultContent:'-'},
+        //         { data: 'status'}
+        //     ],
         
-            drawCallback : function( settings ) { }
-        });
+        //     drawCallback : function( settings ) { }
+        // });
 
         table9 = $("#kt_datatable9").DataTable({
                 // initComplete: function(settings, json) {

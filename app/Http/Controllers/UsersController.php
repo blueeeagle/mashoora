@@ -46,7 +46,7 @@ class UsersController extends Controller
             $search[] = $colum['search']['value'];
         }
 
-        $datas = User::orderBy('first_name','ASC')
+        $datas = User::with('country','state','city')->orderBy('first_name','ASC')
         ->when($search[1],function($query,$search){
             return $query->where('first_name','LIKE',"%{$search}%")->orwhere('last_name','LIKE',"%{$search}%");
         })
@@ -70,7 +70,6 @@ class UsersController extends Controller
                                 $route = \route('admin.user.status',$data->id);
                                     return "<div class='form-check form-switch form-check-custom form-check-solid'>
                                             <input class='form-check-input' type='checkbox' status data-url='$route' value='' $status />
-                                            <p>$statusName</P>
                                         </div>";
                             })
                             ->editColumn('picture', function(User $data){

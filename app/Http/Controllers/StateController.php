@@ -31,6 +31,8 @@ class StateController extends Controller
     }
     
     public function datatables(Request $request){
+        $Companysetting = Companysetting::where('id',1)->first();
+        
         $search=[];
         $columns=$request->columns;
         foreach($columns as $colum){
@@ -58,10 +60,19 @@ class StateController extends Controller
             ->addColumn('action', function(State $data){
                 return ['Delete'=> \route('master.state.destroy',$data->id),'edit'=> \route('master.state.edit',$data->id)];
             })
-             ->editColumn('created_at', function(State $datas) {
-                                $date=date_create($datas->created_at);
-                                 return  date_format($date,"d-m-Y");
-                            })
+            ->editColumn('created_at', function(State $data) use($Companysetting){
+                if($data->created_at){
+                    $temp = $Companysetting->custom_date_time($data->created_at);
+                    return $temp;
+                }
+                return '-';
+            })->editColumn('updated_at', function(State $data) use($Companysetting){
+              if($data->updated_at){
+                    $temp = $Companysetting->custom_date_time($data->updated_at);
+                    return $temp;
+                }
+                return '-';
+            })
             ->rawColumns(['status','action'])
             ->toJson();
         }

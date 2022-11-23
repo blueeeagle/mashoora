@@ -79,6 +79,9 @@ Route::prefix('customer')->group(function () {
         Route::get('/getfirm', [CustomerController::class, 'getfirm']);
         Route::get('/consultantfirm/{firm}', [CustomerController::class, 'consultantfirm']);
     });
+    Route::prefix('offers')->group(function () { 
+        Route::get('/', [CustomerController::class, 'offerindex']);
+    });
 });
 
 
@@ -87,6 +90,7 @@ Route::prefix('customer')->middleware('Apiauth:customer')->group(function () {
     Route::post('/updateprofile', [CustomerController::class, 'updateprofile']);
     Route::get('/bookings', [CustomerController::class, 'bookings']);
     Route::get('/filteringData', [CustomerController::class, 'filteringData']);
+    Route::get('/getprofile', [CustomerController::class, 'getprofile']);
         
     //consultant
     Route::prefix('consultant')->group(function () {
@@ -126,7 +130,6 @@ Route::prefix('customer')->middleware('Apiauth:customer')->group(function () {
     
     //offers
     Route::prefix('offers')->group(function () {
-        Route::get('/', [CustomerController::class, 'offerindex']);
         Route::get('offerdetail/{offer}', [CustomerController::class, 'offerdetail']);
         Route::get('purchased/{offer}', [CustomerController::class, 'offerpurchased']);
     });
@@ -169,6 +172,8 @@ Route::prefix('consultant')->middleware('Apiauth:consultant')->group(function ()
         Route::get('/bookingaccept/{Appointment}', [ConsultantController::class, 'bookingaccept']);
         Route::get('/bookingcancel/{Appointment}', [ConsultantController::class, 'bookingcancel']);
         Route::get('/bookingcompleted/{Appointment}', [ConsultantController::class, 'bookingcompleted']);
+        Route::get('/bookingnoshow/{Appointment}', [ConsultantController::class, 'NoShowByCustomer']);
+        Route::get('/bookingreject/{Appointment}', [ConsultantController::class, 'bookingReject']);
     });
     //schedule
     Route::prefix('schedule')->group(function () {

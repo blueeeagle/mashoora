@@ -18,7 +18,7 @@ class Booking {
     public $consultantcurrency = null;
     public $customercurrnecy = null;
     public $Companysetting = null;
-
+    public $Insurance = null;
     public $customerTimeZone = null;
     public $consultantTimeZone = null;
     public $diff = 0;

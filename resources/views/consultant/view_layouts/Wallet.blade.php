@@ -1,4 +1,4 @@
-<div class="tab-pane fade" id="kt_tab_pane_7" role="tabpanel">
+<div class="tab-pane fade" id="wallet_tab" role="tabpanel">
     <div class="post d-flex flex-column-fluid" id="kt_post">
         <div id="kt_content_container" class="container-xxl">
 

@@ -21,6 +21,8 @@ use App\Models\Wallet;
 use App\Models\Payment;
 use App\Models\Card;
 use App\Models\Country;
+use App\Models\Insurance;
+use App\Models\Category;
 
 use DataTables;
 use Validator;
@@ -52,7 +54,7 @@ class Booking {
     public $consultantcurrency = null;
     public $customercurrnecy = null;
     public $Companysetting = null;
-
+    public $Insurance = null;
     public $customerTimeZone = null;
     public $consultantTimeZone = null;
     public $diff = 0;
@@ -165,7 +167,10 @@ class CustomerController extends Controller
         Auth::guard('customer')->logout();
         return response()->json('redireact');
     }
-
+    public function getprofile(){
+        $customer = Customer::where('id',Auth::guard('customer')->user()->id)->first();
+        return response()->json($customer);
+    }
     public function VerifyOtp(Request $request){
         $this->getsession();
         $phone_no = $request->session()->get('phone_no',null);
@@ -253,10 +258,11 @@ class CustomerController extends Controller
     public function consultantcatsub(Request $request,$id,$sub = null){
         $this->getsession();
         $this->Booking->cat_id = [];
-        $this->Booking->cat_id[] = $id;
-        if($sub) $this->Booking->cat_id[] = $sub;
+        $this->Booking->cat_id['cat'] = Category::where('id',$id)->first();
+        if($sub) $this->Booking->cat_id['sub'] = Category::where('id',$sub)->first(); ;
         $type = $request->type;
         $datas = Consultant::with('country')->with('state')->with('Review')->with('city')->with('firm')->where('status',1)->where('approval',2)
+        
         ->when($request->search,function($query,$search){ return $query->where('name','like',"%{$search}%"); })
         ->when($id,function($query,$search){ return $query->whereRaw("FIND_IN_SET('$search',categorie_id)"); })
         ->when($sub,function($query,$search){ return $query->whereRaw("FIND_IN_SET('$search',categorie_id)"); })
@@ -276,6 +282,9 @@ class CustomerController extends Controller
             else if($type == 'text') return $query->orderBy('text_amount',$search);
             else return $query->orderBy('direct_amount',$search);
         });
+        if($request->search){
+            $datas->orWhereHas ('firm', function($query) use ($request){ $query->where('comapany_name','like',"%$request->search%")->where('approval',2)->where('status',1); });
+        }
         if($request->lang){
             $arrays = \explode(',',$request->lang);
             foreach ($arrays as $key => $value) {
@@ -293,6 +302,7 @@ class CustomerController extends Controller
             }
         }
         $datas = $datas->orderBy('id','desc')->get();
+        // dd($datas);
 
         if($request->has('rating')){
             if($request->rating == 'asc') $datas = (new Collection($datas))->sortBy('review_count');
@@ -354,30 +364,19 @@ class CustomerController extends Controller
 
     public function consultantdetails(Request $request, Consultant $consultant){
         $this->getsession();
-       
-        $consultant = Consultant::with('country')->with('state')->with('city')->with('firm')->with('Review')->where('id',$consultant->id)->first();
+        
+        $consultant = Consultant::with('country')->with('state')->with('city')->with('firm')->with('Review.customer')->where('id',$consultant->id)->first();
         $consultant->{'Insurance'} = $consultant->insurance;
         $this->Booking->newconsultant($consultant);
         
         $date = today()->format('Y-m-d');
-        // $offer = Offer::where('consultant_id',$consultant->id);
-        // if($consultant->firm) $offer = $offer->orwhere('firm_id',$consultant->firm->id);
-        // $offer = $offer->where('status',1)->where('from_date','<',$date)->where('to_date','>',$date)->get();
-        
-        // $discount = Discount::where('consultant_id',$consultant->id);
-        // if($consultant->video) $discount = $discount->where('video',1);
-        // if($consultant->voice) $discount = $discount->orwhere('voice',1);
-        // if($consultant->text) $discount = $discount->orwhere('text',1);
-        // if($consultant->direct) $discount = $discount->orwhere('direct',1);
-        // $discount = $discount->where('status',1)->where('from_date','<',$date)->where('to_date','>',$date)->get();
-        
-        // $offer = Offer::limit(5)->get();
         $offer = Offer::where('consultant_id',$this->Booking->consultant->id)->where('from_date','<=',$date)->where('to_date','>=',$date)->where('status',1)->limit(5)->get();
         $discount = Discount::where('consultant_id',$this->Booking->consultant->id)->where('from_date','<=',$date)->where('to_date','>=',$date)->where('status',1)->limit(5)->get();
         $this->Booking->consultant->{'offer'} = $offer;
         $this->Booking->consultant->{'discount'} = $discount;
         
         $this->setsession();
+        $this->Booking->consultant->Schedule;
         return $this->Booking->consultant;
     }
     public function consultantinsurance(Request $request){
@@ -394,7 +393,7 @@ class CustomerController extends Controller
         $this->getsession();
         date_default_timezone_set($this->Booking->consultantTimeZone);
         $this->Booking->consultant->Schedule;
-        $MapIDs = Appointment::whereIn('schedule_id',$this->Booking->consultant->Schedule->pluck('id')->toArray())->get()->pluck('map')->toArray();
+        $MapIDs = Appointment::whereIn('schedule_id',$this->Booking->consultant->Schedule->pluck('id')->toArray())->whereNotIn('status',['Cancelled'])->get()->pluck('map')->toArray();
         
         $customerTimeZone  = new DateTime(null, new DateTimeZone($this->Booking->customerTimeZone));
         $consultantTimeZone = new DateTime(null, new DateTimeZone($this->Booking->consultantTimeZone));
@@ -411,17 +410,16 @@ class CustomerController extends Controller
 
     public function offer(Request $request){
         $this->getsession();
-        date_default_timezone_set($this->Booking->consultantTimeZone);
+        date_default_timezone_set($this->Booking->customerTimeZone);
         $Booking = $this->Booking;
         
         $date = today()->format('Y-m-d');
-        $offerID = Auth::guard('customer')->user()->OfferPurchase->pluck('offer_id')->toArray();
-        $offer = Offer::whereIn('id',$offerID)->where('consultant_id',$this->Booking->consultant->id)->where('status',1)->Where('has_validity',1)->where('from_date','<=',$date)->where('to_date','>=',$date)->get();
-        $offernotvalide = Offer::whereIn('id',$offerID)->where('consultant_id',$this->Booking->consultant->id)->where('status',1)->Where('has_validity','!=',1)->get();
-        $offer->merge($offernotvalide);
+        $offer = Auth::guard('customer')->user()->OfferPurchase;
+      
         $offer = $offer->filter(function($data) use ($Booking){
-            $data->{'amount_converted'} = ($Booking->customercurrnecy)?(float)$data->amount*(float)$Booking->customercurrnecy->price :(float)$data->amount;
-            $data->{'customer_currency'} = $Booking->customercurrnecy;
+            $offer = unserialize(bzdecompress(utf8_decode($data->rawoffer)));
+            $data->{'offer'} =$offer;
+            unset($data->rawoffer);
             return $data;
         });
         $this->setsession();
@@ -444,6 +442,7 @@ class CustomerController extends Controller
     }
     public function Discount(){
         $this->getsession();
+        date_default_timezone_set($this->Booking->customerTimeZone);
         $date = today()->format('Y-m-d');
         $Discount = Discount::where('consultant_id',$this->Booking->consultant->id)->where('from_date','<=',$date)->where('to_date','>=',$date)->where($this->Booking->type,1)->where('status',1)->get();
         return response()->json($Discount);
@@ -491,7 +490,12 @@ class CustomerController extends Controller
 
         $Appointment->map = $request->id;
         $map = \explode('-',$request->id);
-
+        
+        if($request->insurance_id){
+            $Insurance = Insurance::where('id',$request->insurance_id)->first();
+            if($Insurance) $this->Booking->Insurance = $Insurance;
+        }
+        
         $Discountuser->customer_id = Auth::guard('customer')->user()->id;
         $Discountuser->discount_id = (isset($this->Booking->Discount))?$this->Booking->Discount->id:'';
         $Discountuser->consultation_id = $this->Booking->consultant->id;
@@ -511,7 +515,12 @@ class CustomerController extends Controller
         $Appointment->insurance_id = $request->insurance_id;
         $Appointment->policyid = $request->policyid;
         $Appointment->rawdata = utf8_encode(bzcompress(serialize($this->Booking), 9));
-        if($request->insurance_id != "") $Appointment->status = 'Pending';
+        
+        if($request->insurance_id != ""){ 
+            $Appointment->status = 'Pending'; 
+            $Appointment->pay_in = 2; 
+            $Appointment->pay_out = 2; 
+        }
         $Appointment->save();
         if($request->insurance_id == ""){ $payment = $this->addsubammount($this->Booking->amount,'sub','Booking',$Appointment->id); }
         $Discountuser->appointment_id = $Appointment->id;
@@ -536,7 +545,7 @@ class CustomerController extends Controller
     }
     public function booking(){
         $upcoming = Appointment::with('Consultant')->with('Review')->where('status','!=','completed')->where('status','!=','Cancelled')->where('customer_id',Auth::guard('customer')->user()->id)->where('appointment_date','<','now()')->get();
-        $past = Appointment::with('Consultant')->with('Review')->orwhere('status','completed')->orwhere('status','Cancelled')->where('customer_id',Auth::guard('customer')->user()->id)->get();
+        $past = Appointment::with('Consultant')->with('Review')->whereIn('status',['completed','Cancelled'])->where('customer_id','=',Auth::guard('customer')->user()->id)->get();
         $upcoming = $this->modefyAppointment($upcoming);
         $past = $this->modefyAppointment($past);
         return response()->json(['upcoming'=>$upcoming,'past'=>$past], 200);
@@ -562,7 +571,17 @@ class CustomerController extends Controller
         $myObj->{'Consultant'} = $Appointment->Consultant;
         $myObj->{'countdown'} = $countdown;
         $myObj->{'type'} = $Booking->type;
-
+        $myObj->{'category'} = isset($Booking->cat_id)?$Booking->cat_id:[];
+        $myObj->{'review'} = $Appointment->consultantsingleAppreview;
+        if($Appointment->insurance_id){
+            if(isset($Booking->Insurance)){
+                $myObj->{'insurance'} = ['policyid'=>$Appointment->policyid,'insurance'=>$Booking->Insurance];
+            }else{
+                $Insurance = $Appointment->insurance;
+                $myObj->{'insurance'} = ['policyid'=>$Appointment->policyid,'insurance'=>$Insurance];
+            }
+        }
+        
         if($countdown > $this->strtotimeconvert($Companysetting->reschedule_cut_off_time))
             $myObj->{'Rescheule'} = ['status'=>true,'MSG'=>'Are You sure want to reschedule your appointment to another data & time'];
         else
@@ -637,13 +656,23 @@ class CustomerController extends Controller
     public function offerindex(Request $request){
         $this->getsession();
         $Booking = $this->Booking;
+        
         $date = today()->format('Y-m-d');
-        $Offer = Offer::when($request->cat,function($query,$search){ return $query->where('category_id',$search); })
+        $Offer = Offer::with('consultant')->when($request->cat,function($query,$search){ return $query->where('category_id',$search); })
         ->when($request->sub,function($query,$search){ return $query->where('sub_category_id',$search); })
         ->where('has_validity','!=',1)->orWhere('has_validity',1)->where('from_date','<',$date)->where('to_date','>',$date)
         ->get();
+        
         $banner = (new Collection($Offer))->map(function($data, $key) use ($Booking) {
-            $data->{'amount_converted'} = ($Booking->customercurrnecy)?(float)$data->amount*(float)$Booking->customercurrnecy->price :(float)$data->amount;
+            $amount = $data->consultant->country->currency->price ?? 1;
+            if($data->consultant->com_off_type == 0){
+                $amount = ($data->amount + $data->consultant->com_off_amount)/$amount;
+            }else{
+                $per = $data->amount/100;
+                $amount = (($data->amount*$data->consultant->com_off_amount)+$data->amount)/$amount;
+            }
+            
+            $data->{'amount_converted'} = ($Booking->customercurrnecy)?(float)($amount)*(float)$Booking->customercurrnecy->price:(float)$data->amount;
             $data->{'customer_currency'} = $Booking->customercurrnecy;
             return $data;
         });
@@ -653,16 +682,32 @@ class CustomerController extends Controller
 
     public function offerdetail(Offer $offer){
         $this->getsession();
-        $offer->{'amount_converted'} = ($this->Booking->customercurrnecy)?(float)$offer->amount*(float)$this->Booking->customercurrnecy->price :(float)$offer->amount;
+        
+        $amount = $offer->consultant->country->currency->price ?? 1;
+            if($offer->consultant->com_off_type == 0){
+                $amount = ($offer->amount + $offer->consultant->com_off_amount)/$amount;
+            }else{
+                $per = $offer->amount/100;
+                $amount = (($offer->amount*$offer->consultant->com_off_amount)+$offer->amount)/$amount;
+            }
+            
+        $offer->{'amount_converted'} = number_format(($this->Booking->customercurrnecy)?(float)($amount)*(float)$this->Booking->customercurrnecy->price:(float)$data->amount,2,'.','');
         $offer->{'customer_currency'} = $this->Booking->customercurrnecy;
         return response()->json($offer);
     }
 
     public function offerpurchased(Offer $offer){
         $this->getsession();
-        $offer->{'amount_converted'} = ($this->Booking->customercurrnecy)?(float)$offer->amount*(float)$this->Booking->customercurrnecy->price :(float)$offer->amount;
+        $amount = $offer->consultant->country->currency->price ?? 1;
+            if($offer->consultant->com_off_type == 0){
+                $amount = ($offer->amount + $offer->consultant->com_off_amount)/$amount;
+            }else{
+                $per = $offer->amount/100;
+                $amount = (($offer->amount*$offer->consultant->com_off_amount)+$offer->amount)/$amount;
+            }
+        $offer->{'amount_converted'} = number_format(($this->Booking->customercurrnecy)?(float)($amount)*(float)$this->Booking->customercurrnecy->price:(float)$data->amount,2,'.','');
         $offer->{'customer_currency'} = $this->Booking->customercurrnecy;
-        $payment = $this->addsubammount($offer->amount_converted,'sub','offer purchas');
+        $payment = $this->addsubammount($offer->amount_converted,'sub','Offer Purchased');
 
         $Offerpurchase = new Offerpurchase;
         $Offerpurchase->rawoffer = utf8_encode(bzcompress(serialize($offer), 9));
@@ -793,6 +838,24 @@ class CustomerController extends Controller
         $Payment->save();
 
         $Wallet = Wallet::where('customer_id',Auth::guard('customer')->user()->id)->first();
+        if($type == 'add') $Wallet->balance = $Wallet->balance + $amount;
+        else $Wallet->balance = $Wallet->balance - $amount;
+        $Wallet->update();
+
+        return $Payment;
+    }
+    function addsubammountconsultant($amount,$type,$action,$appointment_id = '',$consultant_id){
+
+        $Payment = new Payment;
+        $Payment->amount = $amount;
+        $Payment->type = $type;
+        $Payment->action = $action;
+        // $Payment->customer_id = Auth::guard('customer')->user()->id;
+        $Payment->appointment_id = $appointment_id;
+        $Payment->consultant_id = $consultant_id;
+        $Payment->save();
+
+        $Wallet = Wallet::where('consultant_id',$consultant_id)->first();
         if($type == 'add') $Wallet->balance = $Wallet->balance + $amount;
         else $Wallet->balance = $Wallet->balance - $amount;
         $Wallet->update();

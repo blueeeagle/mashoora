@@ -168,7 +168,7 @@
                                     <div class="form-group row">
                                         <div class="col-md-6">
                                             <label class="required form-label fs-6 mb-4" >Email ID</label>
-                                            <input type="email" name="email" value="{{ $firm->email }}" class="form-control form-control-solid mb-4" placeholder="email" required />
+                                            <input type="email" name="email" value="{{ $firm->email }}" class="form-control form-control-solid mb-4" placeholder="Email" required />
                                         </div>
                                         <div class="col-md-6">
                                             <label class="required form-label fs-6 mb-4" >User Name</label>

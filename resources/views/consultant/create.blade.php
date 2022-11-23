@@ -60,7 +60,7 @@
                                 @include('consultant.layouts.BankDetails')
                                 {{-- Your Are Done! --}}
                                 @include('consultant.layouts.Done')
-								<div class="d-flex flex-stack pt-15">
+								<div class="d-flex flex-stack pt-10">
 									<div class="mr-2">
 										<button type="button" class="btn btn-lg btn-light-primary me-3" data-kt-stepper-action="previous">
 										<!--begin::Svg Icon | path: icons/duotune/arrows/arr063.svg-->

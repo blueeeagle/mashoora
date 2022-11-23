@@ -27,12 +27,14 @@ class Controller extends BaseController
                 $event = array_merge($event,$eve);
             }
         }
+        // dd($event);
         return $event;
     }
 
     function getslotsApi($schedules,$type){
         $event = [];
         $this->type = $type;
+        
         foreach ($schedules as $key => $value) {
             if($value->schedule_type == 0){
                 $eve = $this->StandardGenerateslot($value);
@@ -43,6 +45,7 @@ class Controller extends BaseController
                 $event = array_merge($event,$eve);
             }
         }
+        
         return $event;
     }
 
@@ -85,7 +88,7 @@ class Controller extends BaseController
             }
             $ScheduleData[$key] = [$days[$key] => $store];
         }
-        
+       
         for ( $i = $currntDay; $i <= $toDay; $i = $i + 86400 ) {
             
             $thisDate = date( 'D', $i );
@@ -152,7 +155,7 @@ class Controller extends BaseController
             }
             $ScheduleData[] = $store;
         }
-
+        
         $no = 0;
         for ( $i = $currntDay; $i <= $toDay; $i = $i + 86400 ) {
 
@@ -171,6 +174,7 @@ class Controller extends BaseController
             }
             ++$no;
         }
+        // dd($event);
         return $event;
     }
 
@@ -183,26 +187,23 @@ class Controller extends BaseController
         $mor = [strtotime("5:00"),strtotime("11:59:59")];
         $aft = [strtotime("12:00"),strtotime("16:59:59")];
         $eve = [strtotime("17:00"),strtotime("20:59:59")];
-
+        // dd($DATA);
         foreach ($DATA as $key => $value) {
             # code...
-        
+            
             $start_strtotime = strtotime($value['start']) + ($diff);
             $end_strtotime = strtotime($value['end']) + ($diff);
             $dummu;
-
-            if(strtotime($value['start']) < strtotime(date("Y-m-d H:i"))) continue;
+            
+            // if(strtotime($value['start']) <= strtotime(date("Y-m-d H:i"))) continue;
+            if(strtotime($value['end']) <= strtotime(date("Y-m-d H:i"))) continue;
             $date = date_create($value['start']);
-
-
-            // if(!isset($event[date_format($date,"y/M/d")])){
-            //     $dummu = array(date_format($date,"y/M/d") => ['Customer'=>null,'Morning'=>[],'Afternoon'=>[],'Evening'=>[],'Night '=>[]]);
-            //     $event += $dummu;
-            // }
 
             $slor = 0;
             for ($i = $start_strtotime; $start_strtotime <= $end_strtotime ; $start_strtotime = $start_strtotime+(60*$consultant->preferre_slot),$slor++) {
-
+                
+                if($start_strtotime <= strtotime(date("Y-m-d H:i"))) continue;
+                
                 $day = $start_strtotime;
                 $date = date_create(date('Y-m-d H:i',$start_strtotime));
             
@@ -224,7 +225,7 @@ class Controller extends BaseController
             }
             if($key == $loopdate) break;
         }
-
+        
         return $event;
     }
 
@@ -239,6 +240,13 @@ class Controller extends BaseController
         $to = date('h:i a' , strtotime($schedule[$map[1]]->kt_docs_repeater_nested_inner[$map[2]]->to));
 
         return "$from - $to";
+    }
+    public  function setEnv($key, $value){
+        file_put_contents(app()->environmentFilePath(), str_replace(
+            $key . '=' . env($key),
+            $key . '=' . $value,
+            file_get_contents(app()->environmentFilePath())
+        ));
     }
 }
 // // Prints the day

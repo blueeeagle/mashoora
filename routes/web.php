@@ -155,7 +155,10 @@ Route::middleware('auth')->group(function () {
         Route::resource('companysettings', CompanysettingsController::Class)->only(['index']);
         Route::Post('companysettings/update/{config}', [CompanysettingsController::Class,'update'])->name('companysettings.update');
         Route::Post('companysettings/datatable', [CompanysettingsController::Class,'datatable'])->name('companysettings.datatable');
-
+        Route::Post('companysettings/detailsupdate', [CompanysettingsController::Class,'detailsupdate'])->name('companysettings.detailsupdate');
+        Route::Post('companysettings/addressupdate', [CompanysettingsController::Class,'addressupdate'])->name('companysettings.addressupdate');
+        Route::Post('companysettings/settingupdate', [CompanysettingsController::Class,'settingupdate'])->name('companysettings.settingupdate');
+        Route::Post('companysettings/contactupdate', [CompanysettingsController::Class,'contactupdate'])->name('companysettings.contactupdate');
     });
     //Others
     Route::prefix('other')->name('other.')->group(function () {
@@ -229,6 +232,9 @@ Route::middleware('auth')->group(function () {
         Route::Post('customer/update/{customer}', [CustomerController::Class,'update'])->name('customer.update');
         Route::Post('customer/datatableDashboard',[CustomerController::Class,'datatableDashboard'])->name('customer.datatableDashboard');
         Route::get('customer/view/{customer}', [CustomerController::Class,'view'])->name('customer.view');
+        Route::Post('customer/transactiondatatable',[CustomerController::Class,'transactiondatatable'])->name('customer.transactiondatatable');
+        Route::Post('customer/user-update/{customer}', [CustomerController::Class,'user_update'])->name('customer.user-update');
+        Route::Post('customer/appointmentdatatable',[CustomerController::Class,'appointmentdatatable'])->name('customer.appointmentdatatable');
 
     });
     //Consultants
@@ -241,6 +247,7 @@ Route::middleware('auth')->group(function () {
         Route::Post('consultant/get/subCat/spec/',[ConsultantController::Class,'subCategory'])->name('consultant.getSubCategory');
         Route::Post('consultant/update/{consultant}', [ConsultantController::Class,'update'])->name('consultant.update');
         Route::Post('consultant/modelcategory/', [ConsultantController::Class,'modelcategory'])->name('modelcategory');
+        Route::Post('consultant/transactiondatatable/', [ConsultantController::Class,'transactiondatatable'])->name('consultant.transactiondatatable');
     });
     //schedule
     Route::prefix('activities')->name('activities.')->group(function () {
@@ -286,7 +293,8 @@ Route::middleware('auth')->group(function () {
         
         Route::resource('pay_in', PayInApprovalController::Class)->only(['index']);
         Route::Post('pay_in/datatable',[PayInApprovalController::Class,'datatables'])->name('pay_in.datatable');
-        Route::Post('pay_in/status/', [PayInApprovalController::Class,'status'])->name('pay_in.status');
+         Route::Post('pay_in/status/', [PayInApprovalController::Class,'status'])->name('pay_in.status');
+        Route::get('pay_in/view', [PayInApprovalController::Class,'view'])->name('pay_in.view');
 
         Route::resource('pay_out', PayOutApprovalController::Class)->only(['index']);
         Route::Post('pay_out/datatable',[PayOutApprovalController::Class,'datatables'])->name('pay_out.datatable');
@@ -310,8 +318,11 @@ Route::middleware('auth')->group(function () {
     Route::Post('purchase/datatable',[PurchaseHistoryController::Class,'datatable'])->name('history.purchase.datatable');
 
 
-    Route::get('appointment',[AppointmentController::Class,'index'])->name('history.appointment');
-    Route::Post('appointment/datatable',[AppointmentController::Class,'datatable'])->name('history.appointment.datatable');
+    Route::get('appointment/history',[AppointmentController::Class,'index'])->name('appointment.history');
+    Route::Post('appointment/datatable',[AppointmentController::Class,'datatable'])->name('appointment.history.datatable');
+    Route::Post('appointment/status/', [AppointmentController::Class,'status'])->name('appointment.status');
+    Route::get('appointment/view',[AppointmentController::Class,'view'])->name('appointment.history.view');
+    
     
     Route::get('review', [ReviewRatingController::Class,'index'])->name('review');
     Route::Post('review/datatable',[ReviewRatingController::Class,'datatable'])->name('review.datatable');

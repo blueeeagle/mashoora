@@ -72,29 +72,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row">
-                                    <div class="col-md-6">
-                                        <label class="required form-label fs-6 mb-4" >First Name</label>
-                                        <input type="text" name="first_name" class="form-control mb-4 " placeholder="First Name" value="{{$user->first_name}}" required />
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="required form-label fs-6 mb-4" >Last Name</label> 
-                                        <input type="text" name="last_name" class="form-control mb-4 " value="{{$user->last_name}}" placeholder="Last Name" required />
-
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <div class="col-md-6">
-                                        <label class="required form-label fs-6 mb-4" >First Name</label>
-                                        <input type="text" name="first_name" class="form-control mb-4 " placeholder="First Name" value="{{$user->first_name}}" required />
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="required form-label fs-6 mb-4" >Last Name</label> 
-                                        <input type="text" name="last_name" class="form-control mb-4 " value="{{$user->last_name}}" placeholder="Last Name" required />
-
-                                    </div>
-                                </div>
+                                
 
                                 <h4>Address</h4>
                                 @include('components.addressComponent',['country_id'=>$user->country_id,'state_id'=>$user->state_id,'phone'=>$user->phone,
@@ -112,7 +90,7 @@
                                                         <th><input class="form-check-input" id="edit_check" type="checkbox"> Edit </th>
                                                         <th><input class="form-check-input" id="view_check" type="checkbox"> View </th>
                                                         <th><input class="form-check-input" id="delete_check" type="checkbox"> Delete </th>
-                                                        <th><input class="form-check-input" id="download_check" type="checkbox"> Download </th>
+                                                        <th hidden><input class="form-check-input" id="download_check" type="checkbox"> Download </th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -123,21 +101,21 @@
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-edit {{ (in_array('Admin_Edit',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Admin_Edit" /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-view {{ (in_array('Admin_View',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Admin_View" /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-delete {{ (in_array('Admin_delete',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Admin_delete" /></td>
-                                                        <td><input class="form-check-input" name="permession[]" data-head data-download {{ (in_array('Admin_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Admin_download" /></td>
+                                                        <td hidden><input class="form-check-input" name="permession[]" data-head data-download {{ (in_array('Admin_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Admin_download" /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" name="permession[]" id="Currency" type="checkbox" value="Currency" {{ (in_array('Currency',explode(',',$user->permission))) ? 'checked':''}}/> Currency</td>
                                                         <td colspan="2"></td>
                                                         <td><input class="form-check-input" name="permession[]" data-head data-view {{ (in_array('Currency_View',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Currency_View" /></td>
                                                         <td></td>
-                                                        <td><input class="form-check-input" name="permession[]" data-head data-download {{ (in_array('Currency_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Currency_download" /></td>
+                                                        <td hidden><input class="form-check-input" name="permession[]" data-head data-download {{ (in_array('Currency_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Currency_download" /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" type="checkbox" id="Country" {{ (in_array('Country',explode(',',$user->permission))) ? 'checked':''}} value="Country" name="permession[]"/> Country</td>
                                                         <td colspan="2"></td>
                                                         <td><input class="form-check-input" name="permession[]" data-head data-view {{ (in_array('Country_View',explode(',',$user->permission))) ? 'checked':''}}  value="Country_View" type="checkbox" /></td>
                                                         <td></td>
-                                                        <td><input class="form-check-input" name="permession[]" data-head data-download {{ (in_array('Country_Download',explode(',',$user->permission))) ? 'checked':''}}  value="Country_Download" type="checkbox" /></td>
+                                                        <td hidden><input class="form-check-input" name="permession[]" data-head data-download {{ (in_array('Country_Download',explode(',',$user->permission))) ? 'checked':''}}  value="Country_Download" type="checkbox" /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         
@@ -146,7 +124,7 @@
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-edit {{ (in_array('State_Edit',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="State_Edit" /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-view {{ (in_array('State_View',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="State_View" /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-delete {{ (in_array('State_delete',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="State_delete" /></td>
-                                                        <td><input class="form-check-input" name="permession[]" data-head data-download {{ (in_array('State_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="State_download" /></td>
+                                                        <td hidden><input class="form-check-input" name="permession[]" data-head data-download {{ (in_array('State_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="State_download" /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" name="permession[]" id="City" type="checkbox" {{ (in_array('City',explode(',',$user->permission))) ? 'checked':''}} value="City"/> City</td>
@@ -154,7 +132,7 @@
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-edit {{ (in_array('City_Edit',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="City_Edit"/></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-view {{ (in_array('City_View',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="City_View" /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-delete {{ (in_array('City_delete',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="City_delete" /></td>
-                                                        <td><input class="form-check-input" name="permession[]"  data-head data-download {{ (in_array('City_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="City_download" /></td>
+                                                        <td hidden><input class="form-check-input" name="permession[]"  data-head data-download {{ (in_array('City_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="City_download" /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" name="permession[]" id="Document" type="checkbox" {{ (in_array('Document',explode(',',$user->permission))) ? 'checked':''}} value="Document"/> Document</td>
@@ -162,7 +140,7 @@
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-edit {{ (in_array('Document_Edit',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Document_Edit" /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-view {{ (in_array('Document_View',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Document_View"  /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-delete {{ (in_array('Document_delete',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Document_delete"  /></td>
-                                                        <td><input class="form-check-input" name="permession[]"  data-head data-download {{ (in_array('Document_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Document_download"  /></td>
+                                                        <td hidden><input class="form-check-input" name="permession[]"  data-head data-download {{ (in_array('Document_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Document_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" name="permession[]"  id="Language" {{ (in_array('Language',explode(',',$user->permission))) ? 'checked':''}} value="Language" type="checkbox" /> Language</td>
@@ -170,7 +148,7 @@
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-edit {{ (in_array('Language_Edit',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Language_Edit" /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-view {{ (in_array('Language_View',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Language_View"  /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-delete {{ (in_array('Language_delete',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Language_delete"  /></td>
-                                                        <td><input class="form-check-input" name="permession[]" data-head data-download {{ (in_array('Language_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Language_download"  /></td>
+                                                        <td hidden><input class="form-check-input" name="permession[]" data-head data-download {{ (in_array('Language_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Language_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" name="permession[]" id="Tax" {{ (in_array('Tax',explode(',',$user->permission))) ? 'checked':''}} value="Tax" type="checkbox" /> Tax</td>
@@ -178,7 +156,7 @@
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-edit {{ (in_array('Tax_Edit',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Tax_Edit" /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-view {{ (in_array('Tax_View',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Tax_View"  /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-delete {{ (in_array('Tax_delete',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Tax_delete"  /></td>
-                                                        <td><input class="form-check-input" name="permession[]"  data-head data-download {{ (in_array('Tax_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Tax_download"  /></td>
+                                                        <td hidden><input class="form-check-input" name="permession[]"  data-head data-download {{ (in_array('Tax_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Tax_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" name="permession[]" id="Category" {{ (in_array('Category',explode(',',$user->permission))) ? 'checked':''}} value="Category" type="checkbox" /> Category</td>
@@ -186,7 +164,7 @@
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-edit {{ (in_array('Categoty_Edit',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Categoty_Edit" /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-view {{ (in_array('Categoty_View',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Categoty_View"  /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-delete {{ (in_array('Categoty_delete',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Categoty_delete"  /></td>
-                                                        <td><input class="form-check-input" name="permession[]" data-head data-download {{ (in_array('Categoty_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Categoty_download"  /></td>
+                                                        <td hidden><input class="form-check-input" name="permession[]" data-head data-download {{ (in_array('Categoty_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Categoty_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" name="permession[]" id="Specialization" {{ (in_array('Specialization',explode(',',$user->permission))) ? 'checked':''}} value="Specialization" type="checkbox" /> Specialization</td>
@@ -194,14 +172,14 @@
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-edit {{ (in_array('Specialization_Edit',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Specialization_Edit" /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-view {{ (in_array('Specialization_View',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Specialization_View"  /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-delete {{ (in_array('Specialization_delete',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Specialization_delete"  /></td>
-                                                        <td><input class="form-check-input" name="permession[]" data-head data-download {{ (in_array('Specialization_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Specialization_download"  /></td>
+                                                        <td hidden><input class="form-check-input" name="permession[]" data-head data-download {{ (in_array('Specialization_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Specialization_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" name="permession[]" id="Company_Settings" {{ (in_array('Company_Settings',explode(',',$user->permission))) ? 'checked':''}} value="Company_Settings" type="checkbox" /> Company Settings</td>
                                                         <td colspan="2"></td>
                                                         <td><input class="form-check-input" name="permession[]" data-head data-view {{ (in_array('Company_Settings_View',explode(',',$user->permission))) ? 'checked':''}}  type="checkbox" value="Company_Settings_View" /></td>
                                                         <td colspan="1"></td>
-                                                        <td><input class="form-check-input" name="permession[]" data-head data-download {{ (in_array('Company_Settings_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Company_Settings_download" /></td>
+                                                        <td hidden><input class="form-check-input" name="permession[]" data-head data-download {{ (in_array('Company_Settings_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Company_Settings_download" /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" name="permession[]" id="Firm" {{ (in_array('Firm',explode(',',$user->permission))) ? 'checked':''}} value="Firm" type="checkbox" /> Firm</td>
@@ -209,7 +187,7 @@
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-edit {{ (in_array('Firm_Edit',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Firm_Edit" /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-view {{ (in_array('Firm_View',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Firm_View"  /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-delete {{ (in_array('Firm_delete',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Firm_delete"  /></td>
-                                                        <td><input class="form-check-input" name="permession[]" data-head data-download {{ (in_array('Firm_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Firm_download"  /></td>
+                                                        <td hidden><input class="form-check-input" name="permession[]" data-head data-download {{ (in_array('Firm_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Firm_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" name="permession[]" id="Insurance" {{ (in_array('Insurance',explode(',',$user->permission))) ? 'checked':''}} value="Insurance" type="checkbox" /> Insurance</td>
@@ -217,7 +195,7 @@
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-edit {{ (in_array('Insurance_Edit',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Insurance_Edit" /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-view {{ (in_array('Insurance_View',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Insurance_View"  /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-delete {{ (in_array('Insurance_delete',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Insurance_delete"  /></td>
-                                                        <td><input class="form-check-input" name="permession[]"  data-head data-download {{ (in_array('Insurance_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Insurance_download"  /></td>
+                                                        <td hidden><input class="form-check-input" name="permession[]"  data-head data-download {{ (in_array('Insurance_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Insurance_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" name="permession[]"  id="Customer" {{ (in_array('Customer',explode(',',$user->permission))) ? 'checked':''}} value="Customer" type="checkbox" /> Customer</td>
@@ -225,7 +203,7 @@
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-edit {{ (in_array('Customer_Edit',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Customer_Edit" /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-view {{ (in_array('Customer_View',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Customer_View"  /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-delete {{ (in_array('Customer_delete',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Customer_delete"  /></td>
-                                                        <td><input class="form-check-input" name="permession[]"  data-head data-download {{ (in_array('Customer_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Customer_download"  /></td>
+                                                        <td hidden><input class="form-check-input" name="permession[]"  data-head data-download {{ (in_array('Customer_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Customer_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" name="permession[]" id="Article" {{ (in_array('Article',explode(',',$user->permission))) ? 'checked':''}} value="Article" type="checkbox" /> Article</td>
@@ -233,7 +211,7 @@
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-edit {{ (in_array('Article_Edit',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Article_Edit" /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-view {{ (in_array('Article_View',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Article_View"  /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-delete {{ (in_array('Article_delete',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Article_delete"  /></td>
-                                                        <td><input class="form-check-input" name="permession[]"  data-head data-download {{ (in_array('Article_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Article_download"  /></td>
+                                                        <td hidden><input class="form-check-input" name="permession[]"  data-head data-download {{ (in_array('Article_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Article_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" name="permession[]" id="Video" {{ (in_array('Video',explode(',',$user->permission))) ? 'checked':''}} value="Video" type="checkbox" /> Video</td>
@@ -241,7 +219,7 @@
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-edit {{ (in_array('Video_Edit',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Video_Edit" /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-view {{ (in_array('Video_View',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Video_View"  /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-delete {{ (in_array('Video_delete',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Video_delete"  /></td>
-                                                        <td><input class="form-check-input" name="permession[]" data-head data-download {{ (in_array('Video_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Video_download"  /></td>
+                                                        <td hidden><input class="form-check-input" name="permession[]" data-head data-download {{ (in_array('Video_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Video_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" name="permession[]" id="Offer" {{ (in_array('Offer',explode(',',$user->permission))) ? 'checked':''}} value="Offer" type="checkbox" /> Offer</td>
@@ -249,7 +227,7 @@
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-edit {{ (in_array('Offer_Edit',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Offer_Edit" /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-view {{ (in_array('Offer_View',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Offer_View"  /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-delete {{ (in_array('Offer_delete',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Offer_delete"  /></td>
-                                                        <td><input class="form-check-input" name="permession[]"  data-head data-download {{ (in_array('Offer_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Offer_download"  /></td>
+                                                        <td hidden><input class="form-check-input" name="permession[]"  data-head data-download {{ (in_array('Offer_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Offer_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" name="permession[]" id="Discount" {{ (in_array('Discount',explode(',',$user->permission))) ? 'checked':''}} value="Discount" type="checkbox" /> Discount</td>
@@ -257,7 +235,7 @@
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-edit {{ (in_array('Discount_Edit',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Discount_Edit" /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-view {{ (in_array('Discount_View',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Discount_View"  /></td>
                                                         <td ><input class="form-check-input" name="permession[]" data-head data-delete {{ (in_array('Discount_delete',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Discount_delete"  /></td>
-                                                        <td><input class="form-check-input" name="permession[]"  data-head data-download {{ (in_array('Discount_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Discount_download"  /></td>
+                                                        <td hidden><input class="form-check-input" name="permession[]"  data-head data-download {{ (in_array('Discount_download',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" value="Discount_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" name="permession[]" id="Communication" {{ (in_array('Communication',explode(',',$user->permission))) ? 'checked':''}} value="Communication" type="checkbox" /> Communication</td>
@@ -265,7 +243,7 @@
                                                         <td></td>
                                                         <td ><input class="form-check-input" name="permession[]" type="checkbox" data-head data-view {{ (in_array('Communication_View',explode(',',$user->permission))) ? 'checked':''}} value="Communication_View"  /></td>
                                                         <td ><input class="form-check-input" name="permession[]" type="checkbox" data-head data-delete {{ (in_array('Communication_delete',explode(',',$user->permission))) ? 'checked':''}} value="Communication_delete"  /></td>
-                                                        <td><input class="form-check-input" name="permession[]" type="checkbox"  data-head data-download {{ (in_array('Communication_download',explode(',',$user->permission))) ? 'checked':''}} value="Communication_download"  /></td>
+                                                        <td hidden><input class="form-check-input" name="permession[]" type="checkbox"  data-head data-download {{ (in_array('Communication_download',explode(',',$user->permission))) ? 'checked':''}} value="Communication_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" name="permession[]" id="Consultant" value="Consultant" {{ (in_array('Consultant',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" /> Consultant</td>
@@ -273,7 +251,7 @@
                                                         <td ><input class="form-check-input" name="permession[]" type="checkbox" data-head data-edit {{ (in_array('Consultant_Edit',explode(',',$user->permission))) ? 'checked':''}} value="Consultant_Edit" /></td>
                                                         <td ><input class="form-check-input" name="permession[]" type="checkbox" data-head data-view {{ (in_array('Consultant_View',explode(',',$user->permission))) ? 'checked':''}} value="Consultant_View"  /></td>
                                                         <td ><input class="form-check-input" name="permession[]" type="checkbox" data-head data-delete {{ (in_array('Consultant_delete',explode(',',$user->permission))) ? 'checked':''}} value="Consultant_delete"  /></td>
-                                                        <td><input class="form-check-input" name="permession[]" type="checkbox"  data-head data-download {{ (in_array('Consultant_download',explode(',',$user->permission))) ? 'checked':''}} value="Consultant_download"  /></td>
+                                                        <td hidden><input class="form-check-input" name="permession[]" type="checkbox"  data-head data-download {{ (in_array('Consultant_download',explode(',',$user->permission))) ? 'checked':''}} value="Consultant_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" name="permession[]" id="Schedule" value="Schedule" {{ (in_array('Schedule',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" /> Schedule</td>
@@ -281,7 +259,7 @@
                                                         <td ><input class="form-check-input" name="permession[]" type="checkbox" data-head data-edit {{ (in_array('Schedule_Edit',explode(',',$user->permission))) ? 'checked':''}} value="Schedule_Edit" /></td>
                                                         <td ><input class="form-check-input" name="permession[]" type="checkbox" data-head data-view {{ (in_array('Schedule_View',explode(',',$user->permission))) ? 'checked':''}} value="Schedule_View"  /></td>
                                                         <td ><input class="form-check-input" name="permession[]" type="checkbox" data-head data-delete {{ (in_array('Schedule_delete',explode(',',$user->permission))) ? 'checked':''}} value="Schedule_delete"  /></td>
-                                                        <td><input class="form-check-input" name="permession[]" type="checkbox"  data-head data-download {{ (in_array('Schedule_download',explode(',',$user->permission))) ? 'checked':''}} value="Schedule_download"  /></td>
+                                                        <td hidden><input class="form-check-input" name="permession[]" type="checkbox"  data-head data-download {{ (in_array('Schedule_download',explode(',',$user->permission))) ? 'checked':''}} value="Schedule_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" name="permession[]" id="Config" value="Config" {{ (in_array('Config',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" /> Config</td>
@@ -289,21 +267,21 @@
                                                         <td ><input class="form-check-input" name="permession[]" type="checkbox" data-head data-edit {{ (in_array('Config_Edit',explode(',',$user->permission))) ? 'checked':''}} value="Config_Edit" /></td>
                                                         <td ><input class="form-check-input" name="permession[]" type="checkbox" data-head data-view {{ (in_array('Config_View',explode(',',$user->permission))) ? 'checked':''}} value="Config_View"  /></td>
                                                         <td ><input class="form-check-input" name="permession[]" type="checkbox" data-head data-delete {{ (in_array('Config_delete',explode(',',$user->permission))) ? 'checked':''}} value="Config_delete"  /></td>
-                                                        <td><input class="form-check-input" name="permession[]" type="checkbox"  data-head data-download {{ (in_array('Config_download',explode(',',$user->permission))) ? 'checked':''}} value="Config_download"  /></td>
+                                                        <td hidden><input class="form-check-input" name="permession[]" type="checkbox"  data-head data-download {{ (in_array('Config_download',explode(',',$user->permission))) ? 'checked':''}} value="Config_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" name="permession[]" id="Consultant_Approval" value="Consultant_Approval" {{ (in_array('Consultant_Approval',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" /> Consultant Approval</td>
                                                         <td colspan="2">
                                                         <td ><input class="form-check-input" name="permession[]" type="checkbox" data-head data-view {{ (in_array('Consultant_Approval_View',explode(',',$user->permission))) ? 'checked':''}} value="Consultant_Approval_View"  /></td>
                                                         <td></td>
-                                                        <td><input class="form-check-input" name="permession[]" type="checkbox" data-head  data-download {{ (in_array('Consultant_Approval_download',explode(',',$user->permission))) ? 'checked':''}} value="Consultant_Approval_download"  /></td>
+                                                        <td hidden><input class="form-check-input" name="permession[]" type="checkbox" data-head  data-download {{ (in_array('Consultant_Approval_download',explode(',',$user->permission))) ? 'checked':''}} value="Consultant_Approval_download"  /></td>
                                                     </tr>
                                                     <tr class="fw-bolder fs-6 text-gray-800">
                                                         <td><input class="form-check-input" name="permession[]" id="Firm_Approval" value="Firm_Approval" {{ (in_array('Firm_Approval',explode(',',$user->permission))) ? 'checked':''}} type="checkbox" /> Firm Approval</td>
                                                         <td colspan="2">
                                                         <td ><input class="form-check-input" name="permession[]" type="checkbox" data-head data-view {{ (in_array('Firm_Approval_View',explode(',',$user->permission))) ? 'checked':''}} value="Firm_Approval_View"  /></td>
                                                         <td></td>
-                                                        <td><input class="form-check-input" name="permession[]" type="checkbox" data-head  data-download {{ (in_array('Firm_Approval_download',explode(',',$user->permission))) ? 'checked':''}} value="Firm_Approval_download"  /></td>
+                                                        <td hidden><input class="form-check-input" name="permession[]" type="checkbox" data-head  data-download {{ (in_array('Firm_Approval_download',explode(',',$user->permission))) ? 'checked':''}} value="Firm_Approval_download"  /></td>
                                                     </tr>
                                                 </tbody>
                                             </table>

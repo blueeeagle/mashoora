@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\DataTables\CurrencyDataTable;
 use App\Models\Currency;
+use App\Models\Companysetting;
 use DataTables;
 
 class CurrencyController extends Controller
@@ -20,6 +21,7 @@ class CurrencyController extends Controller
         return view('currency.index');
     }
     public function datatable(Request $request){
+        $Companysetting = Companysetting::where('id',1)->first();
         $search=[];
         $columns=$request->columns;
         foreach($columns as $colum){
@@ -44,6 +46,19 @@ class CurrencyController extends Controller
 			->addIndexColumn()
 			->addColumn('action', function(Currency $data){
                 return ['edit'=> \route('master.currency.edit',$data->id)];
+            })
+            ->editColumn('created_at', function(Currency $data) use($Companysetting){
+                if($data->created_at){
+                    $temp = $Companysetting->custom_date_time($data->created_at);
+                    return $temp;
+                }
+                return '-';
+            })->editColumn('updated_at', function(Currency $data) use($Companysetting){
+               if($data->updated_at){
+                    $temp = $Companysetting->custom_date_time($data->updated_at);
+                    return $temp;
+                }
+                return '-';
             })
             ->addColumn('status', function(Currency $data) {
                 $status = ($data->status == 1)?'checked':'' ;

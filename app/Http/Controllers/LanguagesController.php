@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Input;
 use DataTables;
 use Illuminate\Support\Collection;
 use Validator;
+use App\Models\Companysetting;
 
 class LanguagesController extends Controller
 {
@@ -26,6 +27,7 @@ class LanguagesController extends Controller
     }
 
     public function datatable(Request $request){
+         $Companysetting = Companysetting::where('id',1)->first();
         $search=[];
         $columns=$request->columns;
         foreach($columns as $colum){
@@ -39,10 +41,21 @@ class LanguagesController extends Controller
 
         return DataTables::of($datas)
         ->addIndexColumn()
-        ->editColumn('created_at', function (Language $datas){
-            // return date('d-m-Y H:i:s',strtotime($datas->created_at));
-            return  $datas->created_at->format('d/m/Y H:i:s');
-         })
+        ->editColumn('created_at', function(Language $data) use($Companysetting){
+           if($data->created_at){
+                    $temp = $Companysetting->custom_date_time($data->created_at);
+                    return $temp;
+                }
+                return '-';
+           
+        })->editColumn('updated_at', function(Language $data) use($Companysetting){
+          if($data->updated_at){
+                    $temp = $Companysetting->custom_date_time($data->updated_at);
+                    return $temp;
+                }
+                return '-';
+           
+        })
         ->addColumn('status', function(Language $datas) {
             $status = ($datas->status == 1)?'checked':'' ;
             $route = \route('master.language.status',$datas->id);

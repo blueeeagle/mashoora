@@ -93,8 +93,9 @@
                             <option selected value="3">Dialing</option>
                             <option selected value="4">Has State</option>
                             <option selected value="5">Created Date</option>
-                            <option selected value="6">Status</option>
-                            <option selected value="7">Action</option>
+                            <option selected value="6">Updated Date</option>
+                            <option selected value="7">Status</option>
+                            <option selected value="8">Action</option>
                         </select>
                     </div>
                     
@@ -226,6 +227,7 @@
                                             <th>Dialing</th>
                                             <th>Has State</th>
                                             <th>Created Date</th>
+                                            <th>Updated Date</th>
                                             <th>Status</th>
                                             <th>Action</th>
                                         </tr>
@@ -296,6 +298,7 @@
                     { data: 'dialing'},
                     { data: 'has_state'},
                     { data: 'created_at'},
+                    { data: 'updated_at'},
                     { data: 'status'},
                     { data: 'action'},
                 ],

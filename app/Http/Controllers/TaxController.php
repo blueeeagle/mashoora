@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Tax;
+use App\Models\Companysetting;
 use Illuminate\Support\Facades\Input;
 use DataTables;
 use Illuminate\Support\Collection;
@@ -24,6 +25,7 @@ class TaxController extends Controller
     }
 
     public function datatable(Request $request){
+        $Companysetting = Companysetting::where('id',1)->first();
         $search=[];
         $columns=$request->columns;
         foreach($columns as $colum){
@@ -43,6 +45,20 @@ class TaxController extends Controller
             return "<div class='form-check form-switch form-check-custom form-check-solid'>
                     <input class='form-check-input' type='checkbox' status data-url='$route' value='' $status />
                 </div>";
+        })
+        ->editColumn('created_at', function(Tax $data) use($Companysetting){
+          if($data->created_at){
+                    $temp = $Companysetting->custom_date_time($data->created_at);
+                    return $temp;
+                }
+                return '-';
+        })
+        ->editColumn('updated_at', function(Tax $data) use($Companysetting){
+         if($data->updated_at){
+                    $temp = $Companysetting->custom_date_time($data->updated_at);
+                    return $temp;
+                }
+                return '-';
         })
         ->addColumn('action', function(Tax $data){
             return ['Delete'=> \route('master.tax.destroy',$data->id),'edit'=> \route('master.tax.edit',$data->id)];

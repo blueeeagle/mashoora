@@ -250,12 +250,12 @@
                                 </svg>
                             </span>
                             <!--end::Svg Icon-->
-                            <div class="fs-2 fw-bolder counted" data-kt-countup="true" data-kt-countup-value="4500"
-                                data-kt-countup-prefix="$">$4,500</div>
+                            <div class="fs-2 fw-bolder counted" data-kt-countup="true" data-kt-countup-value="{{ number_format($consultant->wallet->balance,2) }}"
+                                data-kt-countup-prefix="{{ $consultant->country->currency->currencycode }}">{{ $consultant->country->currency->currencycode }} {{ number_format($consultant->wallet->balance,2) }}</div>
                         </div>
                         <!--end::Number-->
                         <!--begin::Label-->
-                        <div class="fw-bold fs-6 text-gray-400">Earnings</div>
+                        <div class="fw-bold fs-6 text-gray-400">Wallet</div>
                         <!--end::Label-->
                     </div>
                     <!--end::Stat-->

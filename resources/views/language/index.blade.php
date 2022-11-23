@@ -99,9 +99,10 @@
                             <option></option>
                             <option selected value="0">#</option>
                             <option selected value="1">Title</option>
-                            <option selected value="2">Create Date</option>
-                            <option selected value="3">Status</option>
-                            <option selected hidden value="4">Action</option>
+                            <option selected value="2">Created Date</option>
+                            <option selected value="3">Updated Date</option>
+                            <option selected value="4">Status</option>
+                            <option selected hidden value="5">Action</option>
                         </select>
                     </div>
                     
@@ -235,7 +236,8 @@
                                         <tr class="fw-semibold fs-6 text-gray-800">
                                             <th>#</th>
                                             <th>Title</th>
-                                            <th>Create at</th>
+                                            <th>Created Date</th>
+                                            <th>Updated Date</th>
                                             <th>Status</th>
                                             <th>Action</th> 
                                         </tr>
@@ -307,6 +309,7 @@
                     { data: 'DT_RowIndex'},
                     { data: 'title'},
                     { data: 'created_at'},
+                    { data: 'updated_at'},
                     { data: 'status'},
                     { data: 'action'}
                 ],

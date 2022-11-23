@@ -7,6 +7,7 @@ use App\Models\Article;
 use App\Models\User;
 use App\Models\Firm;
 use App\Models\Consultant;
+use App\Models\Appointment;
 use Illuminate\Support\Facades\Input;
 use DataTables;
 use Illuminate\Support\Collection;
@@ -24,6 +25,14 @@ class ArticelController extends Controller
     }
     
     public function index(){
+        //  $Appointment  = Appointment::all();
+        // foreach ($Appointment as $key => &$value) {
+        //     # code...
+            
+        //     $value->appointment;
+        //      unset($value->rawdata);
+        // }
+        // dd($Appointment);
         return view('article.index');
     }
 

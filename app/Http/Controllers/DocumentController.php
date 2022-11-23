@@ -9,6 +9,7 @@ use DataTables;
 use Illuminate\Support\Collection;
 use Validator;
 use App\Models\Category;
+use App\Models\Companysetting;
 
 class DocumentController extends Controller
 {
@@ -25,6 +26,7 @@ class DocumentController extends Controller
     }
 
     public function datatable(Request $request){
+         $Companysetting = Companysetting::where('id',1)->first();
         $search=[];
         $columns=$request->columns;
         foreach($columns as $colum){
@@ -38,9 +40,20 @@ class DocumentController extends Controller
 
         return DataTables::of($datas)
         ->addIndexColumn()
-        ->editColumn('created_at', function(Document $data){
-            $date=date_create($data->created_at);
-            return  date_format($date,"Y-m-d");
+        ->editColumn('created_at', function(Document $data) use($Companysetting){
+          if($data->created_at){
+                    $temp = $Companysetting->custom_date_time($data->created_at);
+                    return $temp;
+                }
+                return '-';
+        })
+        ->editColumn('updated_at', function(Document $data) use($Companysetting){
+          if($data->updated_at){
+                    $temp = $Companysetting->custom_date_time($data->updated_at);
+                    return $temp;
+                }
+                return '-';;
+           
         })
         ->addColumn('status', function(Document $data) {
             $status = ($data->status == 1)?'checked':'' ;

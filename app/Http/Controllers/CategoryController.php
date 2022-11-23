@@ -11,6 +11,7 @@ use Illuminate\Support\Collection;
 use Validator;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Consultant;
+use App\Models\Companysetting;
 use App\Models\Offer;
 use App\Models\Discount;
 
@@ -31,6 +32,7 @@ class CategoryController extends Controller
     }
 
     public function datatable(Request $request){
+        $Companysetting = Companysetting::where('id',1)->first();
         $search=[];
         $columns=$request->columns;
         foreach($columns as $colum){
@@ -59,14 +61,19 @@ class CategoryController extends Controller
             if($data->categories_id) return $data->child_forIndex->name;
             return "";
         })
-        ->editColumn('created_at', function (Category $data){
-            $date=date_create($data->created_at);
-            return  date_format($date,"Y-m-d");
+        ->editColumn('created_at', function(Category $data) use($Companysetting){
+          if($data->created_at){
+                    $temp = $Companysetting->custom_date_time($data->created_at);
+                    return $temp;
+                }
+                return '-';
         })
-        ->editColumn('updated_at', function (Category $data){
-            if($data->updated_at == null) return '';
-            $date=date_create($data->updated_at);
-            return  date_format($date,"Y-m-d");
+        ->editColumn('updated_at', function(Category $data) use($Companysetting){
+          if($data->updated_at){
+                    $temp = $Companysetting->custom_date_time($data->updated_at);
+                    return $temp;
+                }
+                return '-';
         })
         ->editColumn('status', function(Category $data) {
             $status = ($data->status == 1)?'checked':'' ;

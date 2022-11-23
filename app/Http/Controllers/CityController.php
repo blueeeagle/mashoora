@@ -29,6 +29,8 @@ class CityController extends Controller
     }
 
 	public function datatables(Request $request){
+	    $Companysetting = Companysetting::where('id',1)->first();
+	    
         $search=[];
         $columns=$request->columns;
         foreach($columns as $colum){
@@ -58,6 +60,20 @@ class CityController extends Controller
                 })
                 ->addColumn('action', function(City $data){
                     return ['Delete'=> \route('master.city.destroy',$data->id),'edit'=> \route('master.city.edit',$data->id)];
+                })
+                ->editColumn('created_at', function(City $data) use($Companysetting){
+                    if($data->created_at){
+                        $temp = $Companysetting->custom_date_time($data->created_at);
+                        return $temp;
+                    }
+                    return '-';
+                })
+                ->editColumn('updated_at', function(City $data) use($Companysetting){
+                   if($data->updated_at){
+                        $temp = $Companysetting->custom_date_time($data->updated_at);
+                        return $temp;
+                    }
+                    return '-';
                 })
                 ->rawColumns(['status','action'])
                 ->toJson(); //--- Returning Json Data To Client Side

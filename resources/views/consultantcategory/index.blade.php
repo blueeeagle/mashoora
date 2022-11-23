@@ -94,8 +94,10 @@
                             <option selected value="1">Title</option>
                             <option selected value="2">Category</option>
                             <option selected value="3">Child Category</option>
-                            <option selected value="4">Status</option>
-                            <option selected hidden value="5">Action</option>
+                            <option selected value="4">Created Date</option>
+                            <option selected value="5">Updated Date</option>
+                            <option selected value="6">Status</option>
+                            <option selected hidden value="7">Action</option>
                         </select>
                     </div>
                     
@@ -231,7 +233,9 @@
                                             <th>Title</th>
                                             <th>Category</th>
                                             <th>Child Category</th>
-                                            <th>status</th>
+                                            <th>Created Date</th>
+                                            <th>Updated Date</th>
+                                            <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                         
@@ -307,6 +311,8 @@
                     { data: 'title' },
                     { data: 'categorie_id' },
                     { data: 'subcategorie_id' },
+                    { data: 'created_at'},
+                    { data: 'updated_at'},
                     { data: 'status'},
                     { data: 'action'}
                 ],

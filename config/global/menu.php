@@ -206,7 +206,7 @@ return array(
         ),
         // Admin
         array(
-            'title' => 'Admin',
+            'title' => 'Admin & Settings',
             'icon'       => array(
                 'svg'  => theme()->getSvgIcon("demo1/media/icons/duotune/communication/com006.svg", "svg-icon-2"),
                 'font' => '<i class="bi bi-person fs-2"></i>',
@@ -221,6 +221,11 @@ return array(
                     array(
                         'title'  => 'Admin User',
                         'path'   => 'admin/user',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                    array(
+                        'title'  => 'Company Settings',
+                        'path'   => 'setting/companysettings',
                         'bullet' => '<span class="bullet bullet-dot"></span>',
                     ),
 
@@ -287,60 +292,43 @@ return array(
                         'path'   => 'master/tax',
                         'bullet' => '<span class="bullet bullet-dot"></span>',
                     ),
-                )
-            )
-
-        ),
-        //Settings
-        array(
-            'title' => 'Setting',
-            'icon'       => array(
-                'svg'  => theme()->getSvgIcon("demo1/media/icons/duotune/communication/com006.svg", "svg-icon-2"),
-                'font' => '<i class="bi bi-person fs-2"></i>',
-            ),
-            'classes'    => array('item' => 'menu-accordion'),
-            'attributes' => array(
-                "data-kt-menu-trigger" => "click",
-            ),
-            'sub' => array(
-                'class' => 'menu-sub-accordion menu-active-bg',
-                'items' => array(
-                    array(
-                        'title'  => 'Company Settings',
-                        'path'   => 'setting/companysettings',
-                        'bullet' => '<span class="bullet bullet-dot"></span>',
-                    ),
-                )
-            )
-
-        ),
-        //user
-        array(
-            'title' => 'User',
-            'icon'       => array(
-                'svg'  => theme()->getSvgIcon("demo1/media/icons/duotune/communication/com006.svg", "svg-icon-2"),
-                'font' => '<i class="bi bi-person fs-2"></i>',
-            ),
-            'classes'    => array('item' => 'menu-accordion'),
-            'attributes' => array(
-                "data-kt-menu-trigger" => "click",
-            ),
-            'sub' => array(
-                'class' => 'menu-sub-accordion menu-active-bg',
-                'items' => array(
-                    array(
-                        'title'  => 'Manage Firms',
-                        'path'   => 'user/firms',
-                        'bullet' => '<span class="bullet bullet-dot"></span>',
-                    ),
                     array(
                         'title'  => 'Insurance',
                         'path'   => 'user/insurance',
                         'bullet' => '<span class="bullet bullet-dot"></span>',
                     ),
+                )
+            )
+
+        ),
+        
+        //user
+        array(
+            'title' => 'App Users',
+            'icon'       => array(
+                'svg'  => theme()->getSvgIcon("demo1/media/icons/duotune/communication/com006.svg", "svg-icon-2"),
+                'font' => '<i class="bi bi-person fs-2"></i>',
+            ),
+            'classes'    => array('item' => 'menu-accordion'),
+            'attributes' => array(
+                "data-kt-menu-trigger" => "click",
+            ),
+            'sub' => array(
+                'class' => 'menu-sub-accordion menu-active-bg',
+                'items' => array(
+                    array(
+                        'title'  => 'Firms',
+                        'path'   => 'user/firms',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
                     array(
                         'title'  => 'Customer',
                         'path'   => 'user/customer',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                    array(
+                        'title'  => 'Consultants',
+                        'path'   => 'consultant/consultant',
                         'bullet' => '<span class="bullet bullet-dot"></span>',
                     ),
                 )
@@ -386,27 +374,9 @@ return array(
                         'path'   => 'other/communication',
                         'bullet' => '<span class="bullet bullet-dot"></span>',
                     ),
-                )
-            )
-
-        ),
-        //Consultants
-        array(
-            'title' => 'Consultants',
-            'icon'       => array(
-                'svg'  => theme()->getSvgIcon("demo1/media/icons/duotune/communication/com006.svg", "svg-icon-2"),
-                'font' => '<i class="bi bi-person fs-2"></i>',
-            ),
-            'classes'    => array('item' => 'menu-accordion'),
-            'attributes' => array(
-                "data-kt-menu-trigger" => "click",
-            ),
-            'sub' => array(
-                'class' => 'menu-sub-accordion menu-active-bg',
-                'items' => array(
                     array(
-                        'title'  => 'Consultants',
-                        'path'   => 'consultant/consultant',
+                        'title'  => 'Banners',
+                        'path'   => 'activities/config',
                         'bullet' => '<span class="bullet bullet-dot"></span>',
                     ),
                 )
@@ -415,7 +385,7 @@ return array(
         ),
         //Activities
         array(
-            'title' => 'Activities',
+            'title' => 'Booking Activities',
             'icon'       => array(
                 'svg'  => theme()->getSvgIcon("demo1/media/icons/duotune/communication/com006.svg", "svg-icon-2"),
                 'font' => '<i class="bi bi-person fs-2"></i>',
@@ -438,12 +408,10 @@ return array(
                         'bullet' => '<span class="bullet bullet-dot"></span>',
                     ),
                     array(
-                        'title'  => 'Config',
-                        'path'   => 'activities/config',
+                        'title'  => 'Appointment History',
+                        'path'   => 'appointment/history',
                         'bullet' => '<span class="bullet bullet-dot"></span>',
                     ),
-                  
-                
                 )
             )
 

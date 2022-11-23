@@ -26,7 +26,9 @@ public function state(){
 public function city(){
     return $this->belongsTo(City::class);
 }
-
+public function custom_date_time($date){
+    return date($this->date_format,strtotime($date));
+}
 
     // public function getHavetaxAttribute(){
     //     // return ($this->have_tax)?'Yes':'No';

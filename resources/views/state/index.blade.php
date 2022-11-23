@@ -81,8 +81,9 @@
                             <option selected value="1">Country Name</option>
                             <option selected value="2">State Name</option>
                             <option selected value="3">Status</option>
-                            <option selected value="4">Create Date</option>
-                            <option selected hidden value="5">Action</option>
+                            <option selected value="4">Created Date</option>
+                            <option selected value="5">Updated Date</option>
+                            <option selected hidden value="6">Action</option>
                         </select>
                     </div>
                     
@@ -212,6 +213,7 @@
                                             <th>Country Name</th>
                                             <th>State Name</th>
                                             <th>Created Date</th>
+                                            <th>Updated Date</th>
                                             <th>Status</th>
                                             <th>Action</th>
                                         </tr>
@@ -285,6 +287,7 @@
                     { data: 'country_name' },
                     { data: 'state_name' },
                     { data: 'created_at'},
+                    { data: 'updated_at'},
                     { data: 'status'},
                     { data: 'action'}
                 ],

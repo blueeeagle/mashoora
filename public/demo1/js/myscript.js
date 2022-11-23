@@ -19,9 +19,9 @@ $("#formEditReset").click(function(){
     $('select').val("").trigger( "change" );
     
     let form = document.querySelector('#formEdit')
-    form.querySelectorAll("input[type='text'] ,div[id='kt_docs_jstree_checkable'],textarea,input[type='radio'] ,input[name='tags'] ,input[type='number'],input[type='email'],input[type='time'],input[type='file'],input[type='hidden'][name='img'],img[class='file-preview'], input[type='checkbox']")
+    form.querySelectorAll("input[type='text'] ,div[id='kt_docs_jstree_checkable'],textarea,input[type='radio'] ,input[name='tags'] ,input[id='kt_daterangepicker_3'],input[type='number'],input[type='email'],input[type='time'],input[type='file'],input[type='hidden'][name='img'],img[class='file-preview'], input[type='checkbox']")
         .forEach(e=>{
-            if(e.type=='text'||e.name=='tags'||e.type=='hidden'||e.type=='textarea'||e.type=='number'||e.type=='time'){ e.value = ''; }
+            if(e.type=='text'||e.name=='tags'||e.type=='hidden'||e.type=='textarea'||e.type=='number'||e.type=='time'||e.type=='email'|| e.id=='kt_daterangepicker_3'){ e.value = ''; }
             if(e.type=='checkbox') {e.checked=false;}
             if(e.src){e.src = ''}
             if(e.id=='kt_docs_jstree_checkable'){ $('#kt_docs_jstree_checkable').jstree("deselect_all");}

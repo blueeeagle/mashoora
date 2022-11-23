@@ -28,14 +28,10 @@
                     <div class="fv-row mb-12">
                         <select class="form-select form-select-solid" data-control="select2" data-placeholder="Search option" data-allow-clear="true" id="filter" multiple="multiple">
                             <option value="phone_no">Phone No</option>
-                            <option value="dob">DOB</option>
+                            <option value="dob">Name/Email</option>
                             <option value="gender">Gender</option>
-                            <option value="email">Email</option>
-                            <option value="register_address">Register Address</option>
-                            <option value="country_id">Country</option>
-                            <option value="state_id">State</option>
-                            <option value="city_id">City</option>
-                            <option value="zipcode">Zipcode</option>
+                            <option value="dob">DOB</option>
+                            <option value="address">Address</option>
                         </select>
                     </div>
                     <div class="row">
@@ -43,11 +39,12 @@
                             <label class="fs-6 form-label fw-bolder text-dark">Phone No</label>
                             <input type="tel" class="form-control form-control form-control-solid datatable-input" data-col-index='1' />
                         </div>
-                        <div class="col-xxl-4" data-id-filter="dob" hidden>
-                            <label class="fs-6 form-label fw-bolder text-dark">Date Of Birth</label>
-                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='3' />
+                           <div class="col-xxl-4" data-id-filter="email" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">Name / Email</label>
+                            <input type="email" class="form-control form-control form-control-solid datatable-input" data-col-index='5' />
                         </div>
-                        <div class="col-xxl-4" data-id-filter="gender" hidden>
+                        
+                         <div class="col-xxl-4" data-id-filter="gender" hidden>
                             <label class="fs-6 form-label fw-bolder text-dark">Gender</label>
                             <select class="form-control form-control form-control-solid datatable-input" data-col-index='4'>
                                 <option value="">Select Gender</option>
@@ -55,12 +52,15 @@
                                 <option value="female">Female</option>
                             </select>
                         </div>
-                        <div class="col-xxl-4" data-id-filter="email" hidden>
-                            <label class="fs-6 form-label fw-bolder text-dark">Email</label>
-                            <input type="email" class="form-control form-control form-control-solid datatable-input" data-col-index='5' />
+                        
+                        <div class="col-xxl-4" data-id-filter="dob" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">Date Of Birth</label>
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='3' />
                         </div>
-                        <div class="col-xxl-4" data-id-filter="register_address" hidden>
-                            <label class="fs-6 form-label fw-bolder text-dark">Register Address</label>
+                       
+                     
+                        <div class="col-xxl-4" data-id-filter="address" hidden>
+                            <label class="fs-6 form-label fw-bolder text-dark">Address</label>
                             <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='6' />
                         </div>
                         <div class="col-xxl-4" data-id-filter="country_id" hidden>
@@ -133,17 +133,12 @@
                             <option></option>
                             <option selected value="0">#</option>
                             <option selected value="1">Phone No</option>
-                            <option selected value="2">Name</option>
-                            <option selected value="3">DOB</option>
+                            <option selected value="2">Name/Email</option>
                             <option selected value="4">Gender</option>
-                            <option selected value="5">Email</option>
-                            <option selected value="6">Register Address</option>
-                            <option selected value="7">Country</option>
-                            <option selected value="8">State</option>
-                            <option selected value="9">City</option>
-                            <option selected value="10">Zipcode</option>
-                            <option selected value="11">Status</option>
-                            <option selected value="12">Actions</option>
+                            <option selected value="5">DOB</option>
+                            <option selected value="6">Address</option>
+                            <option selected value="7">Status</option>
+                            <option selected value="8">Actions</option>
                         </select>
                     </div>
                     
@@ -277,15 +272,10 @@
                                         <tr class="fw-semibold fs-6 text-gray-800">
                                             <th>#</th>
                                             <th>Phone No</th>
-                                            <th>Name</th>
-                                            <th>DOB</th>
+                                            <th>Name / Email</th>
                                             <th>Gender</th>
-                                            <th>Email</th>
-                                            <th>Register Address</th>
-                                            <th>Country</th>
-                                            <th>State</th>
-                                            <th>City</th>
-                                            <th>Zipcode</th>
+                                            <th>DOB</th>
+                                            <th>Address</th>
                                             <th>Status</th>
                                             <th>Action</th>
                                         </tr>
@@ -354,20 +344,14 @@
                         "_token": "{{ csrf_token() }}",
                         columnsDef : ['id','phone_no','name','dob','gender','email','register_address','country','state','city','zipcode','status']
                     }
-
                 },
                 columns: [
                     { data: 'DT_RowIndex' },
                     { data: 'phone_no' },
                     { data: 'name' },
-                    { data: 'dob' },
                     { data: 'gender' },
-                    { data: 'email' },
+                    { data: 'dob' },
                     { data: 'register_address' },
-                    { data: 'country' },
-                    { data: 'state' },
-                    { data: 'city' },
-                    { data: 'zipcode' },
                     { data: 'status' },
                     { data: 'action' }
                 ],

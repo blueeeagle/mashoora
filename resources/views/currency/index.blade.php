@@ -93,8 +93,10 @@
                             <option selected value="3">Currency Code</option>
                             <option selected value="4">Symbol</option>
                             <option selected value="5">Price</option>
-                            <option selected value="6">Status</option>
-                            <option selected value="7">Action</option>
+                            <option selected value="6">Created Date</option>
+                            <option selected value="7">Updated Date</option>
+                            <option selected value="8">Status</option>
+                            <option selected value="9">Action</option>
                         </select>
                     </div>
                     
@@ -226,6 +228,8 @@
                                             <th>Currency Code</th>
                                             <th>Symbol</th>
                                             <th>Price</th>
+                                            <th>Created Date</th>
+                                            <th>Updated Date</th>
                                             <th>Status</th>
                                             <th>Action</th>
                                         </tr>
@@ -297,7 +301,9 @@
                     { data: 'currencycode'},
                     { data: 'symbol'},
                     { data: 'price'},
-                     { data: 'status'},
+                    { data: 'created_at'},
+                    { data: 'updated_at'},
+                    { data: 'status'},
                     { data: 'action'},
                 ],
 

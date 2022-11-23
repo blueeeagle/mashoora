@@ -10,6 +10,7 @@ use App\Models\Pincode;
 use App\Models\State;
 use App\Models\City;
 use App\Models\Currency;
+use App\Models\Companysetting;
 use DataTables;
 use Validator;
 
@@ -25,6 +26,7 @@ class CountryController extends Controller
         return view('country.index');
     }
      public function datatable(Request $request){
+        $Companysetting = Companysetting::where('id',1)->first();
         $search=[];
         $columns=$request->columns;
         foreach($columns as $colum){
@@ -53,9 +55,18 @@ class CountryController extends Controller
                             ->addColumn('dialing', function(Country $datas) {
                                 return $datas->dialing;
                             }) 
-                            ->editColumn('created_at', function(Country $datas) {
-                                $date=date_create($datas->created_at);
-                                 return  date_format($date,"d-m-Y");
+                             ->editColumn('created_at', function(Country $data) use($Companysetting){
+                                if($data->created_at){
+                                    $temp = $Companysetting->custom_date_time($data->created_at);
+                                    return $temp;
+                                }
+                                return '-';
+                            })->editColumn('updated_at', function(Country $data) use($Companysetting){
+                               if($data->updated_at){
+                                    $temp = $Companysetting->custom_date_time($data->updated_at);
+                                    return $temp;
+                                }
+                                return '-';
                             })
                             ->addColumn('has_state', function(Country $datas) {
                                 $state = ($datas->has_state == 1)?'checked':'' ;

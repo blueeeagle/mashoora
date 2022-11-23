@@ -47,8 +47,8 @@ class CompanysettingsController extends Controller
             $data['cphone'] = $cphone[$key];
             $Contact[] = $data;
         }
-
-        return view('companysetting.create',['Companysetting'=>$Companysetting,'countrys'=>$countrys,'state'=>$state,'city'=>$city,'contact'=>$Contact,'currency'=>$currency->currency]);
+        $Time_Zone = \DateTimeZone::listIdentifiers(\DateTimeZone::PER_COUNTRY, $Companysetting->country->country_code)[0];
+        return view('companysetting.create',['Time_Zone'=>$Time_Zone,'Companysetting'=>$Companysetting,'countrys'=>$countrys,'state'=>$state,'city'=>$city,'contact'=>$Contact,'currency'=>$currency->currency]);
     }
 
     public function store(Request $Request,Companysetting $config){
@@ -77,6 +77,61 @@ class CompanysettingsController extends Controller
        return response()->json(['msg'=>'Updated']);
     }
 
+public function detailsupdate(Request $Request){
+        $Companysetting = Companysetting::where('id',1)->first();
+        $Request['have_tax'] = isset($Request->have_tax)?1:0;
+        $Companysetting->update($Request->all());
+       return response()->json(['status'=>true,'msg'=>'Details updated']);
+
+    }
+    public function addressupdate(Request $Request){
+        $Companysetting = Companysetting::where('id',1)->first();
+        $Companysetting->update($Request->all());
+        $Time_Zone = \DateTimeZone::listIdentifiers(\DateTimeZone::PER_COUNTRY, $Companysetting->country->country_code)[0];
+        $this->setEnv("timezone",$Time_Zone);
+       return response()->json(['status'=>true,'msg'=>'Address updated']);
+    }
+    public function settingupdate(Request $Request){
+        $Companysetting = Companysetting::where('id',1)->first();
+        if(Storage::disk('public_custom')->exists("/uploadFiles/temp/$Request->logo_login_page") && $Request->logo_login_page){
+            Storage::disk('public_custom')->move("/uploadFiles/temp/$Request->logo_login_page","/uploadFiles/user/$Request->logo_login_page");
+            $Request['logo_login_page'] =  "/uploadFiles/user/$Request->logo_login_page";
+        }else{
+            $Request['logo_login_page'] =  $Companysetting->logo_login_page;
+        }
+
+        if(Storage::disk('public_custom')->exists("/uploadFiles/temp/$Request->logo_header") && $Request->logo_header){
+            Storage::disk('public_custom')->move("/uploadFiles/temp/$Request->logo_header","/uploadFiles/user/$Request->logo_header");
+            $Request['logo_header'] =  "/uploadFiles/user/$Request->logo_header";
+        }else{
+            $Request['logo_header'] =  $Companysetting->logo_header;
+        }
+        $Companysetting->update($Request->all());
+       return response()->json(['status'=>true,'msg'=>'Setting updated']);
+    }
+    public function contactupdate(Request $Request){
+      
+        $Companysetting = Companysetting::where('id',1)->first();
+        $cname = [];$ctitle = [];$cemail = [];$cmobile = [];$cphone = [];
+        foreach ($Request->kt_docs_repeater_basic as $key => $value) {
+            # code...
+            $cname[] = $value['cname'];$ctitle[] = $value['ctitle'];$cemail[] = $value['cemail'];$cmobile[] = $value['cmobile'];$cphone[] = $value['cphone'];
+        }
+        $Country = Country::where('id',$Request->country_id)->first();
+        if($Country){
+            $currencySelect = Currency::where('countryname',$Country->country_name)->first();
+            if($currencySelect) $Request['currencie_id'] = $currencySelect->id;
+        }
+
+        $Request['cname'] = \implode(',',$cname);
+        $Request['ctitle'] = \implode(',',$ctitle);
+        $Request['cemail'] = \implode(',',$cemail);
+        $Request['cmobile'] = \implode(',',$cmobile);
+        $Request['cphone'] = \implode(',',$cphone);
+        $Companysetting->update($Request->all());
+       return response()->json(['status'=>true,'msg'=>'Contact updated']);
+    }
+    
     public function update(Request $Request){
         $Companysetting = Companysetting::where('id',1)->first();
         

@@ -21,7 +21,8 @@
                                                             </div>
                                                             <div class="col-md-3">
                                                                 <label class="required form-label fs-6 mb-4 mt-4">Email</label>
-                                                                <input type="email" name="cemail" data-cemail class="form-control mb-2 mb-md-0" placeholder="Email" />
+                                                                <span class="error_message" data-validate-for="cemail"></span>
+                                                                <input type="email" name="cemail" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"  data-cemail class="form-control mb-2 mb-md-0" placeholder="Email" required />
                                                             </div>
                                                             <div class="col-md-3">
                                                                 <label class="required form-label fs-6 mb-4 mt-4">Mobile</label>

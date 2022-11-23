@@ -344,7 +344,20 @@ class ConsultantController extends Controller{
         return response()->json($data1);
     }
     public function indexschedule(){
+        $days = ['sunday'=>'Sun','monday'=>'Mon','tuesday'=>'Tue','wednesday'=>'Wed','thursday'=>'Thu','friday'=>'Fri','saturday'=>'Sat'];
         $Schedule = Schedule::where('consultant_id',Auth::guard('consultant')->user()->id)->get();
+        $Schedule = $Schedule->map(function ($data) use ($days){
+            
+            $returndata = [];
+            $schedule = json_decode($data->schedule);
+            foreach($schedule as $key => $value){
+                if(isset($days[$value->day[0]]))  $returndata[] = $days[$value->day[0]];
+            }
+            $data->{'days'} = $returndata; 
+            unset($data->schedule);
+            unset($data->scheduleformate);
+            return $data;
+        });
         return DataTables::of($Schedule)->addIndexColumn()->toJson();
     }
     public function saveschedule(Request $request){
@@ -369,9 +382,15 @@ class ConsultantController extends Controller{
     public function todaybooking(){
         $consultantTimeZone = \DateTimeZone::listIdentifiers(\DateTimeZone::PER_COUNTRY, Auth::guard('consultant')->user()->country->country_code)[0];
         date_default_timezone_set($consultantTimeZone);
-        
-        // $today = Appointment::where('status','!=','completed')->where('status','!=','Cancelled')->where('consultant_id',Auth::guard('consultant')->user()->id)->whereRaw('appointment_date < CURRENT_DATE() + INTERVAL 1 DAY')->get();
-        $today = Appointment::where('consultant_id',Auth::guard('consultant')->user()->id)->get();
+        $today = Appointment::where('consultant_id',Auth::guard('consultant')->user()->id)->whereIn('status',['Confirmed'])->get();
+        $today = $today->filter(function ($Appointment, $key) {
+                            $Booking = unserialize(bzdecompress(utf8_decode($Appointment->rawdata)));
+                            $date = date_create($Appointment->appointment_date);
+                            $date = strtotime($Appointment->appointment_date) - ($Booking->diff);
+                            $APPDate = strtotime(date("Y-m-d",$date));
+                            $now = strtotime(date("Y-m-d"));
+                            if($APPDate == $now) return $Appointment;
+                        });
         return response()->json($this->modefyAppointment($today));
     }
 
@@ -379,9 +398,9 @@ class ConsultantController extends Controller{
         $consultantTimeZone = \DateTimeZone::listIdentifiers(\DateTimeZone::PER_COUNTRY, Auth::guard('consultant')->user()->country->country_code)[0];
         date_default_timezone_set($consultantTimeZone);
         
-        $upcoming = Appointment::where('status','!=','completed')->where('status','!=','Cancelled')->where('consultant_id',Auth::guard('consultant')->user()->id)->get();
-        $past = Appointment::where('status','=','completed')->orwhere('status','=','Cancelled')->where('consultant_id',Auth::guard('consultant')->user()->id)->get();
-        $acceptreject = Appointment::where('status','!=','Cancelled')->where('status','!=','pending')->where('consultant_id',Auth::guard('consultant')->user()->id)->get();
+        $upcoming = Appointment::where('consultant_id',Auth::guard('consultant')->user()->id)->whereIn('status',['Confirmed'])->get();
+        $past = Appointment::where('consultant_id',Auth::guard('consultant')->user()->id)->whereIn('status',['Cancelled','Completed','NoShowByCustomer','NoShowByConsultant'])->get();
+        $acceptreject = Appointment::where('status',['pending','Reject'])->where('consultant_id',Auth::guard('consultant')->user()->id)->get();
         
         $upcoming = $this->modefyAppointment($upcoming);
         $past = $this->modefyAppointment($past);
@@ -409,6 +428,31 @@ class ConsultantController extends Controller{
         $myObj->{'type'} = $Booking->type;
         $myObj->{'Customer'} = $Appointment->Customer;
         $myObj->{'Amount'} = ($Booking->amount/$Booking->customercurrnecy->price)*$Booking->consultantcurrency->price;
+        if($Appointment->insurance_id){
+            if(isset($Booking->Insurance)){
+                $myObj->{'insurance'} = ['policyid'=>$Appointment->policyid,'insurance'=>$Booking->Insurance];
+            }else{
+                $Insurance = $Appointment->insurance;
+                $myObj->{'insurance'} = ['policyid'=>$Appointment->policyid,'insurance'=>$Insurance];
+            }
+        }
+        
+        if(isset($Booking->cat_id)){
+            if(!empty($Booking->cat_id)){
+                $myObj->{'category'} = isset($Booking->cat_id['cat'])?$Booking->cat_id['cat']:null;
+                $myObj->{'sub_category'} = isset($Booking->cat_id['sub'])?$Booking->cat_id['cat']:null;
+            }
+        }
+        
+        if($Appointment->insurance_id){
+            if(isset($Booking->Insurance)){
+                $myObj->{'insurance'} = ['policyid'=>$Appointment->policyid,'insurance'=>$Booking->Insurance];
+            }else{
+                $Insurance = $Appointment->insurance;
+                $myObj->{'insurance'} = ['policyid'=>$Appointment->policyid,'insurance'=>$Insurance];
+            }
+        }
+        
         $myObj->{'status'} = $Appointment->status;
         $myObj->{'countdown'} = $countdown;
         $myObj->{'review'} = $Appointment->consultantsingleAppreview;
@@ -422,12 +466,23 @@ class ConsultantController extends Controller{
     }
 
     public function bookingaccept(Request $request, Appointment $Appointment){
-
-        $Appointment->status = 'conformed';
+        $Appointment->status = 'Confirmed';
         $Appointment->update();
         return response()->json(['status' => true]);
     }
-
+    public function NoShowByCustomer(Request $request, Appointment $Appointment){
+        $Appointment->consultant_command = ($request->consultant_command)?$request->consultant_command:'';
+        $Appointment->status = 'NoShowByCustomer';
+        $Appointment->pay_in = 1;
+        $Appointment->update();
+        return response()->json(['status' => true]);
+    }
+    public function bookingReject(Request $request, Appointment $Appointment){
+        $Appointment->consultant_command = ($request->consultant_command)?$request->consultant_command:'';
+        $Appointment->status = 'Reject';
+        $Appointment->update();
+        return response()->json(['status' => true]);
+    }
     public function bookingcancel(Request $request, Appointment $Appointment){
         $Booking = unserialize(bzdecompress(utf8_decode($Appointment->rawdata)));
         date_default_timezone_set($Booking->consultantTimeZone);
