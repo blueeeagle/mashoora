@@ -3,6 +3,7 @@
 const Booking = function(){
     var searchTable = `pending`;
     var table;
+    var table_log;
     var rendering;
     var selecterDiv;
     var bulkaction = [];
@@ -181,6 +182,9 @@ const Booking = function(){
                 if(data.status){
                     console.log(data)
                     render_modal(data.App_data);
+                    table_log.clear();
+                    table_log.rows.add(data.App_log.original.data);
+                    table_log.draw();
                 }else{
                     var Ptag = "";
                     for(var error in data.errors) { Ptag += data.errors[error]+', '; };
@@ -199,7 +203,19 @@ const Booking = function(){
             // modal = new bootstrap.Modal(modalEl);
 
             initfun()
-
+            table_log = $("#App_log").DataTable({
+                "scrollY": "500px",
+                "scrollCollapse": true,
+                "paging": false,
+                "dom": "<'table-responsive'tr>",
+                columns: [
+                    { data: 'appointment_id'},
+                    { data: 'action_by'},
+                    { data: 'action'},
+                    { data: 'description'},
+                    { data: 'created_at'},
+                ],
+            });
             table = $("#kt_customers_table").DataTable({
                 initComplete: function(settings, json) {
 
@@ -247,6 +263,7 @@ const Booking = function(){
                     {
                         targets: 0,
                         data: null,
+                        width : 50,
                         orderable: false,
                         render: function (data, type, row) {
                             return `ID : BK-${data}<br>Type : <span style="text-transform:capitalize;">${row.appointment_type}</span>`
@@ -291,12 +308,12 @@ const Booking = function(){
                             if(data == 'Pending') success = 'primary'
                             if(data == 'NoShowByCustomer' || data == 'NoShowByConsultant'){ 
                                 success = 'info' 
-                                return `<a href="#" class="btn btn-sm btn-light-${success} fw-bolder ms-2 fs-8 py-1 px-3">${(data.NoShowByCustomer)?'No Show By Customer':'No Show By Consultant'}</a>`
+                                return `<a href="#" class="btn btn-sm btn-light-${success} fw-bolder ms-2 fs-8 py-1 px-3">${(data == 'NoShowByCustomer')?'No Show By Customer':'No Show By Consultant'}</a>`
                             }
                             if(data == 'Cancelled'){ 
                                 success = 'danger' 
-                                if(row.cancell_custome == null && row.cancell_consultant == null ) return `<a href="#" class="btn btn-sm btn-light-${success} fw-bolder ms-2 fs-8 py-1 px-3">Cancelled</a>`
-                                return `<a href="#" class="btn btn-sm btn-light-${success} fw-bolder ms-2 fs-8 py-1 px-3">${(row.cancell_customer == null)?'Cancelled By Customer':'Cancelled By Consultant'}</a>`
+                                if(row.cancell_customer == null && row.cancell_consultant == null ) return `<a href="#" class="btn btn-sm btn-light-${success} fw-bolder ms-2 fs-8 py-1 px-3">Cancelled</a>`
+                                return `<a href="#" class="btn btn-sm btn-light-${success} fw-bolder ms-2 fs-8 py-1 px-3">${(row.cancell_customer != null)?'Cancelled By Customer':'Cancelled By Consultant'}</a>`
                             }
                             
                             return `<a href="#" class="btn btn-sm btn-light-${success} fw-bolder ms-2 fs-8 py-1 px-3">${data}</a>`
@@ -406,10 +423,18 @@ KTUtil.onDOMContentLoaded(function () {
             document.querySelector('[data-app-status]').className =  'badge badge-success fs-5'
         }
         if(`${data.status}` == "Cancelled" ){
-            document.querySelector('[data-app-status]').innerText =  `${data.status}`
+            let text = data.status;
+            if(data.cancell_customer != null || data.cancell_consultant != null ){
+                text = `${(data.cancell_customer != null)?'Cancelled By Customer':'Cancelled By Consultant'}`;
+            } 
+            document.querySelector('[data-app-status]').innerText =  `${text}`
             document.querySelector('[data-app-status]').className =  'badge badge-danger fs-5'
         }
-
+        
+        if(data.status == 'NoShowByCustomer' || data.status == 'NoShowByConsultant'){ 
+            document.querySelector('[data-app-status]').innerText =  `${(data.status == 'NoShowByCustomer')?'No Show By Customer':'No Show By Consultant'}`
+            document.querySelector('[data-app-status]').className =  'badge badge-info fs-5'
+        }
        
         //     console.log('conf');
         //     document.querySelector('[data-status-update]').value='Action';

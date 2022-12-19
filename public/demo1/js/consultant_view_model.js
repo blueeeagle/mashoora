@@ -38,6 +38,7 @@ var personal_detail_update = function () {
         document.querySelectorAll('[data-update-city_name]').forEach(e => { e.innerText = data.consultant.city.city_name })
         document.querySelectorAll('[data-update-zipcode]').forEach(e => { e.innerText = data.consultant.zipcode })
         document.querySelectorAll('[data-update-firm]').forEach(e => { e.innerText = (data.consultant.firm)?data.consultant.firm.comapany_name : '' })
+        
         if(data.consultant.firm){ document.getElementById('firmorindugial').style.display = ''
         }else{ document.getElementById('firmorindugial').style.display = 'none' }
         
@@ -217,6 +218,7 @@ var personal_detail_update = function () {
     }
 
     return {
+        
         // Public functions
         init: function () {
             // Elements

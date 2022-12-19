@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Consultantcategory;
 use App\Models\Consultant;
 use App\Models\Firm;
+use App\Models\OfferPurchase;
 class Offer extends Model
 {
     use HasFactory;
@@ -15,7 +16,9 @@ class Offer extends Model
     protected $fillable = ['firm_consultant','firm_id','consultant_id','offer_title','image',
                             'description','amount','from_date','to_date','category_id','has_validity',
                             'sub_category_id','status'];
-
+    
+    protected $appends = ['cat','sub','offerpurchasecount'];
+    
     public function consultant(){
         return $this->belongsTo(Consultant::class);
     }
@@ -33,5 +36,15 @@ class Offer extends Model
     }
     public function subcat(){
         return Category::whereIn('id',\explode(',',$this->categorie_id))->where('type',1)->where('status',1)->get();
-    }                    
+    } 
+    public function getCatAttribute(){
+        return Category::whereIn('id',\explode(',',$this->category_id))->where('type',0)->first();
+    }
+    public function getSubAttribute(){
+        return Category::whereIn('id',\explode(',',$this->category_id))->where('type',1)->get();
+    }
+    public function getOfferpurchasecountAttribute(){
+        return OfferPurchase::where('offer_id',$this->id)->count();
+    }
+    
 }

@@ -11,7 +11,7 @@ use App\Models\State;
 use App\Models\City;
 use App\Models\Currenct;
 use App\Models\OfferPurchase;
-
+use App\Models\Appointment;
 class Customer extends Authenticatable
 {
     use HasFactory;
@@ -22,6 +22,7 @@ class Customer extends Authenticatable
     public function country(){
         return $this->belongsTo(Country::class);
    }
+   
     public function state(){
         return $this->belongsTo(State::class);
     }
@@ -32,7 +33,7 @@ class Customer extends Authenticatable
     return $this->belongsTo(Country::class,'country_code','country_code');
     }
     public function OfferPurchase(){
-        return $this->hasMany(OfferPurchase::class);
+        return $this->hasMany(OfferPurchase::class)->where('pay_in','!=','3');
     }
     // 
     public function wallet(){

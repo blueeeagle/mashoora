@@ -54,7 +54,21 @@ var KTSigninGeneral = function () {
             // Validate form
             validator.validate().then(function (status) {
                 if (status === 'Valid') {
-                    // Show loading indication
+
+                    fetch(updateURL,{
+                        method: 'POST', // or 'PUT'
+                        body: new FormData(form)
+                    })
+                    .then(response => response.json())
+                    .then((response) => {
+
+                        if(response.is_two_way==2)
+                        {
+                            $('#phone-number').val(response.phone);
+                            $('#exampleModal').modal('show');
+
+                        }else{
+                            // Show loading indication
                     submitButton.setAttribute('data-kt-indicator', 'on');
 
                     // Disable button to avoid multiple click
@@ -109,6 +123,13 @@ var KTSigninGeneral = function () {
                             // Enable button
                             submitButton.disabled = false;
                         });
+                        }
+
+
+
+                    })
+
+                    
                 } else {
                     // Show error popup. For more info check the plugin's official documentation: https://sweetalert2.github.io/
                     Swal.fire({
@@ -130,7 +151,7 @@ var KTSigninGeneral = function () {
         // Initialization
         init: function () {
             form = document.querySelector('#kt_sign_in_form');
-            submitButton = document.querySelector('#kt_sign_in_submit');
+            submitButton = document.querySelector('#kt_sign_in_submit');            
 
             handleForm();
         }

@@ -90,14 +90,14 @@
        
         <h4>Payout Settings</h4>
         <div class="mb-10 fv-row">
-            <label class="required form-label fs-6 mb-2" >Flat or Percentage</label>
-            <div class="form-check form-check-custom form-check-solid mb-5">
+            <label class="required form-label fs-6 mb-2 d-none" >Flat or Percentage</label>
+            <div class="form-check form-check-custom form-check-solid mb-5 d-none">
                 <input class="form-check-input me-3" name="com_pay_type" onchange="CourencyFlatconveter(document.querySelector('input[name=com_pay_type]:checked').value)" type="radio" value="0" checked id="com_pay_flat" />
                 <label class="form-check-label" for="com_pay_flat">
                     <div class="fw-bolder text-gray-800">Flat</div>
                 </label>
             </div>
-            <div class="form-check form-check-custom form-check-solid mb-5">
+            <div class="form-check form-check-custom form-check-solid mb-5 d-none">
                 <input class="form-check-input me-3" name="com_pay_type" onchange="CourencyFlatconveter(document.querySelector('input[name=com_pay_type]:checked').value)" type="radio" value="1" id="com_pay_per" />
                 <label class="form-check-label" for="com_pay_per">
                     <div class="fw-bolder text-gray-800">Percentage</div>

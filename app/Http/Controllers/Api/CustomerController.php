@@ -23,6 +23,7 @@ use App\Models\Card;
 use App\Models\Country;
 use App\Models\Insurance;
 use App\Models\Category;
+use App\Models\Adminpayment;
 
 use DataTables;
 use Validator;
@@ -87,6 +88,10 @@ class Booking {
     }
     
     function addcoomission($amount){
+       
+        return ($this->customercurrnecy)?(float)($amount/$this->consultantcurrency->price)*(float)$this->customercurrnecy->price :($amount/$this->consultantcurrency->price)*$this->gustcountry->price;   
+        
+        
         if($this->consultant->com_con_type == 0){
             $com_con_amount = ($amount + $this->consultant->com_con_amount ?? 0)/$this->consultantcurrency->price;
             return ($this->customercurrnecy)?(float)$com_con_amount*(float)$this->customercurrnecy->price :(float)$this->gustcountry->price*(float)$com_con_amount;   
@@ -168,9 +173,10 @@ class CustomerController extends Controller
         return response()->json('redireact');
     }
     public function getprofile(){
-        $customer = Customer::where('id',Auth::guard('customer')->user()->id)->first();
+        $customer = Customer::with('country','state','city','reviews.consultant')->where('id',Auth::guard('customer')->user()->id)->first();
         return response()->json($customer);
     }
+    
     public function VerifyOtp(Request $request){
         $this->getsession();
         $phone_no = $request->session()->get('phone_no',null);
@@ -251,8 +257,10 @@ class CustomerController extends Controller
     }
 
     public function consultantfirm(Firm $firm){
+        
         $consultant = $firm->consultant;
-        return DataTables::of($consultant)->addIndexColumn()->toJson();
+        
+        return response()->json(['consultant'=>DataTables::of($consultant)->addIndexColumn()->toJson(),'videos'=>$firm->videos]);
     }
 
     public function consultantcatsub(Request $request,$id,$sub = null){
@@ -261,7 +269,7 @@ class CustomerController extends Controller
         $this->Booking->cat_id['cat'] = Category::where('id',$id)->first();
         if($sub) $this->Booking->cat_id['sub'] = Category::where('id',$sub)->first(); ;
         $type = $request->type;
-        $datas = Consultant::with('country')->with('state')->with('Review')->with('city')->with('firm')->where('status',1)->where('approval',2)
+        $datas = Consultant::with('country')->with('state')->with('city')->with('review.customer')->with('firm')->where('status',1)->where('approval',2)
         
         ->when($request->search,function($query,$search){ return $query->where('name','like',"%{$search}%"); })
         ->when($id,function($query,$search){ return $query->whereRaw("FIND_IN_SET('$search',categorie_id)"); })
@@ -315,7 +323,8 @@ class CustomerController extends Controller
                 foreach($value->review as $review){
                     $star += (float)$review->rating;
                 }
-                $value->{'Total_Review'} = ['count'=>count($value->review),'star'=>$star/count($value->review)];
+                $star = ($star == 0)?$star:($star/count($value->review));
+                $value->{'Total_Review'} = ['count'=>count($value->review),'star'=>$star];
             }else{
                 $value->{'Total_Review'} = ['count'=>0,'star'=>0.0];
             }
@@ -337,7 +346,7 @@ class CustomerController extends Controller
     public function consultant(Request $request){
 
         $type = $request->type;
-        $datas = Consultant::with('country')->with('state')->with('city')->with('Review')->with('firm')->withCount('Review')->where('status',1)->where('approval',2)
+        $datas = Consultant::with('country')->with('state')->with('city')->with('firm')->withCount('Review')->where('status',1)->where('approval',2)
         ->when($request->search,function($query,$search){ return $query->where('name','like',"%{$search}%"); })
         ->when($request->gender,function($query,$search){ return $query->where('gender',$search); })
         ->when($request->type,function($query,$search){
@@ -365,19 +374,34 @@ class CustomerController extends Controller
     public function consultantdetails(Request $request, Consultant $consultant){
         $this->getsession();
         
-        $consultant = Consultant::with('country')->with('state')->with('city')->with('firm')->with('Review.customer')->where('id',$consultant->id)->first();
+        $consultant = Consultant::with('country')->with('state')->with('city')->with('firm')->with('review.customer')->where('id',$consultant->id)->first();
         $consultant->{'Insurance'} = $consultant->insurance;
         $this->Booking->newconsultant($consultant);
-        
+        $this->Booking->consultant->Schedule;
         $date = today()->format('Y-m-d');
         $offer = Offer::where('consultant_id',$this->Booking->consultant->id)->where('from_date','<=',$date)->where('to_date','>=',$date)->where('status',1)->limit(5)->get();
         $discount = Discount::where('consultant_id',$this->Booking->consultant->id)->where('from_date','<=',$date)->where('to_date','>=',$date)->where('status',1)->limit(5)->get();
         $this->Booking->consultant->{'offer'} = $offer;
         $this->Booking->consultant->{'discount'} = $discount;
         
-        $this->setsession();
+        $consultant = clone $this->Booking->consultant;
+        
+        $consultant->review;
+        $star = 0.0;
+        if($consultant->review){
+        foreach($consultant->review as $review){
+            $review->customer;
+            $star += (float)$review->rating;
+        }
+        $star = ($star == 0)?$star:($star/count($consultant->review));
+        $consultant->{'Total_Review'} = ['count'=>count($consultant->review),'star'=>$star];
+        }else{
+            $consultant->{'Total_Review'} = ['count'=>0,'star'=>0.0];
+        }
+        
         $this->Booking->consultant->Schedule;
-        return $this->Booking->consultant;
+        $this->setsession();
+        return $consultant;
     }
     public function consultantinsurance(Request $request){
         $this->getsession();
@@ -386,7 +410,7 @@ class CustomerController extends Controller
             $consultant_type = \explode(',',$data->consultant_type);
             if(in_array($typeantemp[$this->Booking->type],$consultant_type)) return $data;
         });
-        return $insurance;
+        return response()->json($insurance);
     }
 
     public function schedule(Request $request,$type){
@@ -416,12 +440,10 @@ class CustomerController extends Controller
         $date = today()->format('Y-m-d');
         $offer = Auth::guard('customer')->user()->OfferPurchase;
       
-        $offer = $offer->filter(function($data) use ($Booking){
-            $offer = unserialize(bzdecompress(utf8_decode($data->rawoffer)));
-            $data->{'offer'} =$offer;
-            unset($data->rawoffer);
-            return $data;
-        });
+        // $offer = $offer->filter(function($data) use ($Booking){
+        //     unset($data->rawoffer);
+        //     return $data;
+        // });
         $this->setsession();
         return response()->json($offer);
     }
@@ -443,40 +465,71 @@ class CustomerController extends Controller
     public function Discount(){
         $this->getsession();
         date_default_timezone_set($this->Booking->customerTimeZone);
+        
         $date = today()->format('Y-m-d');
         $Discount = Discount::where('consultant_id',$this->Booking->consultant->id)->where('from_date','<=',$date)->where('to_date','>=',$date)->where($this->Booking->type,1)->where('status',1)->get();
+        $Booking = $this->Booking;
+        
+        $Discount->map(function($data) use ($Booking) {
+            if($data->flat_percentage == 0){
+                $DiscountAmount = ($Booking->consultant->{$Booking->type.'_amount'} / 100) * $data->amount;
+                $DiscountAmount = ($DiscountAmount/$Booking->consultant->country->currency->price)*(float)$Booking->customercurrnecy->price;
+                
+                $data->{'amount_converted'} = ($Booking->customercurrnecy)?(float)$DiscountAmount:(float)$data->amount;
+                $data->{'customer_currency'} = $this->Booking->customercurrnecy;
+            }else{
+                $DiscountAmount = $Booking->consultant->{$Booking->type.'_amount'} - $data->amount;
+                $data->{'amount_converted'} = ($this->Booking->customercurrnecy)?(float)($DiscountAmount/$Booking->consultant->country->currency->price)*$Booking->customercurrnecy->price:(float)$data->amount;
+                $data->{'customer_currency'} = $this->Booking->customercurrnecy;
+            }
+        });
+        
+        
         return response()->json($Discount);
 
     }
     public function ApplyDiscount(Request $request){
         $this->getsession();
+        
+        if($this->Booking->Discount){
+            return response()->json(['status'=>false,'msg'=>'Remove Previous Discount']);
+        }
+        
         $date = today()->format('Y-m-d');
         $Discount = Discount::where('promo_code',$request->promocode)->where('to_date','>=',$date)->where('from_date','<=',$date)->where($this->Booking->type,1)->where('consultant_id',$this->Booking->consultant->id)->where('status',1)->first();
-        // $Discount = Discount::where('promo_code',$request->promocode)->where($this->Booking->type,1)->where('consultant_id',$this->Booking->consultant->id)->where('status',1)->first();
+        
         if(empty($Discount)) return response()->json(['status'=>false,'msg'=>'In valide Coupon code']);
         
         $Discountuser = Discountuser::where('discount_id',$Discount->id)->count();
         if($Discount->no_of_coupons > $Discountuser || $Discount->no_of_coupons == 0){
 
             if($Discount->flat_percentage == 0){
-                $this->Booking->DiscountAmount = ($this->Booking->consultant->{$this->Booking->type.'_amount'} / 100) * $Discount->amount;
-                $Discount->{'amount_converted'} = ($this->Booking->customercurrnecy)?(float)$this->Booking->DiscountAmount*(float)$this->Booking->customercurrnecy->price :(float)$this->Booking->DiscountAmount;
+                $DiscountAmount = ($this->Booking->consultant->{$this->Booking->type.'_amount'} / 100) * $Discount->amount;
+                $Discount->{'amount_converted'} = ($this->Booking->customercurrnecy)?(float)($DiscountAmount/$this->Booking->consultantcurrency->price)*(float)$this->Booking->customercurrnecy->price :(float)$this->Booking->DiscountAmount;
                 $Discount->{'customer_currency'} = $this->Booking->customercurrnecy;
             }else{
-                $Discount->{'amount_converted'} = ($this->Booking->customercurrnecy)?(float)$Discount->amount*(float)$this->Booking->customercurrnecy->price :(float)$Discount->amount;
+                $DiscountAmount = ($this->Booking->consultant->{$this->Booking->type.'_amount'} / 100) - $Discount->amount;
+                $Discount->{'amount_converted'} = ($this->Booking->customercurrnecy)?(float)($DiscountAmount/$this->Booking->consultantcurrency->price)*(float)$this->Booking->customercurrnecy->price :(float)$Discount->amount;
                 $Discount->{'customer_currency'} = $this->Booking->customercurrnecy;
-                $this->Booking->DiscountAmount = $Discount->amount_converted;
             }
+            $this->Booking->DiscountAmount = $Discount->amount_converted;
             $this->Booking->Discount = $Discount;
             $this->Booking->amount = $this->Booking->amount - $this->Booking->DiscountAmount;
+            
             $this->setsession();
-            return response()->json(['status'=>true,'msg'=>'Valide','amount'=>$this->Booking->amount]);
+            return response()->json(['status'=>true,'msg'=>'Valide','amount'=>$this->Booking->amount + $this->Booking->DiscountAmount,'Discounted_Amount'=>$this->Booking->DiscountAmount]);
         }else{
             $this->setsession();
             return response()->json(['status'=>false,'msg'=>'Coupon Expired','amount'=>$this->Booking->amount]);
         }
     }
-   
+    public function removediscount(){
+        $this->getsession();
+        $this->Booking->Discount = null;
+        $this->Booking->amount = $this->Booking->amount + $this->Booking->DiscountAmount;
+        $this->setsession();
+        return response()->json([],200);
+    }
     public function appointment(Request $request){
         
         $this->getsession();
@@ -484,7 +537,7 @@ class CustomerController extends Controller
         if($Wallet->balance < $this->Booking->amount && $request->insurance_id == ""){
             return response()->json(['Appointment'=>false,'msg'=>'Insufficient Balance'], 200);
         }
-
+        
         $Appointment = new Appointment;
         $Discountuser = new Discountuser;
 
@@ -516,15 +569,15 @@ class CustomerController extends Controller
         $Appointment->policyid = $request->policyid;
         $Appointment->rawdata = utf8_encode(bzcompress(serialize($this->Booking), 9));
         
-        if($request->insurance_id != ""){ 
+        if(!empty($request->insurance_id)){ 
             $Appointment->status = 'Pending'; 
-            $Appointment->pay_in = 2; 
-            $Appointment->pay_out = 2; 
+            $Appointment->pay_in = 4; 
+            $Appointment->pay_out = 4; 
         }
         $Appointment->save();
         if($request->insurance_id == ""){ $payment = $this->addsubammount($this->Booking->amount,'sub','Booking',$Appointment->id); }
         $Discountuser->appointment_id = $Appointment->id;
-        if(isset($this->Booking->Discount)) $Discountuser->save();
+        if(isset($this->Booking->Discount)){ $Discountuser->save(); }
 
         $this->setsession();
         return response()->json(['Appointment'=>true], 200);
@@ -569,6 +622,7 @@ class CustomerController extends Controller
         $myObj->{'status'} = $Appointment->status;
         $myObj->{'Amount'} = $Booking->amount;
         $myObj->{'Consultant'} = $Appointment->Consultant;
+        $myObj->{'Agora'} = ($Appointment->agora_token)?json_decode($Appointment->agora_token):NULL;
         $myObj->{'countdown'} = $countdown;
         $myObj->{'type'} = $Booking->type;
         $myObj->{'category'} = isset($Booking->cat_id)?$Booking->cat_id:[];
@@ -583,13 +637,13 @@ class CustomerController extends Controller
         }
         
         if($countdown > $this->strtotimeconvert($Companysetting->reschedule_cut_off_time))
-            $myObj->{'Rescheule'} = ['status'=>true,'MSG'=>'Are You sure want to reschedule your appointment to another data & time'];
+            $myObj->{'Rescheule'} = ['status'=>true,'MSG'=>"Sorry your appointment reschedule is not accept Due to $Companysetting->reschedule_cut_off_time hours policy"];
         else
-            $myObj->{'Rescheule'} = ['status'=>false,'MSG'=>"Sorry your appointment reschedule is not accept Due to $Companysetting->reschedule_cut_off_time hours policy"];
+            $myObj->{'Rescheule'} = ['status'=>false,'MSG'=>"Are You sure want to reschedule your appointment to another data & time ?"];
         if($countdown > $this->strtotimeconvert($Companysetting->discard_cut_off_time))
-            $myObj->{'cancel'} = ['status'=>true,'MSG'=>'Are You sure want to cancel your appointment? if yes amount Will be refunded to your wallet'];
+            $myObj->{'cancel'} = ['status'=>true,'MSG'=>'Are You sure want to cancel your appointment? Refund is not appliable due to $Companysetting->discard_cut_off_time hours policy'];
         else
-            $myObj->{'cancel'} = ['status'=>false,'MSG'=>"Are You sure want to cancel your appointment? Refund is not appliable due to $Companysetting->discard_cut_off_time hours policy"];
+            $myObj->{'cancel'} = ['status'=>false,'MSG'=>"Are You sure want to cancel your appointment? if yes amount Will be refunded to your wallet"];
         return response()->json($myObj);
     }
 
@@ -602,9 +656,11 @@ class CustomerController extends Controller
         $Time = strtotime($Appointment->appointment_date) - strtotime('now');
 
         if($Time <= $this->strtotimeconvert($Companysetting->discard_cut_off_time)){
+            $Amount = ($this->Booking->amount/$this->Booking->customercurrnecy->price)*$this->Booking->consultantcurrency->price;
+            if(empty($Appointment->insurance_id)) $Appointment->pay_in = 1;
             $msg = "Your appointment have be cancelled sucessfully. Refund is not appliable due to $Companysetting->discard_cut_off_time hours policy";
         }else{
-            $payment = $this->addsubammount($Booking->amount,'add','Refund',$Appointment->id);
+            if(empty($Appointment->insurance_id))  $payment = $this->addsubammount($Booking->amount,'add','Refund',$Appointment->id);
             $msg = 'Your appointment have be cancelled sucessfully. Amount refunded sucessfully to your wallet';
         }
         $Booking->cancellcustomer = ['status'=> true,'msg'=>$msg,'now'=> date("Y-m-d H:i")];
@@ -658,21 +714,15 @@ class CustomerController extends Controller
         $Booking = $this->Booking;
         
         $date = today()->format('Y-m-d');
-        $Offer = Offer::with('consultant')->when($request->cat,function($query,$search){ return $query->where('category_id',$search); })
+        $Offer = Offer::with('consultant')
+        ->when($request->cat,function($query,$search){ return $query->where('category_id',$search); })
         ->when($request->sub,function($query,$search){ return $query->where('sub_category_id',$search); })
-        ->where('has_validity','!=',1)->orWhere('has_validity',1)->where('from_date','<',$date)->where('to_date','>',$date)
+        ->where('has_validity','!=',1)->orWhere('has_validity',1)->where('from_date','<=',$date)->where('to_date','>=',$date)
         ->get();
         
         $banner = (new Collection($Offer))->map(function($data, $key) use ($Booking) {
-            $amount = $data->consultant->country->currency->price ?? 1;
-            if($data->consultant->com_off_type == 0){
-                $amount = ($data->amount + $data->consultant->com_off_amount)/$amount;
-            }else{
-                $per = $data->amount/100;
-                $amount = (($data->amount*$data->consultant->com_off_amount)+$data->amount)/$amount;
-            }
-            
-            $data->{'amount_converted'} = ($Booking->customercurrnecy)?(float)($amount)*(float)$Booking->customercurrnecy->price:(float)$data->amount;
+
+            $data->{'amount_converted'} = ($Booking->customercurrnecy)?(float)($data->amount/$data->consultant->country->currency->price)*(float)$Booking->customercurrnecy->price:(float)$data->amount;
             $data->{'customer_currency'} = $Booking->customercurrnecy;
             return $data;
         });
@@ -683,35 +733,31 @@ class CustomerController extends Controller
     public function offerdetail(Offer $offer){
         $this->getsession();
         
-        $amount = $offer->consultant->country->currency->price ?? 1;
-            if($offer->consultant->com_off_type == 0){
-                $amount = ($offer->amount + $offer->consultant->com_off_amount)/$amount;
-            }else{
-                $per = $offer->amount/100;
-                $amount = (($offer->amount*$offer->consultant->com_off_amount)+$offer->amount)/$amount;
-            }
-            
-        $offer->{'amount_converted'} = number_format(($this->Booking->customercurrnecy)?(float)($amount)*(float)$this->Booking->customercurrnecy->price:(float)$data->amount,2,'.','');
+        $offer->{'amount_converted'} = number_format(($this->Booking->customercurrnecy)?(float)($offer->amount/$offer->consultant->country->currency->price)*(float)$this->Booking->customercurrnecy->price:(float)$offer->amount,2,'.','');
         $offer->{'customer_currency'} = $this->Booking->customercurrnecy;
         return response()->json($offer);
     }
 
     public function offerpurchased(Offer $offer){
         $this->getsession();
-        $amount = $offer->consultant->country->currency->price ?? 1;
-            if($offer->consultant->com_off_type == 0){
-                $amount = ($offer->amount + $offer->consultant->com_off_amount)/$amount;
-            }else{
-                $per = $offer->amount/100;
-                $amount = (($offer->amount*$offer->consultant->com_off_amount)+$offer->amount)/$amount;
-            }
-        $offer->{'amount_converted'} = number_format(($this->Booking->customercurrnecy)?(float)($amount)*(float)$this->Booking->customercurrnecy->price:(float)$data->amount,2,'.','');
+        
+        $offer->{'amount_converted'} = number_format(($this->Booking->customercurrnecy)?(float)($offer->amount/$offer->consultant->country->currency->price)*(float)$this->Booking->customercurrnecy->price:(float)$offer->amount,2,'.','');
         $offer->{'customer_currency'} = $this->Booking->customercurrnecy;
+        
+        $offer->{'consultant_currency'} = $offer->consultant->country->currency;
+        $offer->{'consultant'} = $offer->consultant;
+        $offer->{'customer'} = Auth::guard('customer')->user();
+        $Companysetting = Companysetting::with('country')->where('id',1)->first();
+        $offer->{'admincurrnecy'} = $Companysetting->country->currency;
+        $Wallet = Wallet::where('customer_id',Auth::guard('customer')->user()->id)->first();
+        if($Wallet->balance < $offer->amount_converted) return response()->json(['status'=>false,'msg'=>'Insufficient Balance']);
+        
         $payment = $this->addsubammount($offer->amount_converted,'sub','Offer Purchased');
 
         $Offerpurchase = new Offerpurchase;
         $Offerpurchase->rawoffer = utf8_encode(bzcompress(serialize($offer), 9));
         $Offerpurchase->customer_id = Auth::guard('customer')->user()->id;
+        $Offerpurchase->consultant_id = $offer->consultant_id;
         $Offerpurchase->offer_id = $offer->id;
         $Offerpurchase->payment_id = \rand(1999,99999);
         $Offerpurchase->purchase_date = date('Y-m-d H:i:s');
@@ -728,11 +774,27 @@ class CustomerController extends Controller
             $data->{'tx-date'} = date('d M Y',strtotime($data->updated_at));
             return $data;
         });
+        $Payment = DataTables::of($Payment)->toJson();
         return response()->json(['wallet'=>$Wallet,'payment'=>$Payment]);
     }
 
     public function addwallet(Request $request){
         $payment = $this->addsubammount($request->amount,'add','Added to Wallet');
+        
+        $Companysetting = Companysetting::with('country')->where('id',1)->first();
+        $Adminpayment = new Adminpayment;
+        $Adminpayment->type = 'add';
+        $Adminpayment->base_amount = $request->amount;
+        $Adminpayment->base_amount_currenct = json_encode(Auth::guard('customer')->user()->dialingcountry->currency);
+        $Adminpayment->amount_currency = json_encode($Companysetting->country->currency);
+        $Adminpayment->amount = $request->amount/ Auth::guard('customer')->user()->dialingcountry->currency->price;
+        $Adminpayment->customer_id = Auth::guard('customer')->user()->id;
+        $Adminpayment->action = 'Customer Wallet Added';
+        $Adminpayment->save();
+        $Wallet = Wallet::where('id',0)->first();
+        $Wallet->balance = $Wallet->balance + $Adminpayment->amount;
+        $Wallet->update();
+        
         return response()->json(['msg'=>'updated']);
     }
 
@@ -861,6 +923,238 @@ class CustomerController extends Controller
         $Wallet->update();
 
         return $Payment;
+    }
+    
+    //7 - Customer Customer Joined Appointment
+    public function customer_join_appointment($id)
+    {
+        $Appointment = Appointment::with('consultant','customer')->where('id',$id)->first();
+        
+        $Appointment->Consultant;
+        $Appointment->Review;
+        $Booking = unserialize(bzdecompress(utf8_decode($Appointment->rawdata)));
+        $date = date_create($Appointment->appointment_date);
+        
+        $countdown = strtotime($Appointment->appointment_date) - strtotime('now');
+
+        $template1=NotificationTemplate::where('type','=',50)->first();
+        $template2=NotificationTemplate::where('type','=',53)->first();
+        $template3=NotificationTemplate::where('type','=',56)->first();        
+
+        $data=array($Appointment->customer->name,
+        "BK-$Appointment->id",
+        $Appointment->consultant->name,
+        $Booking->type,
+        ($Booking->amount/$Booking->customercurrnecy->price)*$Booking->consultantcurrency->price,
+        date_format($date,"M d,Y,l"),
+        date_format($date,"h:i a")." - ". date("h:i a",strtotime(date_format($date,"Y-m-d H:i")) + $Booking->consultant->preferre_slot*60),
+        $Appointment->slot,
+        $Appointment->created_at,
+        $Appointment->status
+    );
+        if($template1)
+        {
+            helperController::email($data,50);
+        }
+        if($template2)
+        {
+            helperController::email($data,53);
+        }
+        if($template3)
+        {
+            helperController::email($data,56);
+        }
+    }
+
+
+    //10 - Customer Customer Joined Appointment
+    public function customer_rate_review_appointment($id)
+    {
+        $Appointment = Appointment::with('consultant','customer','Review')->where('id',$id)->first();
+        
+        $Appointment->Consultant;
+        $Appointment->Review;
+        $Booking = unserialize(bzdecompress(utf8_decode($Appointment->rawdata)));
+        $date = date_create($Appointment->appointment_date);        
+        $countdown = strtotime($Appointment->appointment_date) - strtotime('now');
+
+        $template1=NotificationTemplate::where('type','=',74)->first();
+        $template2=NotificationTemplate::where('type','=',77)->first();
+        $template3=NotificationTemplate::where('type','=',80)->first();        
+
+        $data=array($Appointment->customer->name,
+        "BK-$Appointment->id",
+        $Appointment->consultant->name,
+        $Booking->type,
+        ($Booking->amount/$Booking->customercurrnecy->price)*$Booking->consultantcurrency->price,
+        date_format($date,"M d,Y,l"),
+        date_format($date,"h:i a")." - ". date("h:i a",strtotime(date_format($date,"Y-m-d H:i")) + $Booking->consultant->preferre_slot*60),
+        $Appointment->slot,
+        $Appointment->created_at,
+        $Appointment->status,
+        $Appointment->Review->comments,
+        $Appointment->Review->rating,
+
+    );
+        if($template1)
+        {
+            helperController::email($data,74);
+        }
+        if($template2)
+        {
+            helperController::email($data,77);
+        }
+        if($template3)
+        {
+            helperController::email($data,80);
+        }
+    }
+
+    // Appoinmet Cancel (before)
+    public function customer_before_appointment($id)
+    {
+        $Appointment = Appointment::with('consultant','customer','Review')->where('id',$id)->first();
+        
+        $Appointment->Consultant;
+        $Appointment->Review;
+        $Booking = unserialize(bzdecompress(utf8_decode($Appointment->rawdata)));
+        $date = date_create($Appointment->appointment_date);        
+        $countdown = strtotime($Appointment->appointment_date) - strtotime('now');
+
+        $Companysetting = Companysetting::with('country')->where('id',1)->first();
+
+        $template1=NotificationTemplate::where('type','=',114)->first();
+        $template2=NotificationTemplate::where('type','=',117)->first();
+        $template3=NotificationTemplate::where('type','=',120)->first();        
+
+        $data=array($Appointment->customer->name,
+        "BK-$Appointment->id",
+        $Appointment->consultant->name,
+        $Booking->type,
+        ($Booking->amount/$Booking->customercurrnecy->price)*$Booking->consultantcurrency->price,
+        date_format($date,"M d,Y,l"),
+        date_format($date,"h:i a")." - ". date("h:i a",strtotime(date_format($date,"Y-m-d H:i")) + $Booking->consultant->preferre_slot*60),
+        $Appointment->slot,
+        $Appointment->created_at,
+        $Appointment->status,
+        $Appointment->Review->comments,
+        $Appointment->Review->rating
+
+    );
+
+        if(!$countdown > $this->strtotimeconvert($Companysetting->discard_cut_off_time))
+        {
+            if($template1)
+            {
+                helperController::email($data,114);
+            }
+            if($template2)
+            {
+                helperController::email($data,117);
+            }
+            if($template3)
+            {
+                helperController::email($data,120);
+            }
+        }      
+    }
+
+
+    // Appoinmet Cancel (after)
+    public function customer_after_appointment($id)
+    {
+        $Appointment = Appointment::with('consultant','customer','Review')->where('id',$id)->first();
+        
+        $Appointment->Consultant;
+        $Appointment->Review;
+        $Booking = unserialize(bzdecompress(utf8_decode($Appointment->rawdata)));
+        $date = date_create($Appointment->appointment_date);        
+        $countdown = strtotime($Appointment->appointment_date) - strtotime('now');
+
+        $Companysetting = Companysetting::with('country')->where('id',1)->first();
+
+        $template1=NotificationTemplate::where('type','=',122)->first();
+        $template2=NotificationTemplate::where('type','=',125)->first();
+        $template3=NotificationTemplate::where('type','=',128)->first();        
+
+        $data=array($Appointment->customer->name,
+        "BK-$Appointment->id",
+        $Appointment->consultant->name,
+        $Booking->type,
+        ($Booking->amount/$Booking->customercurrnecy->price)*$Booking->consultantcurrency->price,
+        date_format($date,"M d,Y,l"),
+        date_format($date,"h:i a")." - ". date("h:i a",strtotime(date_format($date,"Y-m-d H:i")) + $Booking->consultant->preferre_slot*60),
+        $Appointment->slot,
+        $Appointment->created_at,
+        $Appointment->status,
+        $Appointment->Review->comments,
+        $Appointment->Review->rating
+
+    );
+
+
+        if($countdown > $this->strtotimeconvert($Companysetting->discard_cut_off_time))
+        {
+            if($template1)
+            {
+                helperController::email($data,122);
+            }
+            if($template2)
+            {
+                helperController::email($data,125);
+            }
+            if($template3)
+            {
+                helperController::email($data,128);
+            }
+        }        
+    }
+
+    //18 - Appoinmet reshedule
+    public function customer_reshedule_appointment($id)
+    {
+        $Appointment = Appointment::with('consultant','customer','Review')->where('id',$id)->first();
+        
+        $Appointment->Consultant;
+        $Appointment->Review;
+        $Booking = unserialize(bzdecompress(utf8_decode($Appointment->rawdata)));
+        $date = date_create($Appointment->appointment_date);        
+        $countdown = strtotime($Appointment->appointment_date) - strtotime('now');
+
+        $Companysetting = Companysetting::with('country')->where('id',1)->first();
+
+        $template1=NotificationTemplate::where('type','=',138)->first();
+        $template2=NotificationTemplate::where('type','=',141)->first();
+        $template3=NotificationTemplate::where('type','=',144)->first();        
+
+        $data=array($Appointment->customer->name,
+        "BK-$Appointment->id",
+        $Appointment->consultant->name,
+        $Booking->type,
+        ($Booking->amount/$Booking->customercurrnecy->price)*$Booking->consultantcurrency->price,
+        date_format($date,"M d,Y,l"),
+        date_format($date,"h:i a")." - ". date("h:i a",strtotime(date_format($date,"Y-m-d H:i")) + $Booking->consultant->preferre_slot*60),
+        $Appointment->slot,
+        $Appointment->created_at,
+        $Appointment->status,
+        $Appointment->Review->comments,
+        $Appointment->Review->rating
+
+    );
+    
+    if($template1)
+            {
+                helperController::email($data,138);
+            }
+            if($template2)
+            {
+                helperController::email($data,141);
+            }
+            if($template3)
+            {
+                helperController::email($data,144);
+            }
+    
     }
 
 }

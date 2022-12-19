@@ -10,6 +10,7 @@ use Auth;
 use Validator;
 use DataTables;
 use DB;
+use Illuminate\Support\Facades\Storage;
 
 class ConsultantApprovalController extends Controller
 {
@@ -17,9 +18,9 @@ class ConsultantApprovalController extends Controller
     public function __construct()
     {
         $this->middleware('Permissions:Consultant_Approval_View',['only'=>['index']]);
-        
+
     }
-    
+
 	public function datatables(Request $request){
         $search=[];
         $columns=$request->columns;
@@ -27,46 +28,42 @@ class ConsultantApprovalController extends Controller
             $search[] = $colum['search']['value'];
         }
 
-        $datas = Consultant::orderBy('id','desc')->get();
-        // ->when($search[1],function($query,$search){
-        //     return $query->where('countries.country_name','LIKE',"%{$search}%");
-        // })
-        //  dd($datas);
-    
+        $datas = Consultant::with('Addcountry','state','city')->where('approval',0)->orderBy('id','desc')->get();
+        if($request->searchTable == 'Approved') $datas = Consultant::with('Addcountry','state','city')->where('approval',2)->orderBy('id','desc')->get();
+        if($request->searchTable == 'Decline') $datas = Consultant::with('Addcountry','state','city')->where('approval',1)->orderBy('id','desc')->get();
+
         return DataTables::of($datas)
-        ->addIndexColumn()
-        ->editColumn('created_at', function (Consultant $datas){
-           return  $datas->created_at->format('d/m/Y');
-        })
-        ->editColumn('updated_at', function(Consultant $datas){
-            return $datas->updated_at->format('d/m/Y H:i:s');
-        })
-        ->addColumn('category', function(Consultant $datas){
-            $cat = Category::whereIn('id',explode(',',$datas->categorie_id))->get();
-            $template='';
-            for($i = 0;$i<count($cat); $i++){
-                $template .= "<span class='badge badge-success'>".$cat[$i]->name."</span>"."<br/>";       
-            }
-            return $template;
-          
-        })
-        ->editColumn('approval',function(Consultant $datas){
-            if($datas->approval == 2){
-                return $temp = "<span class='badge badge-success'>Approved</span>";
-            }
-            if($datas->approval == 3){
-                return  $temp = "<span class='badge badge-danger'>Decline</span>";
-            }
-            return 'Pending';
-        })        
-        ->addColumn('option',function($datas){
-            return ['view'=> \route('consultant.consultant.view',$datas->id)];
-        })
-        ->addColumn('select',function($datas){
-            return ['select'];
-        })
-        ->rawColumns(['category','status','approval'])
-        ->toJson(); //--- Returning Json Data To Client Side
+            ->addIndexColumn()
+            ->editColumn('picture', function(Consultant $data){
+                if(!isset($data->picture)) return "";
+                $exists = Storage::disk('public_custom')->exists($data->picture);
+                if($exists) return asset("storage/$data->picture");
+                return "";
+            })
+            ->editColumn('phone_no', function(Consultant $data){
+                return $data->country->dialing." ".$data->phone_no;
+            })
+            ->editColumn('name', function(Consultant $data){
+                return "Name : ".$data->name."<br/> Email : ".$data->email;
+            })
+            ->addColumn('step', function(Consultant $data){
+                if($data->mobile_step) return "$data->mobile_step of 10";
+                return "$data->step of 11";
+            })
+            ->addColumn('address', function (Consultant $data){
+                return html_entity_decode($data->register_address);
+            })
+            ->addColumn('commission_fee', function (Consultant $data){
+                return $data->country;
+            })
+            ->addColumn('app_status', function (Consultant $data){
+                return $data->com_off_amount != null && $data->com_con_amount != null && $data->com_pay_amount != null;
+            })
+            ->editColumn('action', function(Consultant $data){
+                return ['Delete'=> \route('consultant.consultant.destroy',$data->id),'view'=> \route('consultant.consultant.view',$data->id),'edit'=> \route('consultant.consultant.edit',$data->id)];
+            })
+            ->rawColumns(['action','status','categorie_id','address','name'])
+            ->toJson();
     }
 
 
@@ -76,15 +73,15 @@ class ConsultantApprovalController extends Controller
 
 	public function status(Request $request){
         // dd($request);
-        if($request->status == 'Decline'){
+        if($request->status == 1){
             foreach ($request->id as $key => $id) {
                 $approval = Consultant::where('id',$id)->first();
-                $approval->approval = 3;
+                $approval->approval = 1;
                 $approval->update();
             }
             return response()->json(['status'=>true,'msg'=>'Declined']);
         }
-        if($request->status == 'Approve'){
+        if($request->status == 2){
             foreach ($request->id as $key => $id) {
                 $approval = Consultant::where('id',$id)->first();
                 $approval->approval = 2;
@@ -94,5 +91,5 @@ class ConsultantApprovalController extends Controller
         }
     }
 
-    
+
 }

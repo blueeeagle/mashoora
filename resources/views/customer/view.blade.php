@@ -143,6 +143,12 @@
                     </div>
                 </div>
             </div>
+            <div class="tab-pane fade" id="kt_tab_pane_4" role="tabpanel">
+                @include('customer.view_layouts.Review')
+            </div>
+            <div class="tab-pane fade" id="kt_tab_pane_5" role="tabpanel">
+                @include('customer.view_layouts.offerpurchase')
+            </div>
         </div>
     </div>
 
@@ -318,7 +324,201 @@
             drawCallback : function( settings ) {
             }
         })
+        review_datatablr = $("#review_datatable").DataTable({
+            responsive: true,
+            buttons: [
+                    'print',
+                    'copyHtml5',
+                    'excelHtml5',
+                    'csvHtml5',
+                    'pdfHtml5',
+                ],
+            // Pagination settings
+            dom: `<'row'<'col-sm-12'tr>>
+            <'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>`,
+            // read more: https://datatables.net/examples/basic_init/dom.html
 
+            lengthMenu: [5, 10, 25, 100],
+
+            pageLength: 10,
+            searchDelay: 500,
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url : "{{route('review.datatable_customer',$customer->id)}}",
+                type: 'POST',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    columnsDef : ['id','title','updated_at','status']
+                }
+
+            },
+            columns: [
+                { data: 'DT_RowIndex'},
+                { data: 'created_at'},
+                { data: 'customer_id'},
+                { data: 'consultant_id'},
+                { data: 'appointment_id'},
+                { data: 'comments'},
+                { data: 'action'},
+            ],
+            columnDefs : [
+                {
+                        targets: 3,
+                        data: null,
+                        orderable: true,
+                        render: function (data, type, row) {
+                            if(!data) return ''
+                            data = JSON.parse(data);
+                            return `Name : ${row.consultant.name}<br>Phone No : ${row.consultant.country?.dialing} ${row.consultant.phone_no}<br>
+                            Email : ${row.consultant.email}<br>County : ${row.consultant.country?.country_name} `
+                        },
+                    },
+                    {
+                        targets: 2,
+                        data: null,
+                        orderable: true,
+                        render: function (data, type, row) {
+                            data = JSON.parse(data);
+                            return `Name : ${row.customer.name}<br>Phone No : ${row.customer.country?.dialing} ${row.customer.phone_no}<br>
+                            Email : ${row.customer.email}<br>County : ${row.customer.country?.country_name} `
+                        },
+                    },
+                    {
+                        targets: 4,
+                        data: null,
+                        orderable: true,
+                        render: function (data, type, row) {
+                            return `BK-${data}`
+                        },
+                    },
+                    {
+                        targets: 5,
+                        data: null,
+                        orderable: true,
+                        render: function (data, type, row) {
+                            return `comments : ${data}<br/>
+                                    Rating : ${row.rating}`
+                        },
+                    },
+                    {
+                        targets: -1,
+                        data: null,
+                        orderable: true,
+                        render: function (data, type, row) {
+                            return `<a href="${data.delete}"  class="deleteagain btn btn-icon btn-bg-light btn-active-color-danger btn-sm">
+                                    <i href="${data.delete}" class="las la-trash fs-2 me-2"></i></a>
+								</a>`
+                        },
+                    },
+            ],
+            drawCallback : function( settings ) { }
+        });
+        offerTable = $("#kt_customers_offer").DataTable({
+                initComplete: function(settings, json) {
+
+                },
+                responsive: true,
+                buttons: [
+                        'print',
+                        'copyHtml5',
+                        'excelHtml5',
+                        'csvHtml5',
+                        'pdfHtml5',
+                    ],
+                // Pagination settings
+                // dom: `<'row'<'col-sm-12'tr>>
+                // <'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>`,
+                // // read more: https://datatables.net/examples/basic_init/dom.html
+
+                lengthMenu: [5, 10, 25, 100],
+                bInfo : false,
+                pageLength: 10,
+                searchDelay: 500,
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url : `{{route('history.offer.datatable',['id'=>$customer->id,'type'=>'customer'])}}`,
+                    type: 'POST',
+                    data:{
+                        "_token": csrf,
+                        columnsDef : [],
+                    }
+                },
+                columns: [
+                    { data: 'DT_RowIndex' },
+                    { data: 'id'},
+                    { data: 'consultant_id'},
+                    { data: 'customer_id'},
+                    { data: 'consultant_amount' },
+                    { data: 'cus_amount' },
+                    { data: 'pay_in' },
+                ],
+                columnDefs : [
+                    {
+                        targets: 1,
+                        data: null,
+                        orderable: false,
+                        render: function (data, type, row) {
+                            return `ID : ${row.payment_id}`
+                        },
+                    },
+                    {
+                        targets: 2,
+                        data: null,
+                        orderable: false,
+                        render: function (data, type, row) {
+                            if(!data) return ''
+                            data = JSON.parse(data);
+                            return `Name : <b>${data.name}</b><br>Phone No : ${data.country?.dialing} ${data.phone_no}<br>
+                            Email : ${data.email} `
+                        },
+                    },
+                    {
+                        targets: 3,
+                        data: null,
+                        orderable: false,
+                        render: function (data, type, row) {
+                            if(!data) return ''
+                            data = JSON.parse(data);
+                            return `Name : <b>${data.name}</b><br>Phone No : ${data.country?.dialing} ${data.phone_no}<br>
+                            Email : ${data.email}`
+                        },
+                    },
+                    {
+                        targets: 4,
+                        data: null,
+                        orderable: false,
+                        render: function (data, type, row) {
+                            return `Amount : <b>${data.consultant_currenct.currencycode} ${data.consultant_amount} </b><i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="" data-bs-original-title="Consultant Fee"
+                            aria-label="Consultant Fee"></i> `
+                        },
+                    },
+                    {
+                        targets: 5,
+                        data: null,
+                        orderable: false,
+                        render: function (data, type, row) {
+                            return `Amount : <b> ${data.customer_currency.currencycode} ${data.customer_amount} </b> <i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title=""
+                            data-bs-original-title="Consultant Fee" aria-label="Consultant Fee"></i>`
+                        },
+                    },
+                    {
+                        targets: 6,
+                        data: null,
+                        orderable: false,
+                        render: function (data, type, row) {
+                            let success = 'success', status = 'Approved';
+                            if(data == 1){ success = 'primary';status = 'Pending'}
+                            else if(data == 3){ success = 'danger'; status = 'Decline' }
+                            return `<a href="#" class="btn btn-sm btn-light-${success} fw-bolder ms-2 fs-8 py-1 px-3">${status}</a>`
+                        },
+                    },
+                ],
+
+                drawCallback : function( settings ) {
+                }
+            })
     });
 </script>
 
@@ -337,9 +537,54 @@
     function padTo2Digits(num) {
         return num.toString().padStart(2, '0');
     }
+    
+    
+    $(document).on('click','.deleteagain',function(e){
+    deletedata(e)
+})
+function Switealert(Msg,status){
+        Swal.fire({
+            text: Msg,
+            icon: status,
+            buttonsStyling: false,
+            confirmButtonText: "Ok, got it!",
+            customClass: {
+                confirmButton: 'btn btn-primary'
+            }
+        });
+    }
+function deletedata(e){
+        e.preventDefault();
+        var text = 'Are you sure you want to delete ?'
+        let route = e.target.getAttribute('href')
+            Swal.fire({
+                text: text,
+                icon: "warning",
+                showCancelButton: !0,
+                buttonsStyling: !1,
+                confirmButtonText: "Yes, delete!",
+                cancelButtonText: "No, cancel",
+                customClass: {
+                    confirmButton: "btn fw-bold btn-danger",
+                    cancelButton: "btn fw-bold btn-active-light-primary"
+                }
+            }).then((function (t) {
+                if(t.value){
+                    let data = { _token: csrf }
+                    fetch(route,{
+                        method: 'post',
+                        headers: { 'Content-Type': 'application/json', },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        review_datatablr.ajax.reload(null, false);
+                        Switealert((data.status)?data.msg:'error',(data.status)?'success':'error')
+                    });
+                }
+            }))
+    }
     </script>
-
-
 
 @endsection
 </x-base-layout>

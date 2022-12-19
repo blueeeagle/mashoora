@@ -48,6 +48,27 @@ class RegisteredUserController extends Controller
             'email'      => $request->email,
             'password'   => Hash::make($request->password),
         ]);
+        
+        $user1=array('email'=>$user->email,'name'=>$user->first_name);
+        
+        $template1=NotificationTemplate::where('type','=',2)->first();
+        $template2=NotificationTemplate::where('type','=',5)->first();
+        $template3=NotificationTemplate::where('type','=',8)->first();    
+       
+        $data=array($user->first_name,$user->email,$user->phone,$user->created_at);
+
+        if($template1)
+        {
+            helperController::email($user1,$data,2);
+        }
+        if($template2)
+        {
+            helperController::email($user1,$data,5);
+        }
+        if($template3)
+        {
+            helperController::email($user1,$data,8);
+        }  
 
         event(new Registered($user));
 

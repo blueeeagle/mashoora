@@ -1,4 +1,4 @@
-<x-base-layout>  
+<x-base-layout>
     @section('styles')
     <link href="{{ URL::asset(theme()->getDemo().'/plugins/custom/jstree/jstree.bundle.css')}}" rel="stylesheet" type="text/css" />
     @endsection
@@ -51,7 +51,6 @@
                     <!--begin::Card body-->
                     <div class="card-body pt-0">
                         <form action="{{ route('user.firms.update',$firm->id) }}" method="post" id="formEdit">
-                            <input type="hidden" name="categorie_id" id="categorie_id">
                             @csrf
                             <div class="py-5">
                                 <h4>About</h4>
@@ -61,7 +60,7 @@
                                             <label class="required form-label fs-6 mb-3" >Company Name</label>
                                             <input type="text" value="{{ $firm->comapany_name }}" name="comapany_name" class="form-control  mb-4 " placeholder="Company Name" required />
                                         </div>
-                                        
+
                                         <div class="col-md-6">
                                             <label class="required form-label fs-6 mb-3" >Legal Name</label>
                                             <input type="text" value="{{ $firm->legal_name }}" name="legal_name" class="form-control  mb-4" placeholder="Legal Name" required />
@@ -75,53 +74,75 @@
                                                 <label class="form-check-label me-3" for="have_tax_Yes">
                                                     <div class="fw-bolder text-gray-800">Yes</div>
                                                 </label>
-                                            
-                                        
+
+
                                                 <input class="form-check-input me-3" name="have_tax" type="radio" value="0" {{ ($firm->have_tax == 0)?'checked':'' }} id="have_tax_no" />
                                                 <label class="form-check-label" for="have_tax_no">
                                                     <div class="fw-bolder text-gray-800">No</div>
                                                 </label>
                                             </div>
                                         </div>
-                                   
+
                                         <div class="col-md-6"  id="taxation_number_div" {{ ($firm->have_tax != 1)?'hidden':'' }}>
                                             <label class="required form-label fs-6 mb-3" >Taxation Number</label>
                                             <input type="number" value="{{ $firm->taxation_number }}" name="taxation_number" id="taxation_number" class="form-control  mb-4" placeholder="Taxation Number" {{ ($firm->have_tax != 1)?'':'required' }}  />
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group row">
                                         <div class="col-md-6">
                                             <label class="required form-label fs-6 mb-3" >Company Registered On</label>
-                                            <input class="form-control" name="register_on" value="{{ $firm->register_on }}" placeholder="Pick date rage" id="kt_daterangepicker_3" required/>
+                                            <input class="form-control" name="register_on" value="{{ $firm->register_on }}" placeholder="Company Registered On" id="kt_daterangepicker_3" required/>
                                         </div>
-                                        
                                         <div class="col-md-1">
                                             <label class="form-label fs-6 mb-4" >Logo</label>
                                         </div>
-                                        
-                                        <div class="col-md-3"> 
-                                           
+
+                                        <div class="col-md-3">
                                              @include('components.imagecrop',['name'=>'logo','imgsrc'=>$firm->logo])
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group row">
                                         <label class="required form-label fs-6 mb-2" >About Us</label>
                                         <textarea id="about_us" name="about_us" class="tox-target">{{ $firm->about_us }}</textarea>
                                     </div>
                                 </div>
-                                
+
                                 <h4>Address</h4>
                                 <div class="rounded border p-10">
                                     @include('components.addressComponent',['country_id'=>$firm->country_id,'state_id'=>$firm->state_id,
                                         'city_id'=>$firm->city_id,'zipcode'=>$firm->zipcode,'register_address'=>$firm->register_address,'page'=>'Edit','countrys'=>$countrys,'state'=>$state,'city'=>$city])
                                 </div>
-                               
+
                                 @include('components.contact',['contact'=>$contact,'dialing'=>isset($firm->country->dialing)?$firm->country->dialing:'--'])
                                 <h4>Category / Sub Category</h4>
                                 <div class="rounded border p-10">
-                                    <div id="kt_docs_jstree_checkable"></div>
+                                    @php
+                                        $selectcategory = explode(',',$firm->categorie_id);
+                                    @endphp
+                                    <div class="form-group row">
+                                        <div class="col-md-4">
+                                            <label class="required form-label fs-6 mb-4" >Category</label>
+                                            <select class="form-select mb-4" name="categorie_id[]" id="categorie_id" data-control="select2" data-placeholder="Select Category" required>
+                                                <option></option>
+                                                @foreach ($category as $cat)
+                                                    <option value='{{ $cat->id }}' {{ in_array($cat->id,$selectcategory)?'selected':'' }} {{ count($cat->child) > 0?'data-has_child':'' }}>{{ $cat->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" id="subcatid" style="{{ count($subcategory) > 0 ?'':'display:none' }}">
+                                        <div class="col-md-4">
+                                            <label class="required form-label fs-6 mb-4" >Sub Category</label>
+                                            <select class="form-select mb-4" name="categorie_id[]" id="sub_categorie_id" data-control="select2" multiple data-placeholder="Select Category" {{ count($subcategory) > 0 ?'required':'' }} >
+                                                <option></option>
+                                                @foreach ($subcategory as $cat)
+                                                    <option value='{{ $cat->id }}' {{ in_array($cat->id,$selectcategory)?'selected':'' }} {{ count($cat->child) > 0?'data-has_child':'' }}>{{ $cat->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
                                 <h4>Bank Account Details</h4>
                                 <div class="rounded border p-10">
@@ -135,7 +156,7 @@
                                             <input type="text" name="account_name" value="{{ $firm->account_name }}" class="form-control mb-4" placeholder="Account Name" required />
                                         </div>
                                     </div>
-                                       
+
                                     <div class="form-group row">
                                         <div class="col-md-6">
                                             <label class="required form-label fs-6 mb-4" >IBAN Code / IFSC Code</label>
@@ -146,7 +167,7 @@
                                             <input type="text" name="bank_name" value="{{ $firm->bank_name }}" class="form-control mb-4" placeholder="Bank Name" required />
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group row">
                                         <div class="col-md-6">
                                             <label class="required form-label fs-6 mb-4" >Branch</label>
@@ -156,14 +177,14 @@
                                             <div class="form-check form-check-custom form-check-solid mb-5">
                                                 <input class="form-check-input me-3" name="bank_status" type="checkbox" {{ ($firm->bank_status == '1')?'checked':'' }}  value="1" id="bank_status" />
                                                 <label class="form-check-label" for="bank_status">
-                                                    <div class="fw-bolder text-gray-800">Status</div>
+                                                    <div class="fw-bolder text-gray-800">verified</div>
                                                 </label>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                
-                                <h4>Login Details</h4>
+
+                                {{-- <h4>Login Details</h4>
                                 <div class="rounded border p-10">
                                     <div class="form-group row">
                                         <div class="col-md-6">
@@ -175,7 +196,7 @@
                                             <input type="text" name="user_name" value="{{ $firm->user_name }}" class="form-control form-control-solid mb-4" placeholder="User Name" required />
                                         </div>
                                     </div>
-                                  
+
                                     <div class="form-group row">
                                         <div class="col-md-6">
                                             <div class="form-check form-check-custom form-check-solid mb-5">
@@ -186,13 +207,16 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <h4>Gallary</h4>
                                 <div class="rounded border p-10">
                                     <div class="fv-row mb-10">
                                         @foreach ($gallery as $gal)
-                                        <input type="hidden" name="gallerys[]" value="{{ $gal }}">
+                                        <div class="image_container d-flex justify-content-center position-relative">
+                                            <input type="hidden" name="gallerys[]" value="{{ $gal }}">
                                             <img class="file-preview" id="preview" @if(isset($gal)) src="{{ asset("storage/$gal") }}" @endif style="width:100px;border:2px dashed #222;height: 100px">
+                                            <span class="position-absolute" onclick="event.target.parentElement.remove()">&times;</span>
+                                        </div>
                                         @endforeach
                                     </div>
                                     <div class="fv-row mb-10">
@@ -200,8 +224,16 @@
                                         <input type="file" name="gallery[]" id="image" multiple onchange="image_select()" class="form-control" placeholder="Image" >
                                         <div class="card-body d-flex flex-wrap justify-content-start" id="container"></div>
                                     </div>
+                                    <div class="form-group row" style="float:right" >
+                                        <div class="col-md-6">
+                                            <button type="reset" id="formreset" class="btn btn-secondary btn-hover-rise me-5">Reset</button>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button type="submit" class="btn btn-primary btn-hover-rise">Save</button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <h4>Working Hours</h4>
+                                {{-- <h4>Working Hours</h4>
                                 <div class="rounded border p-10">
                                     <div class="mb-10">
                                         <div class="kt_docs_repeater_nesteds" id="sunday">
@@ -525,7 +557,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                   
+
                                     <div class="form-group row" style="float:right" >
                                         <div class="col-md-6">
                                             <button type="button" id="formEditReset" class="btn btn-secondary btn-hover-rise me-5 ">Reset</button>
@@ -535,7 +567,7 @@
                                             <button type="submit" class="btn btn-primary btn-hover-rise">Save</button>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                         </form>
                     </div>
@@ -559,7 +591,7 @@
         .image_container img {
             height: 120px;
             width: 200px;
-            
+
             object-fit: cover;
         }
         .image_container span {
@@ -591,7 +623,7 @@
             images.forEach((i) => {
                 image += `<div class="image_container d-flex justify-content-center position-relative">
                     <img src="`+ i.url +`"  alt="Image">
-                    <span class="position-absolute" onclick="delete_image(`+ images.indexOf(i) +`)">&times;</span><div></div>
+                    <span class="position-absolute" onclick="delete_image(`+ images.indexOf(i) +`)">&times;</span>
                 </div>`;
             })
             return image;
@@ -625,235 +657,28 @@
     const taxation_number_div = document.getElementById('taxation_number_div')
     const taxation_number = document.getElementById('taxation_number')
     const categorie_id = document.getElementById('categorie_id')
-    var state = $("#state_id")
-    var city = $("#city_id")
-    
+
      back = '{{ route('user.firms.index') }}'
     have_tax_Yes.forEach(element => {
         element.addEventListener('change',have_tax_Yes_fun)
     })
-
-    $(".checkboxOnOff").on('change', function() {
-        if ($(this).is(':checked')) {
-            $(this).parent().parent().parent().find('[data-repeater-create]')[0].click()
-        }
-        else {
-            let arr = $(this).parent().parent().parent().find('[data-repeater-delete]');
-            $.each( arr, function( key, value ) {
-                value.click();
-            });
-
-        }
-    });
-
-    $("#kt_daterangepicker_3").daterangepicker({
-            singleDatePicker: true,
-            showDropdowns: true,
-            minYear: 1901,
-            maxYear: parseInt(moment().format("YYYY"),10),
-            locale: {
-                        format: '{{ strtoupper($companeySetting->date_format) }}'
-                    }
-        }, function(start, end, label) {
-            // var years = moment().diff(start, "years");
-            // alert("You are " + years + " years old!");
-        }
-    );
+        
+        var startFlatpickr = flatpickr($("#kt_daterangepicker_3"), {
+            enableTime: false,
+            dateFormat: "Y-m-d",
+        });
     
-    var sunday = $('#sunday')
-    var mounday = $('#mounday')
-    var Tuesday = $('#Tuesday')
-    var Wednesday = $('#Wednesday')
-    var Thursday = $('#Thursday')
-    var Friday = $('#Friday')
-    var Saturday = $('#Saturday')
-    sunday.repeater({
-        repeaters: [{
+    
 
-            show: function () {
-                $(this).slideDown();
-            },
-
-            hide: function (deleteElement) {
-                $(this).slideUp(deleteElement);
-            }
-        }],
-
-        show: function () {
-            $(this).slideDown();
-        },
-
-        hide: function (deleteElement) {
-            $(this).slideUp(deleteElement);
-        }
-    });
-    mounday.repeater({
-        repeaters: [{
-            show: function () {
-                $(this).slideDown();
-            },
-
-            hide: function (deleteElement) {
-                $(this).slideUp(deleteElement);
-            }
-        }],
-
-        show: function () {
-            $(this).slideDown();
-        },
-
-        hide: function (deleteElement) {
-            $(this).slideUp(deleteElement);
-        }
-    });
-    Tuesday.repeater({
-        repeaters: [{
-            show: function () {
-                $(this).slideDown();
-            },
-
-            hide: function (deleteElement) {
-                $(this).slideUp(deleteElement);
-            }
-        }],
-
-        show: function () {
-            $(this).slideDown();
-        },
-
-        hide: function (deleteElement) {
-            $(this).slideUp(deleteElement);
-        }
-    });
-    Wednesday.repeater({
-        repeaters: [{
-            show: function () {
-                $(this).slideDown();
-            },
-
-            hide: function (deleteElement) {
-                $(this).slideUp(deleteElement);
-            }
-        }],
-
-        show: function () {
-            $(this).slideDown();
-        },
-
-        hide: function (deleteElement) {
-            $(this).slideUp(deleteElement);
-        }
-    });
-    Thursday.repeater({
-        repeaters: [{
-            show: function () {
-                $(this).slideDown();
-            },
-
-            hide: function (deleteElement) {
-                $(this).slideUp(deleteElement);
-            }
-        }],
-
-        show: function () {
-            $(this).slideDown();
-        },
-
-        hide: function (deleteElement) {
-            $(this).slideUp(deleteElement);
-        }
-    });
-    Friday.repeater({
-        repeaters: [{
-            show: function () {
-                $(this).slideDown();
-            },
-
-            hide: function (deleteElement) {
-                $(this).slideUp(deleteElement);
-            }
-        }],
-
-        show: function () {
-            $(this).slideDown();
-        },
-
-        hide: function (deleteElement) {
-            $(this).slideUp(deleteElement);
-        }
-    });
-    Saturday.repeater({
-        repeaters: [{
-            show: function () {
-                $(this).slideDown();
-            },
-
-            hide: function (deleteElement) {
-                $(this).slideUp(deleteElement);
-            }
-        }],
-
-        show: function () {
-            $(this).slideDown();
-        },
-
-        hide: function (deleteElement) {
-            $(this).slideUp(deleteElement);
-        }
-    });
-
-    sunday.setList(@json($day[0]))
-    mounday.setList(@json($day[1]))
-    Tuesday.setList(@json($day[2]))
-    Wednesday.setList(@json($day[3]))
-    Thursday.setList(@json($day[4]))
-    Friday.setList(@json($day[5]))
-    Saturday.setList(@json($day[6]))
-    // console.log(@json($day[0]));
-    var KTJSTreeCheckable = {
-    init: function () {
-        $("#kt_docs_jstree_checkable")
-          // listen for event
-            .on('changed.jstree', function (e, data) {
-                var i, j, r = [];
-                for(i = 0, j = data.selected.length; i < j; i++) {
-                    r.push(data.instance.get_node(data.selected[i]).id);
-                }
-                categorie_id.value = r.join(',');
-                console.log(r);
-            })
-            .jstree({
-            plugins: ["wholerow", "checkbox", "types"],
-            core: {
-                themes: {
-                    responsive: !1
-                },
-                data: {!! json_encode($tree) !!}
-            },
-            types: {
-                default: {
-                    icon: ""
-                },
-                file: {
-                    icon: ""
-                }
-            }
-        })
-    }
-};
 
         var options = {selector: "#about_us"};
-        var options2 = {selector: "#register_address"};
 
         if (KTApp.isDarkMode()) {
             options["skin"] = "oxide-dark";
             options["content_css"] = "dark";
-            options2["skin"] = "oxide-dark";
-            options2["content_css"] = "dark";
         }
 
         tinymce.init(options);
-        tinymce.init(options2);
 
 
     function have_tax_Yes_fun(event){
@@ -867,49 +692,29 @@
         }
     }
 
-    $("#country_id").on('select2:select', function (e) {
+    $("#categorie_id").on('select2:select', function (e) {
         var data = e.params.data;
         $.ajax({
-            url:"{{route('master.country.getState')}}",
+            url:"{{route('help.getchildcategory')}}",
             method:"POST",
             data:{id:data.id,"_token": "{{ csrf_token() }}",},
             success:function(data){
-                var option = `<option>Select State</option>`
-                if(data.states.length != null){
-                    data.states.forEach((e)=>{
-                        option += '<option value='+e.id+'>'+e.state_name+'</option>';
+                var option = `<option>Select Category</option>`
+                if(data.child.length > 0){
+                    data.child.forEach((e)=>{
+                        option += '<option value='+e.id+'>'+e.name+'</option>';
                     })
+                    $('#subcatid').show(100);
+                    $('#sub_categorie_id').prop('required',true);
+                }else{
+                    $('#sub_categorie_id').prop('required',false);
+                    $('#subcatid').hide(100);
                 }
-                state.html(option).trigger("change");
-                // city.html(null).trigger("change");
-                if(data.Country){
-                    $("input[data-cmobile]").val(data.Country.dialing)
-                    $("input[data-cphone]").val(data.Country.dialing)
-                }
-            }
-        })
-    });
-    $("#state_id").on('select2:select', function (e) {
-        var data = e.params.data;
-        $.ajax({
-            url:"{{route('master.country.getCity')}}",
-            method:"POST",
-            data:{id:data.id,"_token": "{{ csrf_token() }}",},
-            success:function(data){
-                var option = null
-                if(data.length != null){
-                    data.forEach((e)=>{
-                        option += '<option value='+e.id+'>'+e.city_name+'</option>';
-                    })
-                }
-                city.html(option).trigger("change");
+                $('#sub_categorie_id').html(option).trigger("change");
             }
         })
     });
 
-    KTUtil.onDOMContentLoaded((function () {
-        KTJSTreeCheckable.init()
-    }));
     </script>
     @endsection
 </x-base-layout>

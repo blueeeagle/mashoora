@@ -8,6 +8,7 @@ use App\Models\Firm;
 use App\Models\Category;
 use App\Models\State;
 use App\Models\City;
+use App\Models\User;
 use DataTables;
 use App\Models\Country;
 use Validator;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Storage;
 use DB;
 use App\Models\Companysetting;
 use App\Models\Language;
+use App\Models\NotificationTemplate;
 use Auth;
 
 
@@ -95,4 +97,72 @@ public function firm(){
         $subCategory = Category::where('categories_id',$request->category_id)->where('status',1)->orderBy('sort_no_list')->get();
         return response()->json(['mainCategory'=>$mainCategory,'subCategory'=>$subCategory], 200);
     }
+
+    public function get_user(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+        return response()->json(['is_two_way'=>$user->is_two_way_auth,'phone'=>$user->phone], 200);
+    }
+
+    public static function email($user,$data,$type)
+    {
+        $notification = NotificationTemplate::where('type',$type)->first();
+        if($notification){
+            //try {
+            
+                $body = (new static)->generateBody($data,$notification->description,$type);
+                
+                \Mail::send('email', ['notification' => $notification,'body' => strip_tags($body),'title' => $notification->title], function($message) use($notification,$user){
+                    $message->to($user['email'], $user['name'])->subject($notification->title);
+                });
+                
+                echo "Email sent successfully";
+            // } catch (\Throwable $th) {
+            //     //throw $th;
+            //     return;
+            // }
+        }      
+    }
+    
+    public function send_email()
+    {
+        // $body="Testing";
+        
+        // return view('email',compact('body'));
+        
+        $id=115;
+        $user = User::find($id);
+        
+        $user1=array('email'=>$user->email,'name'=>$user->first_name);
+
+        $template1=NotificationTemplate::where('type','=',2)->first();
+        $template2=NotificationTemplate::where('type','=',5)->first();
+        $template3=NotificationTemplate::where('type','=',8)->first();    
+       
+        $data=array($user->first_name,$user->email,$user->phone,$user->created_at);
+
+        if($template1)
+        {
+            helperController::email($user1,$data,2);
+        }
+        if($template2)
+        {
+            helperController::email($user1,$data,5);
+        }
+        if($template3)
+        {
+            helperController::email($user1,$data,8);
+        } 
+    }
+
+    public static function generateBody($data,$str,$type){
+        $replace=NotificationController::variables($type);
+        return str_replace($replace, $data, $str);
+    }
+    public function getchild(Request $Request){
+        $child = Category::where('categories_id',$Request->id)->where('status',1)->orderBy('name','ASC')->get();
+    	return response()->json(['child'=>$child]);
+    }
+    
+    
 }

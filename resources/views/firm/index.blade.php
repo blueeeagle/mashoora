@@ -70,7 +70,7 @@
                             <label class="fs-6 form-label fw-bolder text-dark">city</label>
                             <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='10' />
                         </div>
-                       
+
                     </div>
                     <div class="rounded py-4 px-6 mb-5" hidden id="search_div">
                         <button type="button" id="search_two" class="btn btn-primary me-5">Search</button>
@@ -113,21 +113,19 @@
                             <option selected value="2">Company Name</option>
                             <option value="3">Taxation Number</option>
                             <option value="4">Register on</option>
-                            <option value="5">Country</option>
-                            <option value="6">State</option>
-                            <option value="7">City</option>
-                            <option value="8">Zipcode</option>
-                            <option value="9">Approval Status</option>
-                            <option selected value="10">Status</option>
-                            <option selected value="11">Action</option>
+                            <option value="5">Address</option>
+                            <option value="6">Category</option>
+                            <option value="7">Approval Status</option>
+                            <option selected value="8">Status</option>
+                            <option selected value="9">Action</option>
                         </select>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
     </div>
-    
+
 
     <div class="d-flex flex-column flex-column-fluid">
         <!--begin::Toolbar-->
@@ -193,7 +191,7 @@
         <!--end::Toolbar-->
         <!--begin::Content-->
 
-        
+
         <div id="kt_app_content" class="app-content flex-column-fluid">
             <!--begin::Content container-->
             <div id="kt_app_content_container" class="app-container container-xxl">
@@ -219,10 +217,10 @@
                             <div class="d-flex align-items-center p-10">
                                 <!--<button type="button" id="search" class="btn btn-primary me-5">Search</button>-->
                                 <button type="button" id="reset" class="btn btn-primary btn-xs me-5">Reset</button>
-                                
+
                             </div>
 
-                            <!--end::Search-->                                   
+                            <!--end::Search-->
                         </div>
                        <!--begin::Card toolbar-->
                         <div class="card-toolbar" data-select2-id="select2-data-131-2zax">
@@ -255,23 +253,22 @@
                                             <th>Logo</th>
                                             <th>Name</th>
                                             <th>Taxation Number</th>
-                                            <th>Country</th>
-                                            <th>State</th>
-                                            <th>City</th>
-                                            <th>Zipcode</th>
+                                            <th>Address</th>
+                                            <th>Created on</th>
+                                            <th>Category</th>
                                             <th>Approval Status</th>
                                             <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                 </table>
-                                
+
                             </div>
-                            
+
                         </div>
                     </div>
                     <!--end::Card body-->
-                </div> 
+                </div>
             </div>
             <!--end::Content container-->
         </div>
@@ -338,9 +335,8 @@
                     { data: 'comapany_name'},
                     { data: 'taxation_number'},
                     { data: 'country_id'},
-                    { data: 'state_id'},
-                    { data: 'city_id'},//10
-                    { data: 'zipcode'},
+                    { data: 'created_at'},
+                    {data : 'categorie_id'},
                     { data: 'approval'},
                     { data: 'status'},
                     { data: 'action'}//30
@@ -352,15 +348,15 @@
                         orderable: true,
                         render: function (data, type, row) {
                             return `
-                                <a href="${data.edit}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"> 
+                                <a href="${data.edit}" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                                     <span class="svg-icon svg-icon-3">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path opacity="0.3" d="M21.4 8.35303L19.241 10.511L13.485 4.755L15.643 2.59595C16.0248 2.21423 16.5426 1.99988 17.0825 1.99988C17.6224 1.99988 18.1402 2.21423 18.522 2.59595L21.4 5.474C21.7817 5.85581 21.9962 6.37355 21.9962 6.91345C21.9962 7.45335 21.7817 7.97122 21.4 8.35303ZM3.68699 21.932L9.88699 19.865L4.13099 14.109L2.06399 20.309C1.98815 20.5354 1.97703 20.7787 2.03189 21.0111C2.08674 21.2436 2.2054 21.4561 2.37449 21.6248C2.54359 21.7934 2.75641 21.9115 2.989 21.9658C3.22158 22.0201 3.4647 22.0084 3.69099 21.932H3.68699Z" fill="currentColor"></path>
                                             <path d="M5.574 21.3L3.692 21.928C3.46591 22.0032 3.22334 22.0141 2.99144 21.9594C2.75954 21.9046 2.54744 21.7864 2.3789 21.6179C2.21036 21.4495 2.09202 21.2375 2.03711 21.0056C1.9822 20.7737 1.99289 20.5312 2.06799 20.3051L2.696 18.422L5.574 21.3ZM4.13499 14.105L9.891 19.861L19.245 10.507L13.489 4.75098L4.13499 14.105Z" fill="currentColor"></path>
                                         </svg>
-                                    </span>  
+                                    </span>
                                 </a>
-                                
+
                                 <a href="${data.Delete}" delete class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm">
                                     <i href="${data.Delete}" delete class="las la-trash fs-2 me-2"></i></a>
 								</a>
@@ -375,32 +371,55 @@
                             if(data){
                                 return `<div class="d-flex align-items-center">
                                             <div class="symbol symbol-40 symbol-sm flex-shrink-0">
-                                                <img class="rounded-circle z-depth-2" src="${data}">
+                                                <img class="rounded-circle z-depth-2" src="${baseURl}/storage/${data}">
                                             </div>
 							            </div>`;
                             }
                             return '';
 
-                            
+
+                        },
+                    },
+                    {
+                        targets: 4,
+                        data: null,
+                        width : '200px',
+                        orderable: true,
+                        render: function (data, type, row) {
+                            return `Address : ${row.address}<br/>City : ${row.city?.city_name || ''}
+								,<br>State : ${row.state?.state_name || ''}
+								,<br>Country : ${row.addcountry?.country_name || ''}
+                                ,<br> Zipcode : ${row.zipcode || ''}`
+                        },
+                    },
+                    {
+                        targets: 6,
+                        data: null,
+                        width : '200px',
+                        orderable: true,
+                        render: function (data, type, row) {
+                            let temp ='';
+                            data.forEach(e => temp +=  `<span class='badge badge-success'>${e}</span><br/>`)
+                            return temp
                         },
                     },
                 ],
                 drawCallback : function( settings ) { }
             });
 
-            
+
             const filterSearch = document.querySelector('[data-kt-docs-table-filter="search"]');
             filterSearch.addEventListener('keyup', function (e) {
                 table.search(e.target.value).draw();
             });
-            
+
 
             // $('#kt_subheader_search_form').keyup(function(){
             //     table.search($(this).val()).draw();
-            // }) 
+            // })
             $( "#reset" ).click(function() {
                 $('#kt_subheader_search_form').val('');
-               table.search($('#kt_subheader_search_form').val()).draw();   
+               table.search($('#kt_subheader_search_form').val()).draw();
             });
         });
 

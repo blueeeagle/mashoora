@@ -24,12 +24,12 @@
                             </div>
                             <div class="d-flex align-items-center p-10">
                                 <!--<button type="button" id="search" class="btn btn-primary me-5">Search</button>-->
-                                <button type="button" id="reset" class="btn btn-primary btn-xs me-5">Reset</button>
+                                <button type="button" class="btn btn-primary btn-xs me-5 tablereset">Reset</button>
 
                             </div>
-                            <div style="margin-left: 353px;">
+                         {{--   <div style="margin-left: 353px;">
                                 Total Amount : <?php echo $datas = App\Models\Payment::select('amount')->where('consultant_id',$consultant->id)->sum('amount'); ?>
-                            </div>
+                            </div> --}}
 
                             <!--end::Search-->
                         </div>
@@ -63,63 +63,3 @@
         </div>
         <!--end::Content-->
     </div>
-    @section('scripts')
-
-<script>
-    var table = null
-    $(document).ready(function () {
-        table = $("#kt_customers_table").DataTable({
-            responsive: true,
-            buttons: [
-                    'print',
-                    'copyHtml5',
-                    'excelHtml5',
-                    'csvHtml5',
-                    'pdfHtml5',
-                ],
-            // Pagination settings
-            dom: `<'row'<'col-sm-12'tr>>
-            <'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>`,
-            // read more: https://datatables.net/examples/basic_init/dom.html
-
-            lengthMenu: [5, 10, 25, 100],
-
-            pageLength: 10,
-            searchDelay: 500,
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url : "{{route('consultant.consultant.transactiondatatable')}}",
-                type: 'POST',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    'id' : "{{$consultant->id}}",
-                    columnsDef : ['id','amount','type','created_at','action']
-                }
-
-            },
-            columns: [
-                { data : 'DT_RowIndex' },
-                    { data : 'amount' },
-                    { data : 'type' },
-                    { data : 'created_at' },
-                    { data : 'action' },
-            ],
-           
-            drawCallback : function( settings ) { }
-        });
-
-        const filterSearch = document.querySelector('[data-kt-docs-table-filter="search"]');
-            filterSearch.addEventListener('keyup', function (e) {
-                table.search(e.target.value).draw();
-            });
-
-
-        $( "#reset" ).click(function() {
-                $('#kt_customers_table').val('');
-               table.search($('#kt_customers_table').val()).draw();
-            });
-
-    });
-</script>
-    @endsection

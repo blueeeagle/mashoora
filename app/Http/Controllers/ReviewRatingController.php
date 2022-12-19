@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\User;
 use App\Models\Firm;
-use App\Models\Rating;
+use App\Models\Review;
+use App\Models\Consultant;
+use App\Models\Customer;
 use Illuminate\Support\Facades\Input;
 use DataTables;
 use Illuminate\Support\Collection;
@@ -14,39 +16,48 @@ use Validator;
 
 class ReviewRatingController extends Controller
 {
-  
+    public function __construct()
+    {
+        // $this->middleware('Permissions:Review_View',['only'=>['index']]);
+
+    }
     public function index(){
         return view('review.index');
     }
 
-    public function datatable(Request $request){
-        $search=[];
-        $columns=$request->columns;
-        foreach($columns as $colum){
-            $search[] = $colum['search']['value'];
-        }
+    public function datatable(Request $request,Consultant $consultant = null){
+        
+        if(!empty($consultant)){ $datas = Review::with('customer.country','consultant.country')->where('consultant_id',$consultant->id)->orderBy('id','desc')->get(); }
+        else $datas = Review::with('customer.country','consultant.country')->orderBy('id','desc')->get();
 
-        $datas = Rating::orderBy('id','desc')->get();
-
-        // dd($datas);
         return DataTables::of($datas)
         ->addIndexColumn()
-        ->editColumn('created_at', function(Rating $datas) {
-            return  $datas->created_at->format('d/m/Y H:i:s');
+        ->editColumn('created_at',function(Review $data){
+            return date('Y-m-d',\strtotime($data->created_at));
         })
-        // ->editColumn('status', function(Rating $datas) {
-        //     if($datas->status == 0) return '<button class="btn btn-success btn-sm">Completed</button>';
-        //     if($datas->status == 1) return '<button class="btn btn-danger btn-sm">Cancelled</button>';
-        //     if($datas->status == 2) return '<button class="btn btn-primary btn-sm">Booked</button>';
-        //     if($datas->status == 3) return '<button class="btn btn-info btn-sm">In Process</button>';
-        // })
-        ->addColumn('action', function(Rating $datas){
-            return '<a href="#">Read Review</a>';
+        ->addColumn('action',function(Review $data){
+            return ['delete'=>\route('review.delete',$data->id)];
         })
-        ->rawColumns(['status','action'])
-        ->toJson();
+        ->toJson(); //--- Returning Json Data To Client Side
     }
-
-    
-
+public function datatable_customer(Request $request,Customer $customer){
+        
+        $datas = Review::with('customer.country','consultant.country')->where('customer_id',$customer->id)->orderBy('id','desc')->get();
+        
+        return DataTables::of($datas)
+        ->addIndexColumn()
+        ->editColumn('created_at',function(Review $data){
+            return date('Y-m-d',\strtotime($data->created_at));
+        })
+        ->addColumn('action',function(Review $data){
+            return ['delete'=>\route('review.delete',$data->id)];
+        })
+        ->toJson(); //--- Returning Json Data To Client Side
+    }
+	public function delete(Review $review){
+        $review->delete();
+        $data1['msg'] = 'Data Deleted Successfully.';
+        $data1['status'] = true;
+        return response()->json($data1);
+    }
 }

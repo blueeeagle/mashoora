@@ -28,7 +28,7 @@ class FirmController extends Controller
         $this->middleware('Permissions:Firm_delete',['only'=>['destroy']]);
 
     }
-    
+
     public function index()
     {
         return view('firm.index');
@@ -84,6 +84,9 @@ class FirmController extends Controller
                             ->editColumn('have_tax', function(Firm $data){
                                 return ($data->have_tax == 1)?'Yes':'No';
                             })
+                            ->editColumn('created_at', function(Firm $data){
+                                return date('Y-m-d',strtotime($data->created_at));
+                            })
                             ->editColumn('country_id', function(Firm $data){
                                 $country = $data->country;
                                 return ($country)?$country->country_name : '';
@@ -99,7 +102,7 @@ class FirmController extends Controller
                             ->editColumn('categorie_id', function(Firm $data){
                                 $ids = \explode(',',$data->categorie_id);
                                 $categorie_id = Category::whereIn('id',$ids)->where('status',1)->get()->pluck('name')->toArray();
-                                return implode(',',$categorie_id);
+                                return $categorie_id;
 
                             })
                             ->editColumn('bank_status', function(Firm $data) {
@@ -123,21 +126,15 @@ class FirmController extends Controller
                                             <input class='form-check-input' type='checkbox' status data-url='$route' value='' $status />
                                         </div>";
                             })
-                            ->editColumn('logo', function(Firm $data){
-                                // $exists = Storage::disk('public_custom')->exists($data->logo);
-                                // if($exists) return asset("storage/$data->logo");
-                                return "";
+                            ->addColumn('address', function(Firm $data){
+                                return strip_tags($data->register_address);
                             })
                             ->editColumn('approval', function(Firm $data){
                                 if($data->approval == 2){ return $temp = "<span class='badge badge-success'>Approved</span>";}
-                                if($data->approval == 3){ return $temp = "<span class='badge badge-success'>Declined</span>";}
-                              return 'Pending';
-                            }) 
-                            // ->editColumn('gallery', function(Firm $data){
-                            //     $exists = Storage::disk('public_custom')->exists($data->gallery);
-                            //     if($exists) return "<img width = 120 height = 150 src='".asset("storage/$data->gallery")."' alter='$data->gallery' />";
-                            //     return "";
-                            // })
+                                if($data->approval == 3){ return $temp = "<span class='badge badge-danger'>Declined</span>";}
+                              return "<span class='badge badge-warning'>Pending</span>";
+                            })
+
                             ->editColumn('action', function(Firm $data){
                                 return ['Delete'=> \route('user.firms.destroy',$data->id),'edit'=> \route('user.firms.edit',$data->id)];
                             })
@@ -149,7 +146,7 @@ class FirmController extends Controller
         $Offer = Offer::where('firm_id',$firm->id)->exists();
         $Video = Video::where('firm_id',$firm->id)->exists();
         $Article = Article::where('firm_id',$firm->id)->exists();
-      
+
         if($Consultant || $Offer || $Video || $Article){
             $temp = ($Consultant)?'Consultant':'';
             $temp .= ($Offer)?'Offer':'';
@@ -159,7 +156,7 @@ class FirmController extends Controller
             $data1['status'] = false;
             return response()->json($data1);
         }
-        
+
         $firm->delete();
         $data1['msg'] = 'Data Deleted Successfully.';
         $data1['status'] = true;
@@ -172,48 +169,32 @@ class FirmController extends Controller
         $city = City::where('status',1)->get();
         $tree = [];
         $Category = Category::where('status',1)->where('type',0)->get();
-        foreach ($Category as $key => &$value) {
-            # code...
-            $temp = null;
-            $temp = [
-                'id' => $value->id,
-                'text' => $value->name,
-            ];
-            $Category = Category::where('status',1)->where('categories_id',$value->id)->where('type',1)->get();
-            foreach ($Category as $key1 => $value1) {
-                # code...
-                $temp['children'][] = [
-                    'id' => $value1->id,
-                    'text' => $value1->name,
-                ];
-            }
-            $tree[] = $temp;
-        }
-        return \view('firm.create',['countrys'=>$countrys,'tree'=>$tree,'state'=>$state,'city'=>$city]);
+
+        return \view('firm.create',['countrys'=>$countrys,'category'=>$Category,'state'=>$state,'city'=>$city]);
     }
     public function update(Request $Request , Firm $firm){
         // dd($Request->taxation_number);
         if($Request->have_tax == 1){
             $rules=[
     			'taxation_number' => "unique:firms,taxation_number,".$firm->id,
-    			'email' => "unique:firms,email,".$firm->id,
+    			// 'email' => "unique:firms,email,".$firm->id,
     		];
-    
+
     		$customs=[
     			'taxation_number.unique'=> 'Taxation Number Already Taken',
-    			'email.unique'=> 'E-mail Already Taken',
+    			// 'email.unique'=> 'E-mail Already Taken',
     		];
         }
         else{
             $rules=[
-    			'email' => "unique:firms,email,".$firm->id,
+    			// 'email' => "unique:firms,email,".$firm->id,
     		];
-    
+
     		$customs=[
-    			'email.unique'=> 'E-mail Already Taken',
+    			// 'email.unique'=> 'E-mail Already Taken',
     		];
         }
-        
+
         $validator = Validator::make($Request->all(), $rules,$customs);
         if ($validator->fails()) {
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
@@ -226,46 +207,48 @@ class FirmController extends Controller
             $cname[] = $value['cname'];$ctitle[] = $value['ctitle'];$cemail[] = $value['cemail'];$cmobile[] = $value['cmobile'];$cphone[] = $value['cphone'];
         }
 
-        $sunday = [];
-        $monday = [];
-        $tuesday = [];
-        $wednesday = [];
-        $thursday = [];
-        $friday = [];
-        $saturday = [];
+        // $sunday = [];
+        // $monday = [];
+        // $tuesday = [];
+        // $wednesday = [];
+        // $thursday = [];
+        // $friday = [];
+        // $saturday = [];
 
-        foreach($Request->kt_docs_repeater_nested_inner as $key => $value){
+        // foreach($Request->kt_docs_repeater_nested_inner as $key => $value){
 
-            if(isset($value['sunday_from'])) $sunday[] = ['sunday_from'=>$value['sunday_from'],'sunday_to'=>$value['sunday_to'],'day'=>'sunday'];
-            if(isset($value['monday_from'])) $monday[] = ['monday_from'=>$value['monday_from'],'monday_to'=>$value['monday_to'],'day'=>'monday'];
-            if(isset($value['tuesday_from'])) $tuesday[] = ['tuesday_from'=>$value['tuesday_from'],'tuesday_to'=>$value['tuesday_to'],'day'=>'tuesday'];
-            if(isset($value['wednesday_from'])) $wednesday[] = ['wednesday_from'=>$value['wednesday_from'],'wednesday_to'=>$value['wednesday_to'],'day'=>'wednesday'];
-            if(isset($value['thursday_from'])) $thursday[] = ['thursday_from'=>$value['thursday_from'],'thursday_to'=>$value['thursday_to'],'day'=>'thursday'];
-            if(isset($value['friday_from'])) $friday[] = ['friday_from'=>$value['friday_from'],'friday_to'=>$value['friday_to'],'day'=>'friday'];
-            if(isset($value['saturday_from'])) $saturday[] = ['saturday_from'=>$value['saturday_from'],'saturday_to'=>$value['saturday_to'],'day'=>'saturday'];
-        }
+        //     if(isset($value['sunday_from'])) $sunday[] = ['sunday_from'=>$value['sunday_from'],'sunday_to'=>$value['sunday_to'],'day'=>'sunday'];
+        //     if(isset($value['monday_from'])) $monday[] = ['monday_from'=>$value['monday_from'],'monday_to'=>$value['monday_to'],'day'=>'monday'];
+        //     if(isset($value['tuesday_from'])) $tuesday[] = ['tuesday_from'=>$value['tuesday_from'],'tuesday_to'=>$value['tuesday_to'],'day'=>'tuesday'];
+        //     if(isset($value['wednesday_from'])) $wednesday[] = ['wednesday_from'=>$value['wednesday_from'],'wednesday_to'=>$value['wednesday_to'],'day'=>'wednesday'];
+        //     if(isset($value['thursday_from'])) $thursday[] = ['thursday_from'=>$value['thursday_from'],'thursday_to'=>$value['thursday_to'],'day'=>'thursday'];
+        //     if(isset($value['friday_from'])) $friday[] = ['friday_from'=>$value['friday_from'],'friday_to'=>$value['friday_to'],'day'=>'friday'];
+        //     if(isset($value['saturday_from'])) $saturday[] = ['saturday_from'=>$value['saturday_from'],'saturday_to'=>$value['saturday_to'],'day'=>'saturday'];
+        // }
 
-        $Request['sunday'] = json_encode($sunday);
-        $Request['monday'] = json_encode($monday);
-        $Request['tuesday'] = json_encode($tuesday);
-        $Request['wednesday'] = json_encode($wednesday);
-        $Request['thursday'] = json_encode($thursday);
-        $Request['friday'] = json_encode($friday);
-        $Request['saturday'] = json_encode($saturday);
+        // $Request['sunday'] = json_encode($sunday);
+        // $Request['monday'] = json_encode($monday);
+        // $Request['tuesday'] = json_encode($tuesday);
+        // $Request['wednesday'] = json_encode($wednesday);
+        // $Request['thursday'] = json_encode($thursday);
+        // $Request['friday'] = json_encode($friday);
+        // $Request['saturday'] = json_encode($saturday);
 
         $Request['cname'] = \implode(',',$cname);
         $Request['ctitle'] = \implode(',',$ctitle);
         $Request['cemail'] = \implode(',',$cemail);
         $Request['cmobile'] = \implode(',',$cmobile);
         $Request['cphone'] = \implode(',',$cphone);
-        
+        $Request['categorie_id'] = \implode(',',$Request->categorie_id);
+        $Request['is_new'] = 0;
+
+
       if(Storage::disk('public_custom')->exists("/uploadFiles/temp/$Request->logo") && $Request->logo){
             Storage::disk('public_custom')->move("/uploadFiles/temp/$Request->logo","/uploadFiles/logo/$Request->logo");
             $Request['logo'] =  "/uploadFiles/logo/$Request->logo";
         }else{
             $Request['logo'] = $firm->logo;
         }
-        // dd($Request->logo);
         $gallery = [];
 
         if($Request->has('gallery')){
@@ -276,7 +259,7 @@ class FirmController extends Controller
             }
         }
         if(isset($Request->gallerys)) $gallery = array_merge($Request->gallerys,$gallery);
-       
+
         $Request->register_on = date("Y-m-d H:i:s", strtotime($Request->register_on));
         $Request->login_status = (isset($Request->login_status)?1:0);
         $Request->bank_status = (isset($Request->bank_status)?1:0);
@@ -293,38 +276,9 @@ class FirmController extends Controller
         $countrys = Country::where('status',1)->get();
         $state = State::where('country_id',$firm->country_id)->where('status',1)->get();
         $city = City::where('state_id',$firm->state_id)->where('status',1)->get();
-        $category_id = \explode(',',$firm->categorie_id);
         $tree = [];
-        $Category = Category::where('status',1)->where('type',0)->get();
-        foreach ($Category as $key => &$value) {
-            # code...
-            $temp = null;
-            $temp = [
-                'id' => $value->id,
-                'text' => $value->name,
-            ];
-            $Category = Category::where('status',1)->where('categories_id',$value->id)->where('type',1)->get();
-            foreach ($Category as $key1 => $value1) {
-                # code...
-                $temp['children'][] = [
-                    'id' => $value1->id,
-                    'text' => $value1->name,
-                    'state' => [
-                        'selected' => \in_array($value1->id,$category_id)  //'selected' does NOT take effect after refresh
-                    ]
-                ];
-            }
-            $tree[] = $temp;
-        }
-        $day = [];
-        $day[] = json_decode($firm->sunday);
-        $day[] = json_decode($firm->monday);
-        $day[] = json_decode($firm->tuesday);
-        $day[] = json_decode($firm->wednesday);
-        $day[] = json_decode($firm->thursday);
-        $day[] = json_decode($firm->friday);
-        $day[] = json_decode($firm->saturday);
-
+        $selectCategory = Category::where('status',1)->where('type',0)->whereIn('id',\explode(',',$firm->categorie_id))->first();
+        $category = Category::where('status',1)->where('type',0)->get();
         $cname = \explode(',',$firm->cname);
         $ctitle = \explode(',',$firm->ctitle);
         $cemail = \explode(',',$firm->cemail);
@@ -343,39 +297,29 @@ class FirmController extends Controller
             $data['cphone'] = $cphone[$key];
             $Contact[] = $data;
         }
-        $Days=[];
-        foreach ($day as $key => $value) {
-            # code...
-            if($value){
-                foreach ($value as $data => $value) {
-                    $Days[] = $value->day;
-                }
-            }   
-            
-        }
-       
-        return \view('firm.edit',['firm'=>$firm,'day'=>$day,'Days'=>$Days,'countrys'=>$countrys,'tree'=>$tree,'state'=>$state,'city'=>$city,'contact'=>$Contact,'gallery'=>$gallery]);
+
+        return \view('firm.edit',['firm'=>$firm,'countrys'=>$countrys,'state'=>$state,'city'=>$city,'contact'=>$Contact,'gallery'=>$gallery,'category'=>$category,'subcategory'=>$selectCategory->child]);
     }
     public function store(Request $Request){
         //  dd($Request);
         if($Request->have_tax == 1){
             $rules=[
     			'taxation_number' => 'unique:firms,taxation_number,'.$Request->taxation_number,
-    			'email' => "unique:firms,email,".$Request->email,
+    			// 'email' => "unique:firms,email,".$Request->email,
     		];
-    
+
     		$customs=[
     			'taxation_number.unique'      	=> 'Taxation Number Already Taken',
-    			'email.unique'      	=> 'Email Already Taken',
+    			// 'email.unique'      	=> 'Email Already Taken',
     		];
         }
         else{
              $rules=[
-    			'email' => "unique:firms,email,".$Request->email,
+    			// 'email' => "unique:firms,email,".$Request->email,
     		];
-    
+
     		$customs=[
-    			'email.unique'      	=> 'Email Already Taken',
+    			// 'email.unique'      	=> 'Email Already Taken',
     		];
         }
 
@@ -389,44 +333,45 @@ class FirmController extends Controller
             # code...
             $cname[] = $value['cname'];$ctitle[] = $value['ctitle'];$cemail[] = $value['cemail'];$cmobile[] = $value['cmobile'];$cphone[] = $value['cphone'];
         }
-        $days = isset($Request->kt_docs_repeater_nested_outer[0]['kt_docs_repeater_nested_inner'])?$Request->kt_docs_repeater_nested_outer[0]['kt_docs_repeater_nested_inner']:[];
-       
-        
-        $sunday = [];
-        $monday = [];
-        $tuesday = [];
-        $wednesday = [];
-        $thursday = [];
-        $friday = [];
-        $saturday = [];
-       
+        // $days = isset($Request->kt_docs_repeater_nested_outer[0]['kt_docs_repeater_nested_inner'])?$Request->kt_docs_repeater_nested_outer[0]['kt_docs_repeater_nested_inner']:[];
 
 
-        foreach ($days as $key => $value) {
-            # code...
-          
-            if(isset($value['sunday_from'])) $sunday[] = ['sunday_from'=>$value['sunday_from'],'sunday_to'=>$value['sunday_to'],'day'=>'sunday'];
-            if(isset($value['monday_from'])) $monday[] = ['monday_from'=>$value['monday_from'],'monday_to'=>$value['monday_to'],'day'=>'monday'];
-            if(isset($value['tuesday_from'])) $tuesday[] = ['tuesday_from'=>$value['tuesday_from'],'tuesday_to'=>$value['tuesday_to'],'day'=>'tuesday'];
-            if(isset($value['wednesday_from'])) $wednesday[] = ['wednesday_from'=>$value['wednesday_from'],'wednesday_to'=>$value['wednesday_to'],'day'=>'wednesday'];
-            if(isset($value['thursday_from'])) $thursday[] = ['thursday_from'=>$value['thursday_from'],'thursday_to'=>$value['thursday_to'],'day'=>'thursday'];
-            if(isset($value['friday_from'])) $friday[] = ['friday_from'=>$value['friday_from'],'friday_to'=>$value['friday_to'],'day'=>'friday'];
-            if(isset($value['saturday_from'])) $saturday[] = ['saturday_from'=>$value['saturday_from'],'saturday_to'=>$value['saturday_to'],'day'=>'saturday'];
-        }
+        // $sunday = [];
+        // $monday = [];
+        // $tuesday = [];
+        // $wednesday = [];
+        // $thursday = [];
+        // $friday = [];
+        // $saturday = [];
 
-        $Request['sunday'] = json_encode($sunday);
-        $Request['monday'] = json_encode($monday);
-        $Request['tuesday'] = json_encode($tuesday);
-        $Request['wednesday'] = json_encode($wednesday);
-        $Request['thursday'] = json_encode($thursday);
-        $Request['friday'] = json_encode($friday);
-        $Request['saturday'] = json_encode($saturday);
+
+
+        // foreach ($days as $key => $value) {
+        //     # code...
+
+        //     if(isset($value['sunday_from'])) $sunday[] = ['sunday_from'=>$value['sunday_from'],'sunday_to'=>$value['sunday_to'],'day'=>'sunday'];
+        //     if(isset($value['monday_from'])) $monday[] = ['monday_from'=>$value['monday_from'],'monday_to'=>$value['monday_to'],'day'=>'monday'];
+        //     if(isset($value['tuesday_from'])) $tuesday[] = ['tuesday_from'=>$value['tuesday_from'],'tuesday_to'=>$value['tuesday_to'],'day'=>'tuesday'];
+        //     if(isset($value['wednesday_from'])) $wednesday[] = ['wednesday_from'=>$value['wednesday_from'],'wednesday_to'=>$value['wednesday_to'],'day'=>'wednesday'];
+        //     if(isset($value['thursday_from'])) $thursday[] = ['thursday_from'=>$value['thursday_from'],'thursday_to'=>$value['thursday_to'],'day'=>'thursday'];
+        //     if(isset($value['friday_from'])) $friday[] = ['friday_from'=>$value['friday_from'],'friday_to'=>$value['friday_to'],'day'=>'friday'];
+        //     if(isset($value['saturday_from'])) $saturday[] = ['saturday_from'=>$value['saturday_from'],'saturday_to'=>$value['saturday_to'],'day'=>'saturday'];
+        // }
+
+        // $Request['sunday'] = json_encode($sunday);
+        // $Request['monday'] = json_encode($monday);
+        // $Request['tuesday'] = json_encode($tuesday);
+        // $Request['wednesday'] = json_encode($wednesday);
+        // $Request['thursday'] = json_encode($thursday);
+        // $Request['friday'] = json_encode($friday);
+        // $Request['saturday'] = json_encode($saturday);
 
         $Request['cname'] = \implode(',',$cname);
         $Request['ctitle'] = \implode(',',$ctitle);
         $Request['cemail'] = \implode(',',$cemail);
         $Request['cmobile'] = \implode(',',$cmobile);
         $Request['cphone'] = \implode(',',$cphone);
+        $Request['categorie_id'] = \implode(',',$Request->categorie_id);
 
         if(Storage::disk('public_custom')->exists("/uploadFiles/temp/$Request->logo")){
             Storage::disk('public_custom')->move("/uploadFiles/temp/$Request->logo","/uploadFiles/logo/$Request->logo");

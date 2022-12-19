@@ -1,100 +1,31 @@
 <x-base-layout>
     @include('history.appointment.view_model')
-
-    <div id="kt_engage_demos" class="bg-body" data-kt-drawer="true" data-kt-drawer-name="explore" data-kt-drawer-activate="true" data-kt-drawer-overlay="true" data-kt-drawer-width="{default:'350px', 'lg': '475px'}" data-kt-drawer-direction="end" data-kt-drawer-toggle="#kt_engage_demos_toggle" data-kt-drawer-close="#kt_engage_demos_close">
-        <!--begin::Card-->
-        <div class="card shadow-none rounded-0 w-100">
-            <!--begin::Header-->
-            <div class="card-header" id="kt_engage_demos_header" hidden>
-                <h3 class="card-title fw-bolder text-gray-700">Advanced Search</h3>
-                <div class="card-toolbar">
-                    <button type="button" class="btn btn-sm btn-icon btn-active-color-primary h-40px w-40px me-n6" id="kt_engage_demos_close">
-                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
-                        <span class="svg-icon svg-icon-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor" />
-                                <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="currentColor" />
-                            </svg>
-                        </span>
-                        <!--end::Svg Icon-->
-                    </button>
+<div class="modal fade" id="Info-model" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered mw-650px">
+        <div class="modal-content rounded">
+            <div class="modal-header pb-0 border-0 justify-content-end">
+                <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                    <span class="svg-icon svg-icon-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
+                                transform="rotate(-45 6 17.3137)" fill="currentColor" />
+                            <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                                fill="currentColor" />
+                        </svg>
+                    </span>
                 </div>
             </div>
-            <!--end::Header-->
-            <!--begin::Body-->
-            <div class="card-body" id="kt_engage_demos_body">
-                <!--begin::Content-->
-                <div id="kt_explore_scroll" class="scroll-y me-n5 pe-5" data-kt-scroll="true" data-kt-scroll-height="auto" data-kt-scroll-wrappers="#kt_engage_demos_body" data-kt-scroll-dependencies="#kt_engage_demos_header" data-kt-scroll-offset="5px">
-                    <!--begin::Wrapper-->
-                    <div class="fv-row mb-12" hidden>
-                        <select class="form-select form-select-solid" data-control="select2" data-placeholder="Search option" data-allow-clear="true" id="filter" multiple="multiple">
-                            <option value="country_name">Country Name</option>
-                            <option value="state_name">State Name</option>
-                            <option value="city_name">City Name</option>
-                        </select>
-                    </div>
-                    <div class="row">
-                        <div class="col-xxl-10" data-id-filter="country_name" hidden>
-                            <label class="fs-6 form-label fw-bolder text-dark">Country Name</label>
-                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='1' />
-                        </div>
-                        <div class="col-xxl-10" data-id-filter="state_name" hidden>
-                            <label class="fs-6 form-label fw-bolder text-dark">State Name</label>
-                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='2' />
-                        </div>
-                        <div class="col-xxl-10" data-id-filter="city_name" hidden>
-                            <label class="fs-6 form-label fw-bolder text-dark">City Name</label>
-                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='3' />
-                        </div>
-                    </div>
-                    <div class="rounded py-4 px-6 mb-5" hidden id="search_div">
-                        <button type="button" id="search_two" class="btn btn-primary me-5">Search</button>
-                    </div>
-                </div>
+            <div class="modal-body scroll-y px-10 px-lg-15 pt-0 pb-15">
+                <div class="text-muted fw-bold fs-5"><a href="#" class="link-primary fw-bolder">Accept</a> -- Accept Booking</div>
+                <div class="text-muted fw-bold fs-5"><a href="#" class="link-primary fw-bolder">Reject </a> -- Reject Booking</div>
+                <div class="text-muted fw-bold fs-5"><a href="#" class="link-primary fw-bolder">Cancelled By Consultant</a> -- Customer Refund Accepted</div>
+                <div class="text-muted fw-bold fs-5"><a href="#" class="link-primary fw-bolder">Cancelled By customer</a> -- Refund base on Admin Cancelled time</div>
+                <div class="text-muted fw-bold fs-5"><a href="#" class="link-primary fw-bolder">No Show By Customer</a> -- No refund for customer</div>
+                <div class="text-muted fw-bold fs-5"><a href="#" class="link-primary fw-bolder">No Show By Consultant</a> -- Refund for customer</div>
             </div>
         </div>
     </div>
-
-    <div id="kt_engage_demos1" class="bg-body" data-kt-drawer="true" data-kt-drawer-name="explore" data-kt-drawer-activate="true" data-kt-drawer-overlay="true" data-kt-drawer-width="{default:'350px', 'lg': '475px'}" data-kt-drawer-direction="end" data-kt-drawer-toggle="#kt_engage_demos1_toggle" data-kt-drawer-close="#kt_engage_demos1_close">
-        <!--begin::Card-->
-        <div class="card shadow-none rounded-0 w-100">
-            <!--begin::Header-->
-            <div class="card-header" id="kt_engage_demos1_header">
-                <h3 class="card-title fw-bolder text-gray-700">Filter</h3>
-                <div class="card-toolbar">
-                    <button type="button" class="btn btn-sm btn-icon btn-active-color-primary h-40px w-40px me-n6" id="kt_engage_demos1_close">
-                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
-                        <span class="svg-icon svg-icon-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor" />
-                                <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="currentColor" />
-                            </svg>
-                        </span>
-                        <!--end::Svg Icon-->
-                    </button>
-                </div>
-            </div>
-            <!--end::Header-->
-            <!--begin::Body-->
-            <div class="card-body" id="kt_engage_demos1_body" hidden>
-                <!--begin::Content-->
-                <div id="kt_explore_scroll" class="scroll-y me-n5 pe-5" data-kt-scroll="true" data-kt-scroll-height="auto" data-kt-scroll-wrappers="#kt_engage_demos1_body" data-kt-scroll-dependencies="#kt_engage_demos1_header" data-kt-scroll-offset="5px">
-                    <!--begin::Wrapper-->
-                    <div class="fv-row mb-12">
-                        <select class="form-select" id="toogleColum" data-control="select2" data-placeholder="Toggle column" multiple="multiple">
-                            <option></option>
-                            <option selected value="0">#</option>
-                            <option selected value="1">Title</option>
-                            <option selected value="2">Create Date</option>
-                            <option selected value="3">Status</option>
-                            <option selected hidden value="4">Action</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
+</div>
 
     <div class="d-flex flex-column flex-column-fluid">
         <!--begin::Toolbar-->
@@ -172,7 +103,7 @@
                         </div>
                        <!--begin::Card toolbar-->
                        <div id="selecterDiv_two" class="card-toolbar" style="flex-wrap: nowrap;">
-                           <label class="col-lg-4 fw-bold text-muted">Action<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" title="" data-bs-original-title="Cancelled by customer <br/>" aria-label="Cancelled by customer <br/>"></i></label>
+                           <label class="col-lg-4 fw-bold text-muted">Action<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="modal" data-bs-target="#Info-model"></i></label>
                             <div data-select2-id="select2-data-131-2zax">
                                 <select id="Bookingaction" class="form-select" data-control="select2" data-placeholder="select an option">
                                     <option></option>

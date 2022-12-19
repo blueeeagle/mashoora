@@ -64,11 +64,15 @@
                                         <label class="required form-label fs-6 mb-4" >Email Id / Username</label>
                                         <input type="text" name="email" class="form-control form-control-solid mb-4" placeholder="Email" value="{{$user->email}}"required />
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <label class="form-label fs-6 mb-4" >Profile Picture </label>
                                         <div class="col-md-6">
                                             @include('components.imagecrop',['name'=>'picture','imgsrc'=>$user->picture])
                                         </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="required form-label fs-6 mb-4" >Two Way Aunthentication</label> <br>
+                                        <input type="checkbox" class="form-check-input mb-4 " name="is_two_way_auth" @if($user->is_two_way_auth==2) checked @endif value="2">
                                     </div>
                                 </div>
 

@@ -102,6 +102,7 @@ Route::prefix('customer')->middleware('Apiauth:customer')->group(function () {
         Route::get('/getoffer/offer', [CustomerController::class, 'offer']);
         Route::get('/applyoffer/{offer}', [CustomerController::class, 'Applyoffer']);
         Route::get('/get/promo', [CustomerController::class, 'Discount']);
+        Route::get('/removediscount', [CustomerController::class, 'removediscount']);
         Route::get('/verifi/promo', [CustomerController::class, 'ApplyDiscount']);
         Route::post('/appointment/schedule', [CustomerController::class, 'appointment']);
         Route::post('/appointment/reschedule/{Appointment}', [CustomerController::class, 'AppointmentReschedule']);
@@ -136,19 +137,6 @@ Route::prefix('customer')->middleware('Apiauth:customer')->group(function () {
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Mashoora API
 
 Route::post('/consultant/login', [ConsultantController::class, 'login']);
@@ -159,6 +147,8 @@ Route::prefix('consultant')->middleware('Apiauth:consultant')->group(function ()
     //profile update
     Route::prefix('profile')->group(function () {
         Route::post('/storeProfile', [ConsultantController::class, 'storeProfile']);
+        Route::post('/bankupdate', [ConsultantController::class, 'bankupdate']);
+        Route::post('/update/phone', [ConsultantController::class, 'updateuserphone']);
         Route::get('/documents', [ConsultantController::class, 'getdocuments']);
         Route::get('/speclizatioi', [ConsultantController::class, 'getspeclization']);
         Route::get('/insurance', [ConsultantController::class, 'getinsurance']);
@@ -206,7 +196,17 @@ Route::prefix('consultant')->middleware('Apiauth:consultant')->group(function ()
     Route::resource('discounts', DiscountController::class)->only(['index','create','destroy','store','edit']);
     Route::post('/discounts/update/{discount}', [DiscountController::class, 'update']);
 
-
+    //Pay_Out
+    Route::prefix('pay/out')->group(function () {
+        Route::get('/', [ConsultantController::class, 'payoutindex']);
+        Route::post('/request', [ConsultantController::class, 'payoutrequest']);
+    });
+    
+    //Agora Token
+    Route::prefix('agora')->group(function () {
+        Route::get('/token/{Appointment}', [ConsultantController::class, 'startsession']);
+        Route::get('/recreate/{Appointment}', [ConsultantController::class, 'recreatesession']);
+    });
 
 });
 

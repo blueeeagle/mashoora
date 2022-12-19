@@ -10,6 +10,7 @@ class Review extends Model
     use HasFactory;
 
     protected $fillable = ['consultant_id','customer_id','comments','rating'];
+    protected $appends = ['createdate'];
     
     public function customer(){
         return $this->belongsTo(Customer::class,'customer_id');
@@ -17,5 +18,8 @@ class Review extends Model
     public function consultant(){
         return $this->belongsTo(Consultant::class,'consultant_id');
     }
-
+    
+    public function getCreatedateAttribute(){
+        return date('Y-m-d',strtotime($this->created_at));
+    }
 }

@@ -226,7 +226,7 @@ class CustomerController extends Controller
                 return  date('D-m-Y',strtotime($datas->created_at));
             })  
             ->addColumn('amount', function(Payment $datas) {                
-                return  $datas->customer->country->currency->currencycode.' '.$datas->amount;
+                return  number_format($datas->amount,2);
             })  
             ->addColumn('type', function(Payment $datas) {  
                 if($datas->type=='add')

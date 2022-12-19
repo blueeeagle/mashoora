@@ -63,9 +63,7 @@ class OfferController extends Controller
         if(isset($Request->has_validity)) $offer->has_validity = $Request->has_validity;
         if(isset($Request->from_date)) $offer->from_date = $Request->from_date;
         if(isset($Request->to_date)) $offer->to_date = $Request->to_date;
-        $category_id = $Request->sub_category_id;
-        $category_id[] = $Request->category_id;
-        $offer->category_id = \implode(',',$category_id);
+        $offer->category_id = \implode(',',array_merge($Request->sub_category_id,$Request->category_id));
         $offer->status = (isset($Request->status)?1:0);
 
         if($Request->has('image')){
@@ -111,8 +109,7 @@ class OfferController extends Controller
         if(isset($Request->has_validity)) $offer->has_validity = $Request->has_validity;
         if(isset($Request->from_date)) $offer->from_date = $Request->from_date;
         if(isset($Request->to_date)) $offer->to_date = $Request->to_date;
-        $offer->category_id = \implode(',',$Request->category_id);
-        $offer->sub_category_id = \implode(',',$Request->sub_category_id);
+        $offer->category_id = \implode(',',array_merge($Request->sub_category_id,$Request->category_id));
         $offer->status = (isset($Request->status)?1:0);
 
         if($Request->has('image')){
@@ -125,9 +122,7 @@ class OfferController extends Controller
     }
 
     public function edit(Request $request, Offer $offer){
-        $sub = explode(',',$offer->category_id);
-        $offer->{'parent_Cat'} = $offer->parentcat();
-        $offer->{'sub_Cat'} = $offer->subcat();
+        
         $category = Category::where('type',0)->where('status',1)->whereIn('id',explode(",",Auth::guard('consultant')->user()->categorie_id))->first();
         $subcategory = Category::where('type',1)->where('status',1)->where('categories_id',$category->id)->get();
 

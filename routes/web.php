@@ -40,6 +40,9 @@ use App\Http\Controllers\WalletController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\PayInApprovalController;
 use App\Http\Controllers\PayOutApprovalController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\Adminpaymentcontroller;
+use App\Http\Controllers\DashboadController;
 use Illuminate\Support\Facades\Route;
 //arun
 /*
@@ -57,30 +60,42 @@ use Illuminate\Support\Facades\Route;
 //     return redirect('index');
 // });
 
-$menu = theme()->getMenu();
+// $menu = theme()->getMenu();
 
-array_walk($menu, function ($val) {
-    if (isset($val['path'])) {
-        $route = Route::get($val['path'], [PagesController::class, 'index']);
-        // Exclude documentation from auth middleware
-        if (!Str::contains($val['path'], 'documentation')) {
-            $route->middleware('auth');
+// array_walk($menu, function ($val) {
+//     if (isset($val['path'])) {
+//         $route = Route::get($val['path'], [PagesController::class, 'index']);
+//         // Exclude documentation from auth middleware
+//         if (!Str::contains($val['path'], 'documentation')) {
+//             $route->middleware('auth');
 
-        }
-    }
-});
+//         }
+//     }
+// });
+
+Route::Post('get-user', [helperController::class, 'get_user'])->name('get-user');
+Route::get('email', [helperController::class, 'email'])->name('email');
+
+Route::get('send-email', [helperController::class, 'send_email'])->name('send-email');
 
 // Documentations pages
 Route::prefix('documentation')->group(function () {
     Route::get('getting-started/references', [ReferencesController::class, 'index']);
     Route::get('getting-started/changelog', [PagesController::class, 'index']);
 });
-
-Route::Post('uploadimage', [helperController::Class,'uploadimage'])->name('help.uploadimage');
-
+Route::prefix('helper')->group(function () {
+    Route::Post('uploadimage', [helperController::Class,'uploadimage'])->name('help.uploadimage');
+    Route::Post('get/child/category', [helperController::Class,'getchild'])->name('help.getchildcategory');
+});
 
 
 Route::middleware('auth')->group(function () {
+    //Dashboad
+    Route::get('/', [DashboadController::class, 'index']);
+    Route::prefix('dashboad/data')->group(function () {
+        Route::post('customer', [DashboadController::class, 'customer_filter'])->name('dashboad.customer');
+        Route::post('consultant', [DashboadController::class, 'consultant_filter'])->name('dashboad.consultant');
+    });
     // Account pages
     Route::prefix('account')->group(function () {
         Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
@@ -160,6 +175,16 @@ Route::middleware('auth')->group(function () {
         Route::Post('companysettings/settingupdate', [CompanysettingsController::Class,'settingupdate'])->name('companysettings.settingupdate');
         Route::Post('companysettings/contactupdate', [CompanysettingsController::Class,'contactupdate'])->name('companysettings.contactupdate');
     });
+    
+    //notification
+    Route::prefix('notification')->name('notification.')->group(function () {
+        Route::get('notification-setting', [NotificationController::Class,'index'])->name('notification-setting');
+        Route::Post('notification-store', [NotificationController::Class,'store'])->name('notification.store');
+        Route::Post('template-store', [NotificationController::Class,'template_store'])->name('notification.template-store');
+        Route::get('variables/{value}', [NotificationController::Class,'variables'])->name('variables');
+        Route::get('template/{value}', [NotificationController::Class,'template'])->name('template');
+    });
+    
     //Others
     Route::prefix('other')->name('other.')->group(function () {
         Route::resource('article', ArticelController::Class)->only(['create','store','index','edit','destroy']);
@@ -248,6 +273,8 @@ Route::middleware('auth')->group(function () {
         Route::Post('consultant/update/{consultant}', [ConsultantController::Class,'update'])->name('consultant.update');
         Route::Post('consultant/modelcategory/', [ConsultantController::Class,'modelcategory'])->name('modelcategory');
         Route::Post('consultant/transactiondatatable/', [ConsultantController::Class,'transactiondatatable'])->name('consultant.transactiondatatable');
+        Route::Post('consultant/appointmentdatatable',[ConsultantController::Class,'appointmentdatatable'])->name('consultant.appointmentdatatable');
+
     });
     //schedule
     Route::prefix('activities')->name('activities.')->group(function () {
@@ -293,9 +320,12 @@ Route::middleware('auth')->group(function () {
         
         Route::resource('pay_in', PayInApprovalController::Class)->only(['index']);
         Route::Post('pay_in/datatable',[PayInApprovalController::Class,'datatables'])->name('pay_in.datatable');
-         Route::Post('pay_in/status/', [PayInApprovalController::Class,'status'])->name('pay_in.status');
+        Route::Post('pay_in/status/', [PayInApprovalController::Class,'status'])->name('pay_in.status');
         Route::get('pay_in/view', [PayInApprovalController::Class,'view'])->name('pay_in.view');
 
+        Route::post('pay_in/offerDatatable',[PayInApprovalController::Class,'offerDatatable'])->name('pay_in.offerDatatable');
+        Route::Post('pay_in/offstatus/', [PayInApprovalController::Class,'offstatus'])->name('pay_in.offstatus');
+        
         Route::resource('pay_out', PayOutApprovalController::Class)->only(['index']);
         Route::Post('pay_out/datatable',[PayOutApprovalController::Class,'datatables'])->name('pay_out.datatable');
         Route::Post('pay_out/status/', [PayOutApprovalController::Class,'status'])->name('pay_out.status');
@@ -312,7 +342,7 @@ Route::middleware('auth')->group(function () {
     //history
   
     Route::get('offer', [OfferHistoryController::Class,'index'])->name('history.offer');
-    Route::Post('offer/datatable',[OfferHistoryController::Class,'datatable'])->name('history.offer.datatable');
+    Route::Post('offer/datatable/{id?}/{type?}',[OfferHistoryController::Class,'datatable'])->name('history.offer.datatable');
         
     Route::get('purchase',[PurchaseHistoryController::Class,'index'])->name('history.purchase');
     Route::Post('purchase/datatable',[PurchaseHistoryController::Class,'datatable'])->name('history.purchase.datatable');
@@ -324,11 +354,19 @@ Route::middleware('auth')->group(function () {
     Route::get('appointment/view',[AppointmentController::Class,'view'])->name('appointment.history.view');
     
     
-    Route::get('review', [ReviewRatingController::Class,'index'])->name('review');
-    Route::Post('review/datatable',[ReviewRatingController::Class,'datatable'])->name('review.datatable');
+    Route::get('reviews', [ReviewRatingController::Class,'index'])->name('review');
+    Route::post('reviews/delete/review', [ReviewRatingController::Class,'delete'])->name('review.delete');
+    Route::Post('review/datatable/{consultant?}',[ReviewRatingController::Class,'datatable'])->name('review.datatable');
+    Route::Post('review/datatable/{customer}',[ReviewRatingController::Class,'datatable_customer'])->name('review.datatable_customer');
 
+    Route::get('admin/wallet', [Adminpaymentcontroller::Class,'index'])->name('admin.wallet');
+    Route::Post('admin/wallet/datatable/',[Adminpaymentcontroller::Class,'datatable'])->name('admin.wallet.datatable');
     
-
+    Route::get('revenue', [Adminpaymentcontroller::Class,'revenue'])->name('revenue');
+    Route::post('chartrevenue', [Adminpaymentcontroller::Class,'chartrevenue'])->name('chartrevenue');
+    
+    Route::get('appChart', [Adminpaymentcontroller::Class,'appChart'])->name('appChart');
+    Route::post('appChartdata', [Adminpaymentcontroller::Class,'appChartdata'])->name('appChartdata');
 });
 
 Route::resource('users', UsersController::class);

@@ -9,6 +9,7 @@ use App\Models\State;
 use App\Models\City;
 use App\Models\Consultant;
 use App\Models\Offer;
+use App\Models\Video;
 
 class Firm extends Model
 {
@@ -27,8 +28,11 @@ class Firm extends Model
                         public function city(){
                             return $this->belongsTo(City::class);
                        }
-public function consultant(){
+    public function consultant(){
         return $this->hasMany(Consultant::class,'firm_choose','id');
+    }
+    public function videos(){
+        return $this->hasMany(Video::class,'firm_id','id')->where('status',1)->orderBy('sort_no');
     }
     public function offer()
     {

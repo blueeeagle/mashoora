@@ -1,5 +1,5 @@
 <x-base-layout>
-    @include('approval.pay_approvals.view_modeForPayIn')
+    @include('history.appointment.view_model')
 
     <div class="d-flex flex-column flex-column-fluid">
         <!--begin::Toolbar-->
@@ -34,6 +34,16 @@
                 <div class="d-flex align-items-center gap-2 gap-lg-3">
                     <!--begin::Filter menu-->
                     <div class="m-0">
+                        <ul class="nav nav-tabs nav-line-tabs fs-6">
+                            <li class="nav-item">
+                                <a class="btn btn-sm btn-flex bg-body btn-color-gray-700 btn-active-color-primary fw-bold active" data-bs-toggle="tab" href="#app_tab">Appointment</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-sm btn-flex bg-body btn-color-gray-700 btn-active-color-primary fw-bold" data-bs-toggle="tab" href="#offer_tab">Offer</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="m-0">
                         <!--begin::Menu toggle-->
                          <!--begin::Filter-->
                         <button type="button" id="kt_engage_demos1_toggle" class="btn btn-sm btn-flex bg-body btn-color-gray-700 btn-active-color-primary fw-bold" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
@@ -63,52 +73,121 @@
         <div id="kt_app_content" class="app-content flex-column-fluid">
             <!--begin::Content container-->
             <div id="kt_app_content_container" class="app-container container-xxl">
-                <!--begin::Card-->
-                <div class="card">
-                    <!--begin::Card header-->
-                    <div class="card-header border-0">
-                        <!--begin::Card title-->
-                        <div class="card-title">
-                            <button class="btn btn-success me-5 btn-sm" data-rendering value="Approved">Approved List</button>
-                            <button class="btn btn-danger me-5 btn-sm" data-rendering value="Decline">Declined List</button>
-                        </div>
-                     
-                    </div>
-                    <!--end::Card header-->
-                    <!--begin::Card body-->
-                    <div class="card-body pt-0">
-                        <!--begin::Table-->
-                        <div id="kt_customers_table_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
-                            <div class="table-responsive" style="margin-top:-25px;">
-                                <table class="table table-row-bordered table-row-dashed gy-5" id="kt_customers_table">
-                                    <thead>
-                                        <tr class="fw-semibold fs-6 text-gray-800">
-                                            <th>#</th>
-                                            <th>Booking Info</th>
-                                            <th>Consultant Info</th>
-                                            <th>Customer Info</th>
-                                            <th>Consultant Amount</th>
-                                            <th>Customer Amount</th>
-                                            <th>Pay In Approval</th>
-                                            <th>Booking Status</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                     <tfoot>
-                                        <tr>
-                                            <td colspan="7"></td>
-                                            <td><button class="btn btn-danger btn-sm" data-app  value="Decline" id="decline">Decline</button></th>
-                                            <td><button class="btn btn-success btn-sm" data-decline  value="Approve" id="approve">Approve</button></th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                                
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="app_tab" role="tabpanel">
+                        <!--begin::Card-->
+                        <div class="card">
+                            <!--begin::Card header-->
+                            <div class="card-header border-0">
+                                <!--begin::Card title-->
+                                <div class="card-title">
+                                    <button class="btn btn-primary me-5 btn-sm" data-rendering="booking" value="Pending">
+                                        <span data-apptick="Pending" class="svg-icon svg-icon-muted svg-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                            <path d="M9.89557 13.4982L7.79487 11.2651C7.26967 10.7068 6.38251 10.7068 5.85731 11.2651C5.37559 11.7772 5.37559 12.5757 5.85731 13.0878L9.74989 17.2257C10.1448 17.6455 10.8118 17.6455 11.2066 17.2257L18.1427 9.85252C18.6244 9.34044 18.6244 8.54191 18.1427 8.02984C17.6175 7.47154 16.7303 7.47154 16.2051 8.02984L11.061 13.4982C10.7451 13.834 10.2115 13.834 9.89557 13.4982Z" fill="currentColor"></path>
+                                                </svg></span>Pending List</button>
+                                    <button class="btn btn-success me-5 btn-sm" data-rendering="booking" value="Approved">
+                                        <span data-apptick="Approved" hidden class="svg-icon svg-icon-muted svg-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                            <path d="M9.89557 13.4982L7.79487 11.2651C7.26967 10.7068 6.38251 10.7068 5.85731 11.2651C5.37559 11.7772 5.37559 12.5757 5.85731 13.0878L9.74989 17.2257C10.1448 17.6455 10.8118 17.6455 11.2066 17.2257L18.1427 9.85252C18.6244 9.34044 18.6244 8.54191 18.1427 8.02984C17.6175 7.47154 16.7303 7.47154 16.2051 8.02984L11.061 13.4982C10.7451 13.834 10.2115 13.834 9.89557 13.4982Z" fill="currentColor"></path>
+                                                </svg></span>Approved List</button>
+                                    <button class="btn btn-danger me-5 btn-sm" data-rendering="booking" value="Decline">
+                                        <span data-apptick="Decline" hidden class="svg-icon svg-icon-muted svg-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                            <path d="M9.89557 13.4982L7.79487 11.2651C7.26967 10.7068 6.38251 10.7068 5.85731 11.2651C5.37559 11.7772 5.37559 12.5757 5.85731 13.0878L9.74989 17.2257C10.1448 17.6455 10.8118 17.6455 11.2066 17.2257L18.1427 9.85252C18.6244 9.34044 18.6244 8.54191 18.1427 8.02984C17.6175 7.47154 16.7303 7.47154 16.2051 8.02984L11.061 13.4982C10.7451 13.834 10.2115 13.834 9.89557 13.4982Z" fill="currentColor"></path>
+                                                </svg></span>Declined List</button>
+                                </div>
                             </div>
-                            
+                            <!--end::Card header-->
+                            <!--begin::Card body-->
+                            <div class="card-body pt-0 ">
+                                <!--begin::Table-->
+                                <div id="kt_customers_table_wrapper_12" class="dataTables_wrapper dt-bootstrap4 no-footer">
+                                    <div class="table-responsive" style="margin-top:-25px;">
+                                        <table class="table table-row-bordered table-row-dashed gy-5" id="kt_customers_table">
+                                            <thead>
+                                                <tr class="fw-semibold fs-6 text-gray-800">
+                                                    <th>#</th>
+                                                    <th>Booking Info</th>
+                                                    <th>Consultant Info</th>
+                                                    <th>Customer Info</th>
+                                                    <th>Consultant Amount</th>
+                                                    <th>Customer Amount</th>
+                                                    <th>Pay In Approval</th>
+                                                    <th>Booking Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                             <tfoot>
+                                                <tr>
+                                                    <td colspan="7"></td>
+                                                    <td><button class="btn btn-danger btn-sm" data-app  value="Decline" id="decline">Decline</button></th>
+                                                    <td><button class="btn btn-success btn-sm" data-decline  value="Approve" id="approve">Approve</button></th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                        
+                                    </div>
+        
+                                </div>
+                            </div>
+                            <!--end::Card body-->
                         </div>
                     </div>
-                    <!--end::Card body-->
-                </div> 
+                    <div class="tab-pane fade" id="offer_tab" role="tabpanel">
+                        <!--begin::Card-->
+                        <div class="card">
+                            <!--begin::Card header-->
+                            <div class="card-header border-0">
+                                <!--begin::Card title-->
+                                <div class="card-title">
+                                    <button class="btn btn-primary me-5 btn-sm" data-rendering="offer" value="Pending">
+                                        <span data-offtick="Pending" class="svg-icon svg-icon-muted svg-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                            <path d="M9.89557 13.4982L7.79487 11.2651C7.26967 10.7068 6.38251 10.7068 5.85731 11.2651C5.37559 11.7772 5.37559 12.5757 5.85731 13.0878L9.74989 17.2257C10.1448 17.6455 10.8118 17.6455 11.2066 17.2257L18.1427 9.85252C18.6244 9.34044 18.6244 8.54191 18.1427 8.02984C17.6175 7.47154 16.7303 7.47154 16.2051 8.02984L11.061 13.4982C10.7451 13.834 10.2115 13.834 9.89557 13.4982Z" fill="currentColor"></path>
+                                                </svg></span>Pending List</button>
+                                    <button class="btn btn-success me-5 btn-sm" data-rendering="offer" value="Approved">
+                                        <span data-offtick="Approved" hidden class="svg-icon svg-icon-muted svg-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                            <path d="M9.89557 13.4982L7.79487 11.2651C7.26967 10.7068 6.38251 10.7068 5.85731 11.2651C5.37559 11.7772 5.37559 12.5757 5.85731 13.0878L9.74989 17.2257C10.1448 17.6455 10.8118 17.6455 11.2066 17.2257L18.1427 9.85252C18.6244 9.34044 18.6244 8.54191 18.1427 8.02984C17.6175 7.47154 16.7303 7.47154 16.2051 8.02984L11.061 13.4982C10.7451 13.834 10.2115 13.834 9.89557 13.4982Z" fill="currentColor"></path>
+                                                </svg></span>Approved List</button>
+                                    <button class="btn btn-danger me-5 btn-sm" data-rendering="offer" value="Decline">
+                                        <span data-offtick="Decline" hidden class="svg-icon svg-icon-muted svg-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                            <path d="M9.89557 13.4982L7.79487 11.2651C7.26967 10.7068 6.38251 10.7068 5.85731 11.2651C5.37559 11.7772 5.37559 12.5757 5.85731 13.0878L9.74989 17.2257C10.1448 17.6455 10.8118 17.6455 11.2066 17.2257L18.1427 9.85252C18.6244 9.34044 18.6244 8.54191 18.1427 8.02984C17.6175 7.47154 16.7303 7.47154 16.2051 8.02984L11.061 13.4982C10.7451 13.834 10.2115 13.834 9.89557 13.4982Z" fill="currentColor"></path>
+                                                </svg></span>Declined List</button>
+                                </div>
+                            </div>
+                            <!--end::Card header-->
+                            <!--begin::Card body-->
+                            <div class="card-body pt-0 ">
+                                <!--begin::Table-->
+                                <div id="kt_customers_table_wrapper_12" class="dataTables_wrapper dt-bootstrap4 no-footer">
+                                    <div class="table-responsive" style="margin-top:-25px;">
+                                        <table class="table table-row-bordered table-row-dashed gy-5" id="kt_customers_offer">
+                                            <thead>
+                                                <tr class="fw-semibold fs-6 text-gray-800">
+                                                    <th>#</th>
+                                                    <th>Offer Info</th>
+                                                    <th>Consultant Info</th>
+                                                    <th>Customer Info</th>
+                                                    <th>Consultant Amount</th>
+                                                    <th>Customer Amount</th>
+                                                    <th>Offer Pay In</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                             <tfoot>
+                                                <tr>
+                                                    <td colspan="6"></td>
+                                                    <td><button class="btn btn-danger btn-sm" data-appoffer  value="Decline" id="decline">Decline</button></th>
+                                                    <td><button class="btn btn-success btn-sm" data-declineoffer  value="Approve" id="approve">Approve</button></th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+        
+                                    </div>
+        
+                                </div>
+                            </div>
+                            <!--end::Card body-->
+                        </div>
+                    </div>
+                </div>
             </div>
             <!--end::Content container-->
         </div>
@@ -119,52 +198,11 @@
 
 <script>
     const appurl = `{{route('approval.pay_in.datatable')}}`;
-    const View = `{{ route('approval.pay_in.view') }}`
+    const offurl = `{{route('approval.pay_in.offerDatatable')}}`;
+    const View = `{{ route('appointment.history.view') }}`
     const AppStatus = "{{ route('approval.pay_in.status') }}"
-
-    // var checked =[];
-    // // var table = null;
-    // var bulkaction = [];
-//     const update_approval = function(e){
-   
-//    console.log(bulkaction)
-//     Swal.fire({
-//     text: 'Change Status',
-//     icon: "warning",
-//     showCancelButton: !0,
-//     buttonsStyling: !1,
-//     confirmButtonText: "Yes, Update!",
-//     cancelButtonText: "No, cancel",
-//     customClass: {
-//         confirmButton: "btn fw-bold btn-danger",
-//         cancelButton: "btn fw-bold btn-active-light-primary"
-//     }
-//     }).then((function (t) {
-//         if(t.value){
-//             $.ajax({
-//                 url: "{{ route('approval.pay_in.status')}}",
-//                 method:"post",
-//                 data:{
-//                     "_token": csrf,
-//                     id:bulkaction,
-//                     status:e.value
-//                 },
-//                 success:function(data){
-//                     if(data.status){
-//                         bulkaction = [];
-//                         Switealert((data.status)?data.msg:'error',(data.status)?'success':'error')
-//                         ref()
-//                     }else{
-//                         Switealert('','error')
-//                     }
-//                 }
-//             })
-//         }
-//     }))
-// }
-        
-
-    </script>
+    const offerStatus = "{{ route('approval.pay_in.offstatus') }}"
+</script>
 @endsection
 </x-base-layout>
 

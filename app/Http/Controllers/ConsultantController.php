@@ -21,6 +21,7 @@ use App\Models\Companysetting;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Wallet;
+use App\Models\Appointment;
 
 class ConsultantController extends Controller
 {
@@ -747,7 +748,7 @@ class ConsultantController extends Controller
                 return  date('D-m-Y',strtotime($datas->created_at));
             })  
             ->addColumn('amount', function(Payment $datas) {                
-                return  $datas->consultant->country->currency->currencycode.' '.$datas->amount;
+                return  $datas->consultant->country->currency->currencycode.' '.number_format($datas->amount,2);
             })  
             ->addColumn('type', function(Payment $datas) {  
                 if($datas->type=='add')
@@ -779,5 +780,50 @@ class ConsultantController extends Controller
             })   
             ->rawColumns(['type'])        
             ->toJson(); 
+    }
+    
+    public function appointmentdatatable(Request $request){
+       
+        $datas = Appointment::with('customer','consultant')->where('consultant_id',$request->id)->orderBy('id','desc')->get();
+
+        return  DataTables::of($datas)
+        ->editColumn('customer_id', function(Appointment $datas) {
+            $datas->booking;
+            if(isset($datas->customer)) $datas->customer->country;
+            return $datas->customer;
+        })
+        ->addColumn('consultant_id', function(Appointment $datas) {
+            return $datas->booking->consultant;
+        })
+        ->editColumn('status', function(Appointment $datas) {
+            return $datas->status;
+        })
+        ->addColumn('cus_date_slot', function(Appointment $datas){
+            if(!isset($datas->booking)) return [];
+            $date = date_create($datas->appointment_date);
+            $Time = date_format($date,"h:i a")." - ". date("h:i a",strtotime(date_format($date,"Y-m-d H:i")) + $datas->booking->consultant->preferre_slot*60);
+            return ['Date'=>date_format($date,"M d,Y,l"),'Time'=>$Time,'Amount'=>$datas->booking->customercurrnecy->currencycode.' ' .number_format($datas->booking->amount,2)];
+        })
+        ->addColumn('cons_date_slot', function(Appointment $datas){
+            if(!isset($datas->booking)) return [];
+            $date = strtotime($datas->appointment_date) - ($datas->booking->diff);
+            $date = date("Y-m-d H:i",$date);
+            $date = date_create($date);
+            $Time = date_format($date,"h:i a")." - ". date("h:i a",strtotime(date_format($date,"Y-m-d H:i")) + $datas->booking->consultant->preferre_slot*60);
+            return ['Date'=>date_format($date,"M d,Y,l"),'Time'=>$Time,'Amount'=>$datas->booking->consultantcurrency->currencycode.' '.number_format(($datas->booking->amount/$datas->booking->customercurrnecy->price)*$datas->booking->consultantcurrency->price,2)];
+        })
+        ->addColumn('customer_currency', function(Appointment $datas){
+            return $datas->booking->customercurrnecy;
+        })
+        ->addColumn('customer_currency', function(Appointment $datas){
+            return $datas->booking->consultantcurrency;
+        })
+        ->addColumn('action', function(Appointment $datas){
+            return '';
+        })
+        ->addColumn('amount', function(Appointment $datas){
+            return $amount=0;
+        })
+        ->toJson();
     }
 }

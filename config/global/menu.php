@@ -228,6 +228,11 @@ return array(
                         'path'   => 'setting/companysettings',
                         'bullet' => '<span class="bullet bullet-dot"></span>',
                     ),
+                    array(
+                        'title'  => 'Notification Settings',
+                        'path'   => 'notification/notification-setting',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
 
                 )
             )
@@ -448,6 +453,49 @@ return array(
                     array(
                         'title'  => 'Firm Approvals',
                         'path'   => 'approval/firm',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                )
+            )
+
+        ),
+        //Report
+        array(
+            'title' => 'Report',
+            'icon'       => array(
+                'svg'  => theme()->getSvgIcon("demo1/media/icons/duotune/communication/com006.svg", "svg-icon-2"),
+                'font' => '<i class="bi bi-person fs-2"></i>',
+            ),
+            'classes'    => array('item' => 'menu-accordion'),
+            'attributes' => array(
+                "data-kt-menu-trigger" => "click",
+            ),
+            'sub' => array(
+                'class' => 'menu-sub-accordion menu-active-bg',
+                'items' => array(
+                    array(
+                        'title'  => 'Review',
+                        'path'   => 'review',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                    array(
+                        'title'  => 'Admin Wallet',
+                        'path'   => 'admin/wallet',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                    array(
+                        'title'  => 'Offer Purchase',
+                        'path'   => 'offer',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                    array(
+                        'title'  => 'Revenue',
+                        'path'   => 'revenue',
+                        'bullet' => '<span class="bullet bullet-dot"></span>',
+                    ),
+                    array(
+                        'title'  => 'Appointment',
+                        'path'   => 'appChart',
                         'bullet' => '<span class="bullet bullet-dot"></span>',
                     ),
                 )

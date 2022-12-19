@@ -32,7 +32,7 @@
 						    
 						    <div class="nav-group nav-group-outline mx-auto" data-kt-buttons="true">
 						        <div class="nav nav-tabs">
-						            <button class="btn nav-link btn-color-gray-400 btn-active btn-active-secondary px-6 py-3 me-2 active" data-bs-toggle="tab" href="#kt_tab_pane_1">Appointment Details</button>
+						            <button class="btn nav-link btn-color-gray-400 btn-active btn-active-secondary px-6 py-3 me-2 active" data-bs-toggle="tab" href="#kt_tab_pane_1">Bookin Info</button>
 								    <button class="btn  nav-link  btn-color-gray-400 btn-active btn-active-secondary px-6 py-3" data-bs-toggle="tab" href="#kt_tab_pane_2">Log Details</button>
 						        </div>
 							</div><br/>
@@ -320,16 +320,27 @@
                                 
                                 
                                 <div class="tab-pane fade" id="kt_tab_pane_2" role="tabpanel">
-                                   <div class="col-lg-6 mb-10 mb-lg-0">Coming Soon</div>
+                                   <div class="col-12 mb-10 mb-lg-0">
+                                    <div class="table-responsive" style="margin-top:-25px;">
+                                        <table id="App_log" class=" table table-striped table-row-bordered gy-5 gs-7">
+                                            <thead>
+                                                <tr class="fw-bold fs-6 text-gray-800">
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                   </div>
                                 </div>
                             </div>
 						</div>
 						<!--end::Plans-->
 						<!--begin::Actions-->
-						<div class="d-flex flex-center flex-row-fluid pt-12">
-							<button  class="btn btn-light me-3" data-bs-dismiss="modal">Close</button>
-							<!--<button type="submit" class="btn btn-primary">Upgrade Plan</button>-->
-						</div>
+						
 						<!--end::Actions-->
 					</div>
 					<!--end::Modal body-->

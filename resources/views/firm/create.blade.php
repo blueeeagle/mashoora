@@ -1,4 +1,4 @@
-<x-base-layout>  
+<x-base-layout>
     @section('styles')
     <link href="{{ URL::asset(theme()->getDemo().'/plugins/custom/jstree/jstree.bundle.css')}}" rel="stylesheet" type="text/css" />
     @endsection
@@ -51,7 +51,6 @@
                     <!--begin::Card body-->
                     <div class="card-body pt-0">
                         <form action="{{ route('user.firms.store') }}" method="post" id="formCreate">
-                            <input type="hidden" name="categorie_id" id="categorie_id">
                             @csrf
                             <div class="py-5">
                                 <h4>About</h4>
@@ -66,7 +65,7 @@
                                             <input type="text" name="legal_name" class="form-control  mb-4" placeholder="Legal Name" required />
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group row">
                                         <div class="col-md-6">
                                             <label class="required form-label fs-6 mb-4" >Do you have tax?</label>
@@ -75,31 +74,31 @@
                                                 <label class="form-check-label me-3" for="have_tax_Yes">
                                                     <div class="fw-bolder text-gray-800">Yes</div>
                                                 </label>
-                                            
+
                                                 <input class="form-check-input" name="have_tax" type="radio" value="0" id="have_tax_no" />
                                                 <label class="form-check-label " for="have_tax_no">
                                                     <div class="fw-bolder text-gray-800">No</div>
                                                 </label>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="col-md-6" id="taxation_number_div">
                                             <label class="required form-label fs-6 mb-4" >Taxation Number</label>
                                             <input type="number" id="taxation_number" name="taxation_number" class="form-control mb-4" placeholder="Taxation Number" required />
                                         </div>
                                     </div>
-                                  
+
                                     <div class="form-group row">
                                         <div class="col-md-6">
                                             <label class="required form-label fs-6 mb-4" >Company Registered On</label>
-                                            <input class="form-control mb-4" name="register_on" placeholder="Pick date rage" id="kt_daterangepicker_3" required/>
-                                        </div> 
+                                            <input class="form-control mb-4" name="register_on" placeholder="Company Registered On" id="kt_daterangepicker_3" required/>
+                                        </div>
                                         <div class="col-md-1">
                                             <label class="form-label fs-6 mb-4" >Logo</label>
                                         </div>
-                                        <div class="col-md-3"> 
+                                        <div class="col-md-3">
                                          @include('components.imagecrop',['name'=>'logo'])
-                                        </div> 
+                                        </div>
                                     </div>
 
                                     <div class="form-group row">
@@ -109,7 +108,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <h4>Address</h4>
                                 <div class="rounded border p-10">
                                     <div class="rounded border p-10">
@@ -119,7 +118,25 @@
                                 @include('components.contact')
                                 <h4>Category / Sub Category</h4>
                                 <div class="rounded border p-10">
-                                    <div id="kt_docs_jstree_checkable"></div>
+                                    <div class="form-group row">
+                                        <div class="col-md-4">
+                                            <label class="required form-label fs-6 mb-4" >Category</label>
+                                            <select class="form-select mb-4" name="categorie_id[]" id="categorie_id" data-control="select2" data-placeholder="Select Category" required>
+                                                <option></option>
+                                                @foreach ($category as $cat)
+                                                    <option value='{{ $cat->id }}' {{ count($cat->child) > 0?'data-has_child':'' }}>{{ $cat->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" id="subcatid">
+                                        <div class="col-md-4">
+                                            <label class="required form-label fs-6 mb-4" >Sub Category</label>
+                                            <select class="form-select mb-4" name="categorie_id[]" id="sub_categorie_id" data-control="select2" multiple data-placeholder="Select Category" required>
+                                                <option></option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
                                 <h4>Bank Account Details</h4>
                                 <div class="rounded border p-10">
@@ -133,7 +150,7 @@
                                             <input type="text" name="account_name" class="form-control  mb-4" placeholder="Account Name" required />
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group row">
                                         <div class="col-md-6">
                                             <label class="required form-label fs-6 mb-4" >IBAN Code / IFSC Code</label>
@@ -144,7 +161,7 @@
                                             <input type="text" name="bank_name" class="form-control  mb-4 " placeholder="Bank Name" required />
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group row">
                                         <div class="col-md-6">
                                             <label class="required form-label fs-6 mb-2" >Branch</label>
@@ -155,27 +172,27 @@
                                                 <div class="form-check form-check-custom form-check-solid mb-5">
                                                     <input class="form-check-input me-3" name="bank_status" type="checkbox" value="1" id="bank_status" />
                                                     <label class="form-check-label" for="bank_status">
-                                                        <div class="fw-bolder text-gray-800">Status</div>
+                                                        <div class="fw-bolder text-gray-800">verified</div>
                                                     </label>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                
-                                <h4>Login Details</h4>
+
+                                {{-- <h4>Login Details</h4>
                                 <div class="rounded border p-10">
                                     <div class="form-group row">
                                         <div class="col-md-6">
                                             <label class="required form-label fs-6 mb-2" >Email ID</label>
-                                            <input type="email" name="email" class="form-control  mb-4" placeholder="email" required />
+                                            <input type="email" name="email" class="form-control  mb-4" placeholder="email" />
                                         </div>
                                         <div class="col-md-6">
                                             <label class="required form-label fs-6 mb-2" >User Name</label>
-                                            <input type="text" name="user_name" class="form-control  mb-4" placeholder="User Name" required />
+                                            <input type="text" name="user_name" class="form-control  mb-4" placeholder="User Name"  />
                                         </div>
                                     </div>
-                                    
+
                                     <div class="form-group row">
                                         <div class="col-md-6">
                                             <div class="form-check form-check-custom form-check-solid mb-5">
@@ -186,7 +203,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
 
                                 <h4>Gallary</h4>
                                 <div class="rounded border p-10">
@@ -195,9 +212,19 @@
                                         <input type="file" name="gallery[]" id="image" multiple onchange="image_select()" class="form-control" placeholder="Image" required >
                                         <div class="card-body d-flex flex-wrap justify-content-start" id="container"></div>
                                     </div>
+                                    <div class="fv-row mb-10">
+
+                                    </div>
                                 </div>
-                                
-                                <h4>Working Hours</h4>
+                                <div class="form-group row" style="float:right" >
+                                    <div class="col-md-6">
+                                        <button type="reset" id="formreset" class="btn btn-secondary btn-hover-rise me-5">Reset</button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button type="submit" class="btn btn-primary btn-hover-rise">Save</button>
+                                    </div>
+                                </div>
+                                {{-- <h4>Working Hours</h4>
                                 <div class="rounded border p-10">
                                     <div class="mb-10">
                                         <div class="kt_docs_repeater_nested">
@@ -521,9 +548,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     </div>
-                                   
+
                                     <div class="form-group row" style="float:right" >
                                         <div class="col-md-6">
                                             <button type="reset" id="formreset" class="btn btn-secondary btn-hover-rise me-5 ">Reset</button>
@@ -532,7 +559,7 @@
                                             <button type="submit" class="btn btn-primary btn-hover-rise">Save</button>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                             <!--</div>-->
                         </form>
                     </div>
@@ -557,7 +584,7 @@
         .image_container img {
             height: 120px;
             width: 200px;
-            
+
             object-fit: cover;
         }
         .image_container span {
@@ -569,7 +596,7 @@
             cursor: pointer;
         }
     </style>
-   
+
     <script>
         var images = [];
         function image_select() {
@@ -588,9 +615,9 @@
           var image = "";
           images.forEach((i) => {
              image += `<div class="image_container d-flex justify-content-center position-relative">
-                  <img src="`+ i.url +`"  alt="Image">
-                  <span class="position-absolute" onclick="delete_image(`+ images.indexOf(i) +`)">&times;</span><div></div>
-              </div>`;
+                        <img src="`+ i.url +`"  alt="Image">
+                        <span class="position-absolute" onclick="delete_image(`+ images.indexOf(i) +`)">&times;</span>
+                    </div>`;
           })
           return image;
         }
@@ -619,30 +646,20 @@
     <script src='{{ URL::asset(theme()->getDemo().'/plugins/custom/jstree/jstree.bundle.js')}}'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
     <script>
-    
-        back = "{{ route('user.firms.index') }}"
-        
+     back = "{{ route('user.firms.index') }}"
     const have_tax_Yes = document.querySelectorAll('[name="have_tax"]')
     const taxation_number_div = document.getElementById('taxation_number_div')
     const taxation_number = document.getElementById('taxation_number')
     const categorie_id = document.getElementById('categorie_id')
-    var state = $("#state_id")
-    var city = $("#city_id")
 
     have_tax_Yes.forEach(element => {
         element.addEventListener('change',have_tax_Yes_fun)
     })
-    // function time(event){
-    //     console.log(event.value);
-    //     var btdel =  document.querySelectorAll('[data-repeater-create]')
-    //     btdel[1].click();
-    // }
 
-    
     $(".checkboxOnOff").on('change', function() {
         if ($(this).is(':checked')) {
             $(this).parent().parent().parent().find('[data-repeater-create]')[0].click()
-       
+
         }
         else {
             let arr = $(this).parent().parent().parent().find('[data-repeater-delete]');
@@ -653,21 +670,10 @@
         }
     });
 
-    $("#kt_daterangepicker_3").daterangepicker({
-            singleDatePicker: true,
-            showDropdowns: true,
-            minYear: 1901,
-            maxYear: parseInt(moment().format("YYYY"),10),
-            // locale: {
-            //             format: '{{ strtoupper($companeySetting->date_format) }}'
-            //         }
-
-            dateFormat: "mm-dd-yy"
-        }, function(start, end, label) {
-            // var years = moment().diff(start, "years");
-            // alert("You are " + years + " years old!");
-        }
-    );
+    var startFlatpickr = flatpickr($("#kt_daterangepicker_3"), {
+            enableTime: false,
+            dateFormat: "Y-m-d",
+        });
 
     $('.kt_docs_repeater_nested').repeater({
         repeaters: [{
@@ -689,51 +695,15 @@
             $(this).slideUp(deleteElement);
         }
     });
-    
-    var KTJSTreeCheckable = {
-        init: function () {
-            $("#kt_docs_jstree_checkable")
-            // listen for event
-                .on('changed.jstree', function (e, data) {
-                    var i, j, r = [];
-                    for(i = 0, j = data.selected.length; i < j; i++) {
-                        r.push(data.instance.get_node(data.selected[i]).id);
-                    }
-                    categorie_id.value = r.join(',');
-                    console.log(r);
-                })
-                .jstree({
-                plugins: ["wholerow", "checkbox", "types"],
-                core: {
-                    themes: {
-                        responsive: !1
-                    },
-                    data: {!! json_encode($tree) !!}
-                },
-                types: {
-                    default: {
-                        icon: ""
-                    },
-                    file: {
-                        icon: ""
-                    }
-                }
-            })
-        }
-    };
 
     var options = {selector: "#about_us"};
-    var options2 = {selector: "#register_address"};
 
     if (KTApp.isDarkMode()) {
         options["skin"] = "oxide-dark";
         options["content_css"] = "dark";
-        options2["skin"] = "oxide-dark";
-        options2["content_css"] = "dark";
     }
 
     tinymce.init(options);
-    tinymce.init(options2);
 
 
     function have_tax_Yes_fun(event){
@@ -747,53 +717,28 @@
         }
     }
 
-    $("#country_id").on('select2:select', function (e) {
+    $("#categorie_id").on('select2:select', function (e) {
         var data = e.params.data;
         $.ajax({
-            url:"{{route('master.country.getState')}}",
+            url:"{{route('help.getchildcategory')}}",
             method:"POST",
             data:{id:data.id,"_token": "{{ csrf_token() }}",},
             success:function(data){
-                var option = `<option>Select State</option>`
-                if(data.states.length != null){
-                    data.states.forEach((e)=>{
-                        option += '<option value='+e.id+'>'+e.state_name+'</option>';
+                var option = `<option>Select Category</option>`
+                if(data.child.length > 0){
+                    data.child.forEach((e)=>{
+                        option += '<option value='+e.id+'>'+e.name+'</option>';
                     })
+                    $('#subcatid').show(100);
+                    $('#sub_categorie_id').prop('required',true);
+                }else{
+                    $('#sub_categorie_id').prop('required',false);
+                    $('#subcatid').hide(100);
                 }
-                state.html(option).trigger("change");
-                // city.html(null).trigger("change");
-                if(data.Country){
-                    $("input[data-cmobile]").val(data.Country.dialing)
-                    $("input[data-cphone]").val(data.Country.dialing)
-                }
+                $('#sub_categorie_id').html(option).trigger("change");
             }
         })
     });
-    $("#state_id").on('select2:select', function (e) {
-        var data = e.params.data;
-        $.ajax({
-            url:"{{route('master.country.getCity')}}",
-            method:"POST",
-            data:{id:data.id,"_token": "{{ csrf_token() }}",},
-            success:function(data){
-                var option = null
-                if(data.length != null){
-                    data.forEach((e)=>{
-                        option += '<option value='+e.id+'>'+e.city_name+'</option>';
-                    })
-                }
-                city.html(option).trigger("change");
-            }
-        })
-    });
-   
-    KTUtil.onDOMContentLoaded((function () {
-        KTJSTreeCheckable.init()
-    }));
-    
-    
-    
-    
     </script>
     @endsection
 </x-base-layout>

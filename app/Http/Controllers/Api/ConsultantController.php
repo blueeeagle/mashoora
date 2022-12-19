@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\Agora\RtcTokenBuilderSample;
 use DataTables;
 use Validator;
 use DB;
@@ -27,6 +28,7 @@ use App\Models\Card;
 use App\Models\Consultantcategory;
 use App\Models\Document;
 use App\Models\Country;
+use App\Models\PayApproval;
 
 class Booking {
     public $consultant = null;
@@ -199,6 +201,15 @@ class ConsultantController extends Controller{
         $Insurance = Insurance::where('country_id',$Consultant->country->id)->where('status',1)->get();
         return response()->json($Insurance);
     }
+    public function updateuserphone(Request $request){
+        
+        if(!isset($request->phone_no)) return response()->json(['Status'=>false,'msg' =>'Require Phone no']);
+        
+        Auth::guard('consultant')->user()->phone_no = $request->phone_no;
+        Auth::guard('consultant')->user()->update();
+        $Consultant = Consultant::where('id',Auth::guard('consultant')->user()->id)->first();
+        return response()->json(['status' => true,'msg' =>'Updated','Consultant'=>$Consultant]);
+    }
     public function storeProfile(Request $request){
 
         $Consultant = Consultant::where('id',Auth::guard('consultant')->user()->id)->first();
@@ -318,8 +329,6 @@ class ConsultantController extends Controller{
             break;
             default:
             return response()->json(['next' => true,'msg' =>'step Not found']);
-
-
         }
     }
     
@@ -405,8 +414,29 @@ class ConsultantController extends Controller{
         $upcoming = $this->modefyAppointment($upcoming);
         $past = $this->modefyAppointment($past);
         $acceptreject = $this->modefyAppointment($acceptreject);
-        return response()->json(['upcoming'=>$upcoming,'past'=>$past,'accept'=>$acceptreject]);
+        $Schedule = Auth::guard('consultant')->user()->Schedule->isEmpty();
+        
+        return response()->json(['upcoming'=>$upcoming,'past'=>$past,'accept'=>$acceptreject,'is_schedule_empty'=>$Schedule]);
 
+    }
+    public function startsession(Request $request, Appointment $Appointment){
+        if($Appointment->agora_token == null){
+            $Booking = unserialize(bzdecompress(utf8_decode($Appointment->rawdata)));
+            $RtcTokenBuilderSample = new RtcTokenBuilderSample;
+            $token  = $RtcTokenBuilderSample->tok($Booking->consultant->preferre_slot*60,$request->role);
+            $Appointment->agora_token = json_encode($token);
+            $Appointment->update();
+            return response()->json(['Token'=>$token[0],'ChannelName'=>$token[1]]);
+        }
+        return response()->json(['Token'=>$Appointment->agora_token]);
+    }
+    public function recreatesession(Request $request, Appointment $Appointment){
+            $Booking = unserialize(bzdecompress(utf8_decode($Appointment->rawdata)));
+            $RtcTokenBuilderSample = new RtcTokenBuilderSample;
+            $token  = $RtcTokenBuilderSample->tok($Booking->consultant->preferre_slot*60,$request->role);
+            $Appointment->agora_token =json_encode($token);
+            $Appointment->update();
+            return response()->json(['Token'=>$token[0],'ChannelName'=>$token[1]]);
     }
     public function bookingdetail(Request $request, Appointment $Appointment){
         $consultantTimeZone = \DateTimeZone::listIdentifiers(\DateTimeZone::PER_COUNTRY, Auth::guard('consultant')->user()->country->country_code)[0];
@@ -427,7 +457,13 @@ class ConsultantController extends Controller{
         $myObj->{'Time'} = date_format($date,"h:i a")." - ". date("h:i a",strtotime(date_format($date,"Y-m-d H:i")) + $Booking->consultant->preferre_slot*60);
         $myObj->{'type'} = $Booking->type;
         $myObj->{'Customer'} = $Appointment->Customer;
+        $myObj->{'Agora'} = ($Appointment->agora_token)?json_decode($Appointment->agora_token):NULL;
         $myObj->{'Amount'} = ($Booking->amount/$Booking->customercurrnecy->price)*$Booking->consultantcurrency->price;
+        if($Appointment->pay_in == 0) $myObj->{'payment'} = '';
+            else if($Appointment->pay_in == 1) $myObj->{'payment'} = 'Pending';
+            else if($Appointment->pay_in == 2) $myObj->{'payment'} = 'Approved';
+            else if($Appointment->pay_in == 3) $myObj->{'payment'} = 'Decline';
+            
         if($Appointment->insurance_id){
             if(isset($Booking->Insurance)){
                 $myObj->{'insurance'} = ['policyid'=>$Appointment->policyid,'insurance'=>$Booking->Insurance];
@@ -479,7 +515,8 @@ class ConsultantController extends Controller{
     }
     public function bookingReject(Request $request, Appointment $Appointment){
         $Appointment->consultant_command = ($request->consultant_command)?$request->consultant_command:'';
-        $Appointment->status = 'Reject';
+        $Appointment->status = 'Cancelled';
+        $Appointment->cancell_consultant = Auth::guard('consultant')->user()->id;
         $Appointment->update();
         return response()->json(['status' => true]);
     }
@@ -488,11 +525,15 @@ class ConsultantController extends Controller{
         date_default_timezone_set($Booking->consultantTimeZone);
         $Booking->cancellconsultant = ['status'=> true,'msg'=>'Appointment have be cancelled sucessfully','now'=> date("Y-m-d H:i")];
         $Appointment->consultant_command = ($request->consultant_command)?$request->consultant_command:'';
-        // $this->setsession();
+        
+        if($Appointment->pay_in != 5 && $Appointment->insurance_id == '') $this->addsubammountcustomer($Booking->amount,'add','Refund',$Appointment->id,$Appointment->customer_id);
+        
         $Appointment->rawdata = utf8_encode(bzcompress(serialize($Booking), 9));
         $Appointment->status = 'Cancelled';
+        $Appointment->pay_in = 5;
         $Appointment->cancell_consultant = Auth::guard('consultant')->user()->id;
         $Appointment->update();
+        
         return response()->json(['status' => true,]);
     }
     public function bookingcompleted(Request $request, Appointment $Appointment){
@@ -521,12 +562,16 @@ class ConsultantController extends Controller{
             $myObj->{'Amount'} = ($Booking->amount/$Booking->customercurrnecy->price)*$Booking->consultantcurrency->price;
             $myObj->{'status'} = $data->status;
             $myObj->{'countdown'} = $countdown;
+            if($data->pay_in == 0) $myObj->{'payment'} = '';
+            else if($data->pay_in == 1) $myObj->{'payment'} = 'Pending';
+            else if($data->pay_in == 2) $myObj->{'payment'} = 'Approved';
+            else if($data->pay_in == 3) $myObj->{'payment'} = 'Decline';
 
             return $myObj;
         });
     }
     
-    public function wallet(){
+    public function wallet(Request $request){
         $Wallet = Wallet::where('consultant_id',Auth::guard('consultant')->user()->id)->first();
         $Payment = Payment::where('consultant_id',Auth::guard('consultant')->user()->id)->orderBy('id','desc')->get();
         $Payment = $Payment->map(function ($data){ 
@@ -534,7 +579,7 @@ class ConsultantController extends Controller{
             $data->{'tx-date'} = date('d M Y',strtotime($data->updated_at));
             return $data;
         });
-        
+        $Payment = DataTables::of($Payment)->toJson();
         return response()->json(['wallet'=>$Wallet,'payment'=>$Payment]);
     }
 
@@ -558,16 +603,83 @@ class ConsultantController extends Controller{
         $Card->save();
         return response()->json(['status'=>true,'msg'=>'Card Added']);
     }
+    
+    public function bankupdate(Request $request){
+        $Consultant = Consultant::where('id',Auth::guard('consultant')->user()->id)->first();
+        $Consultant->account_number = $request->account_number;
+        $Consultant->account_name = $request->account_name;
+        $Consultant->ifsc_code = $request->ifsc_code;
+        $Consultant->bank_name = $request->bank_name;
+        $Consultant->branch = $request->branch;
+        $Consultant->bank_status = 0;
+        $Consultant->update();
+        return response()->json(['status'=>true,'msg'=>'updated']);
+    }
+    
     public function deletecard(Request $request,Card $card){
         $card->delete();
         return response()->json(['msg'=>'Card Deleted']);
     }
+    
+    public function payoutindex(){
+        $PayApproval = PayApproval::where('consultant_id',Auth::guard('consultant')->user()->id)->get();
+        return DataTables::of($PayApproval)->addIndexColumn()->toJson();
+    }
 
+    public function payoutrequest(Request $request){
+        // dd(Auth::guard('consultant')->user());
+        if(!isset($request->amount)) return response()->json(['status'=>false,'msg'=>'Enter Amount']);
+        $consultant  = Consultant::where('id',Auth::guard('consultant')->user()->id)->first();
+        if($consultant->bank_status != 1) return response()->json(['status'=>false,'msg'=>'Your Bank Acount is not Verfied. contact Admin']);
+        if($consultant->com_pay_amount > (float)$request->amount)return response()->json(['status'=>false,'msg'=>"Min Pay Out Amount is $consultant->com_pay_amount"]);
+        $Wallet = Wallet::where('consultant_id',$consultant->id)->first();
+        if($Wallet->balance < (float)$request->amount) return response()->json(['status'=>false,'msg'=>'Insufficient balance']);
+        $consultant->country->currency;
+        $Payment = new Payment;
+        $Payment->amount = $request->amount;
+        $Payment->type = 'sub';
+        $Payment->action = 'Pay Out';
+        $Payment->consultant_id = Auth::guard('consultant')->user()->id;
+        $Payment->save();
+
+        $Wallet->balance = $Wallet->balance - $request->amount;
+        $Wallet->update();
+        $Companysetting = Companysetting::with('country')->where('id',1)->first();
+        $Companysetting->country->currency;
+        $consultant->country->currency;
+        $consultant->{'admin'} = $Companysetting;
+        
+        $PayApproval = new PayApproval;
+        $PayApproval->amount = $request->amount;
+        $PayApproval->consultant_id = Auth::guard('consultant')->user()->id;
+        $PayApproval->consultantraw = utf8_encode(bzcompress(serialize($consultant), 9));
+        $PayApproval->save();
+        return response()->json(['status'=>true,'msg'=>'']);
+    }
+    
     function strtotimeconvert($data){
         $data = \explode(':',$data);
         return ($data[0]*60*60) + ($data[1]*60);
     }
+    
+    function addsubammountcustomer($amount,$type,$action,$appointment_id = '',$cusuomerID){
 
+        $Payment = new Payment;
+        $Payment->amount = $amount;
+        $Payment->type = $type;
+        $Payment->action = $action;
+        $Payment->customer_id = $cusuomerID;
+        $Payment->appointment_id = $appointment_id;
+        $Payment->save();
+
+        $Wallet = Wallet::where('customer_id',$cusuomerID)->first();
+        if($type == 'add') $Wallet->balance = $Wallet->balance + $amount;
+        else $Wallet->balance = $Wallet->balance - $amount;
+        $Wallet->update();
+
+        return $Payment;
+    }
+    
     function addsubammount($amount,$type,$action){
         $Payment = new Payment;
         $Payment->amount = $amount;
@@ -583,5 +695,349 @@ class ConsultantController extends Controller{
 
         return $Payment;
     }
+    
+    //6 - Consultant Started Appointment Notification
+    public function consultant_start_appointment($id)
+    {
+        $Appointment = Appointment::with('consultant','customer')->where('status','!=','completed')->where('status','!=','Cancelled')->where('id',$id)->first();
+        $Booking = unserialize(bzdecompress(utf8_decode($Appointment->rawdata)));
+        $date = date_create($Appointment->appointment_date);
+
+        $date = strtotime($Appointment->appointment_date) - ($Booking->diff);
+        $date = date("Y-m-d H:i",$date);
+        $countdown = strtotime($date) - strtotime('now');
+        $date = date_create($date);        
+
+        $template1=NotificationTemplate::where('type','=',45)->first();
+        $template2=NotificationTemplate::where('type','=',42)->first();
+        $template3=NotificationTemplate::where('type','=',45)->first();          
+
+        $data=array($Appointment->customer->name,
+        "BK-$Appointment->id",
+        $Appointment->consultant->name,
+        $Booking->type,
+        ($Booking->amount/$Booking->customercurrnecy->price)*$Booking->consultantcurrency->price,
+        date_format($date,"M d,Y,l"),
+        date_format($date,"h:i a")." - ". date("h:i a",strtotime(date_format($date,"Y-m-d H:i")) + $Booking->consultant->preferre_slot*60),
+        $Appointment->slot,
+        $Appointment->consultantsingleAppreview,
+        $Appointment->created_at,
+        $Appointment->status);
+        if($template1)
+        {
+            helperController::email($data,45);
+        }
+        if($template2)
+        {
+            helperController::email($data,42);
+        }
+        if($template3)
+        {
+            helperController::email($data,48);
+        }
+    }
+
+    //9 - Consultant Completed Appoinment Notification
+    public function consultant_completed_appointment($id)
+    {
+        $Appointment = Appointment::with('consultant','customer')->where('id',$id)->first();
+        $Booking = unserialize(bzdecompress(utf8_decode($Appointment->rawdata)));
+        $date = date_create($Appointment->appointment_date);
+
+        $date = strtotime($Appointment->appointment_date) - ($Booking->diff);
+        $date = date("Y-m-d H:i",$date);
+        $countdown = strtotime($date) - strtotime('now');
+        $date = date_create($date);
+
+        $template1=NotificationTemplate::where('type','=',66)->first();
+        $template2=NotificationTemplate::where('type','=',69)->first();
+        $template3=NotificationTemplate::where('type','=',72)->first();        
+        
+       
+
+        $data=array($Appointment->customer->name,
+        "BK-$Appointment->id",
+        $Appointment->consultant->name,
+        $Booking->type,
+        ($Booking->amount/$Booking->customercurrnecy->price)*$Booking->consultantcurrency->price,
+        date_format($date,"M d,Y,l"),
+        date_format($date,"h:i a")." - ". date("h:i a",strtotime(date_format($date,"Y-m-d H:i")) + $Booking->consultant->preferre_slot*60),
+        $Appointment->slot,
+        $Appointment->consultantsingleAppreview,
+        $Appointment->created_at,
+        $Appointment->status);
+        if($template1)
+        {
+            helperController::email($data,66);
+        }
+        if($template2)
+        {
+            helperController::email($data,69);
+        }
+        if($template3)
+        {
+            helperController::email($data,72);
+        }
+    }
+
+    //11 - Consultant Completed Appoinment Notification
+    public function consultant_rate_review_appointment($id)
+    {
+        $Appointment = Appointment::with('consultant','customer','Review')->where('id',$id)->first();
+        $Booking = unserialize(bzdecompress(utf8_decode($data->rawdata)));
+
+        $template1=NotificationTemplate::where('type','=',82)->first();
+        $template2=NotificationTemplate::where('type','=',85)->first();
+        $template3=NotificationTemplate::where('type','=',88)->first();        
+        
+        $Booking = unserialize(bzdecompress(utf8_decode($Appointment->rawdata)));
+        $date = date_create($Appointment->appointment_date);
+
+        $date = strtotime($Appointment->appointment_date) - ($Booking->diff);
+        $date = date("Y-m-d H:i",$date);
+        $countdown = strtotime($date) - strtotime('now');
+        $date = date_create($date);
+
+        $data=array($Appointment->customer->name,
+        "BK-$Appointment->id",
+        $Appointment->consultant->name,
+        $Booking->type,
+        ($Booking->amount/$Booking->customercurrnecy->price)*$Booking->consultantcurrency->price,
+        date_format($date,"M d,Y,l"),
+        date_format($date,"h:i a")." - ". date("h:i a",strtotime(date_format($date,"Y-m-d H:i")) + $Booking->consultant->preferre_slot*60),
+        $Appointment->slot,
+        $Appointment->consultantsingleAppreview,
+        $Appointment->created_at,
+        $Appointment->status);
+        if($template1)
+        {
+            helperController::email($data,82);
+        }
+        if($template2)
+        {
+            helperController::email($data,85);
+        }
+        if($template3)
+        {
+            helperController::email($data,88);
+        }
+    }
+
+    //17 - Consultant Cancel Appoinment (before)
+    public function consultant_cancel_appointment($id)
+    {
+        $Appointment = Appointment::with('consultant','customer','Review')->where('id',$id)->first();
+        $Booking = unserialize(bzdecompress(utf8_decode($data->rawdata)));
+
+        $template1=NotificationTemplate::where('type','=',130)->first();
+        $template2=NotificationTemplate::where('type','=',133)->first();
+        $template3=NotificationTemplate::where('type','=',136)->first();        
+        
+        $Companysetting = Companysetting::with('country')->where('id',1)->first();
+        $Booking = unserialize(bzdecompress(utf8_decode($Appointment->rawdata)));
+        $date = date_create($Appointment->appointment_date);
+
+        $date = strtotime($Appointment->appointment_date) - ($Booking->diff);
+        $date = date("Y-m-d H:i",$date);
+        $countdown = strtotime($date) - strtotime('now');
+        $date = date_create($date);
+
+        $data=array($Appointment->customer->name,
+        "BK-$Appointment->id",
+        $Appointment->consultant->name,
+        $Booking->type,
+        ($Booking->amount/$Booking->customercurrnecy->price)*$Booking->consultantcurrency->price,
+        date_format($date,"M d,Y,l"),
+        date_format($date,"h:i a")." - ". date("h:i a",strtotime(date_format($date,"Y-m-d H:i")) + $Booking->consultant->preferre_slot*60),
+        $Appointment->slot,
+        $Appointment->consultantsingleAppreview,
+        $Appointment->created_at,
+        $Appointment->status);
+
+        if(!$countdown > strtotime($Companysetting->discard_cut_off_time))
+        {
+            if($template1)
+            {
+                helperController::email($data,130);
+            }
+            if($template2)
+            {
+                helperController::email($data,133);
+            }
+            if($template3)
+            {
+                helperController::email($data,136);
+            }
+        }
+    }
+
+     //20 - Consultant Reshedule Appoinment
+     public function consultant_reshedule_appointment($id)
+     {
+         $Appointment = Appointment::with('consultant','customer','Review')->where('id',$id)->first();
+         $Booking = unserialize(bzdecompress(utf8_decode($data->rawdata)));
+ 
+         $template1=NotificationTemplate::where('type','=',154)->first();
+         $template2=NotificationTemplate::where('type','=',157)->first();
+         $template3=NotificationTemplate::where('type','=',160)->first();        
+         
+         $Companysetting = Companysetting::with('country')->where('id',1)->first();
+         $Booking = unserialize(bzdecompress(utf8_decode($Appointment->rawdata)));
+         $date = date_create($Appointment->appointment_date);
+ 
+         $date = strtotime($Appointment->appointment_date) - ($Booking->diff);
+         $date = date("Y-m-d H:i",$date);
+         $countdown = strtotime($date) - strtotime('now');
+         $date = date_create($date);
+ 
+         $data=array($Appointment->customer->name,
+         "BK-$Appointment->id",
+         $Appointment->consultant->name,
+         $Booking->type,
+         ($Booking->amount/$Booking->customercurrnecy->price)*$Booking->consultantcurrency->price,
+         date_format($date,"M d,Y,l"),
+         date_format($date,"h:i a")." - ". date("h:i a",strtotime(date_format($date,"Y-m-d H:i")) + $Booking->consultant->preferre_slot*60),
+         $Appointment->slot,
+         $Appointment->consultantsingleAppreview,
+         $Appointment->created_at,
+         $Appointment->status);
+ 
+        
+        if($template1)
+        {
+            helperController::email($data,154);
+        }
+        if($template2)
+        {
+            helperController::email($data,157);
+        }
+        if($template3)
+        {
+            helperController::email($data,160);
+        }
+     }
+
+
+     //20 - Consultant Reshedule Appoinment
+     public function consultant_signup_appointment($id)
+     {
+        $consultant  = Consultant::where('id',Auth::guard('consultant')->user()->id)->first();
+
+        $template1=NotificationTemplate::where('type','=',162)->first();
+         $template2=NotificationTemplate::where('type','=',165)->first();
+         $template3=NotificationTemplate::where('type','=',168)->first(); 
+ 
+         $data=array($consultant->name,
+         $consultant->id,
+         $consultant->phone_no,
+         $consultant->created_at);
+ 
+        
+        if($template1)
+        {
+            helperController::email($data,162);
+        }
+        if($template2)
+        {
+            helperController::email($data,165);
+        }
+        if($template3)
+        {
+            helperController::email($data,168);
+        }
+     }
+
+     //22 - Consultant Approves Appoinment
+     public function consultant_approves_appointment($id)
+     {
+         $Appointment = Appointment::with('consultant','customer','Review')->where('id',$id)->first();
+         $Booking = unserialize(bzdecompress(utf8_decode($data->rawdata)));
+ 
+         $template1=NotificationTemplate::where('type','=',170)->first();
+         $template2=NotificationTemplate::where('type','=',173)->first();
+         $template3=NotificationTemplate::where('type','=',176)->first();        
+         
+         $Companysetting = Companysetting::with('country')->where('id',1)->first();
+         $Booking = unserialize(bzdecompress(utf8_decode($Appointment->rawdata)));
+         $date = date_create($Appointment->appointment_date);
+ 
+         $date = strtotime($Appointment->appointment_date) - ($Booking->diff);
+         $date = date("Y-m-d H:i",$date);
+         $countdown = strtotime($date) - strtotime('now');
+         $date = date_create($date);
+ 
+         $data=array($Appointment->customer->name,
+         "BK-$Appointment->id",
+         $Appointment->consultant->name,
+         $Booking->type,
+         ($Booking->amount/$Booking->customercurrnecy->price)*$Booking->consultantcurrency->price,
+         date_format($date,"M d,Y,l"),
+         date_format($date,"h:i a")." - ". date("h:i a",strtotime(date_format($date,"Y-m-d H:i")) + $Booking->consultant->preferre_slot*60),
+         $Appointment->slot,
+         $Appointment->consultantsingleAppreview,
+         $Appointment->created_at,
+         $Appointment->status);
+ 
+        
+        if($template1)
+        {
+            helperController::email($data,170);
+        }
+        if($template2)
+        {
+            helperController::email($data,173);
+        }
+        if($template3)
+        {
+            helperController::email($data,176);
+        }
+     }
+
+
+     //23 - Consultant denied Appoinment
+     public function consultant_denied_appointment($id)
+     {
+         $Appointment = Appointment::with('consultant','customer','Review')->where('id',$id)->first();
+         $Booking = unserialize(bzdecompress(utf8_decode($data->rawdata)));
+ 
+         $template1=NotificationTemplate::where('type','=',178)->first();
+         $template2=NotificationTemplate::where('type','=',181)->first();
+         $template3=NotificationTemplate::where('type','=',184)->first();        
+         
+         $Companysetting = Companysetting::with('country')->where('id',1)->first();
+         $Booking = unserialize(bzdecompress(utf8_decode($Appointment->rawdata)));
+         $date = date_create($Appointment->appointment_date);
+ 
+         $date = strtotime($Appointment->appointment_date) - ($Booking->diff);
+         $date = date("Y-m-d H:i",$date);
+         $countdown = strtotime($date) - strtotime('now');
+         $date = date_create($date);
+ 
+         $data=array($Appointment->customer->name,
+         "BK-$Appointment->id",
+         $Appointment->consultant->name,
+         $Booking->type,
+         ($Booking->amount/$Booking->customercurrnecy->price)*$Booking->consultantcurrency->price,
+         date_format($date,"M d,Y,l"),
+         date_format($date,"h:i a")." - ". date("h:i a",strtotime(date_format($date,"Y-m-d H:i")) + $Booking->consultant->preferre_slot*60),
+         $Appointment->slot,
+         $Appointment->consultantsingleAppreview,
+         $Appointment->created_at,
+         $Appointment->status);
+ 
+        
+        if($template1)
+        {
+            helperController::email($data,178);
+        }
+        if($template2)
+        {
+            helperController::email($data,181);
+        }
+        if($template3)
+        {
+            helperController::email($data,184);
+        }
+     }
     
 }

@@ -66,11 +66,15 @@
                                         <input type="text" name="email" class="form-control mb-4 " placeholder="Email" required />
 
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <label class="required form-label fs-6 mb-4" >Profile Picture </label>
                                         <div class="col-md-6">
                                             @include('components.imagecrop',['name'=>'picture','width'=>600,'height'=>600])
                                         </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="required form-label fs-6 mb-4" >Two Way Aunthentication</label> <br>
+                                        <input type="checkbox" class="form-check-input mb-4 " name="is_two_way_auth" value="2">
                                     </div>
                                 </div>
 

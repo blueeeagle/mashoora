@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\OfferLog;
+use Auth;
 
 class OfferPurchase extends Model
 {
@@ -11,6 +13,65 @@ class OfferPurchase extends Model
     
     // protected $fillable = ['from_user','consultant_id','firm_id','admin_id','title','image','describtion','status'];
     protected $table = 'offerpurchases';
+    protected $appends = ['offer'];
+    
+    protected static function boot(){
+
+        parent::boot();
+
+        static::created(function ($model) {
+            $AppointmentLog = new OfferLog;
+            $AppointmentLog->offerPurchase_id = $model->id;
+            $AppointmentLog->action_by = 'Customer';
+            $AppointmentLog->action = 'Offer Purchased';
+            $AppointmentLog->description = 'Customer Offer Purchased Waiting for Approved';
+            $AppointmentLog->save();
+        });
+
+        static::updated(function($model) {
+            $action_by = 'Admin';$user_id = '';
+            
+            if(static::activeGuard() != 'web'){
+                if(static::activeGuard() == 'consultant') $action_by = "Consultant";
+                else $action_by = "Customer";
+            }else $user_id = Auth::guard(static::activeGuard())->user()->id;
+            
+            if ($model->isDirty('pay_in')){
+                $action = '';
+                $description = '';
+                if($model->pay_in == 1){
+                    $description = 'Offer Purchased Move To Approval';
+                    $action = 'Pending';
+                }else if($model->pay_in == 2){
+                    $description = 'Pay In Approved amount transferred to wallet';
+                    $action = 'Approved';
+                }elseif($model->pay_in == 3) {
+                    # code...
+                    $description = 'Pay In Decline';
+                    $action = 'Decline';
+                }
+                $AppointmentLog = new OfferLog;
+                $AppointmentLog->offerPurchase_id = $model->id;
+                $AppointmentLog->action_by = $action_by;
+                $AppointmentLog->user_id = $user_id;
+                $AppointmentLog->action = $action;
+                $AppointmentLog->description = $description;
+                $AppointmentLog->save();
+            }
+
+        });
+    }
+
+    static private function activeGuard(){
+
+        foreach(array_keys(config('auth.guards')) as $guard){
+
+            if(auth()->guard($guard)->check()) return $guard;
+
+        }
+        return null;
+    }
+    
     public function offer(){
         return $this->belongsTo(Offer::class,'offer_id');
     }
@@ -20,7 +81,11 @@ class OfferPurchase extends Model
     public function consultant(){
         return $this->belongsTo(Consultant::class, 'consultant_id');
     }
-    // public function user(){
-    //     return $this->belongsTo(User::class, 'admin_id');
-    // }
+    public function getOfferAttribute(){
+        try {
+            return unserialize(bzdecompress(utf8_decode($this->rawoffer)));
+        } catch (\Throwable $th) {
+            return null;
+        }
+    }
 }

@@ -11,6 +11,7 @@ use App\Models\Consultant;
 use App\Http\Controllers\Api\Booking;
 use App\Models\Payment;
 use App\Models\Insurance;
+use App\Models\AppointmentLog;
 
 class Appointment extends Model
 {
@@ -18,6 +19,83 @@ class Appointment extends Model
 
     protected $fillable = [];
     public $Booking=null;
+    
+    
+    protected static function boot(){
+
+        parent::boot();
+
+        static::created(function ($model) {
+            $AppointmentLog = new AppointmentLog;
+            $AppointmentLog->appointment_id = $model->id;
+            $AppointmentLog->action_by = 'Customer';
+            $AppointmentLog->action = 'Appointment Created';
+            $AppointmentLog->description = 'Creating New Appointment';
+            $AppointmentLog->save();
+        });
+
+        static::updated(function($model) {
+            $action_by = 'Admin';$user_id = '';
+            
+            if(static::activeGuard() != 'web'){
+                if(static::activeGuard() == 'consultant') $action_by = "Consultant";
+                else $action_by = "Customer";
+            }else $user_id = Auth::guard(static::activeGuard())->user()->id;
+            
+        if ($model->isDirty('status')){
+
+            $AppointmentLog = new AppointmentLog;
+            $AppointmentLog->appointment_id = $model->id;
+            $AppointmentLog->action_by = $action_by;
+            $AppointmentLog->user_id = $user_id;
+            $AppointmentLog->action = $model->getOriginal('status').' To ' .$model->status;
+            $AppointmentLog->description = 'Status Updating';
+            $AppointmentLog->save();
+            }
+
+            if ($model->isDirty('pay_in')){
+                $action = '';
+                $description = '';
+                if($model->pay_in == 1){
+                    $description = 'Appointment Move To Approval';
+                    $action = 'Pending';
+                }else if($model->pay_in == 2){
+                    $description = 'Pay In Approved amount transferred to wallet';
+                    $action = 'Approved';
+                }else {
+                    # code...
+                    $description = 'Pay In Decline';
+                    $action = 'Decline';
+                }
+                $AppointmentLog = new AppointmentLog;
+                $AppointmentLog->appointment_id = $model->id;
+                $AppointmentLog->action_by = $action_by;
+                $AppointmentLog->user_id = $user_id;
+                $AppointmentLog->action = $action;
+                $AppointmentLog->description = $description;
+                $AppointmentLog->save();
+            }
+            if ($model->isDirty('appointment_date')){ 
+                $AppointmentLog = new AppointmentLog;
+                $AppointmentLog->appointment_id = $model->id;
+                $AppointmentLog->action_by = 'Customer';
+                $AppointmentLog->user_id = '';
+                $AppointmentLog->action = 'Customer Reschedule';
+                $AppointmentLog->description = 'Status Updating';
+                $AppointmentLog->save();
+            }
+        });
+    }
+
+    static private function activeGuard(){
+
+        foreach(array_keys(config('auth.guards')) as $guard){
+
+            if(auth()->guard($guard)->check()) return $guard;
+
+        }
+        return null;
+    }
     
     public function customer(){
         return $this->belongsTo(Customer::class, 'customer_id');

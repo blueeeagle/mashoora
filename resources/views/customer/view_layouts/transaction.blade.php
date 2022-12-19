@@ -27,9 +27,9 @@
                                 <button type="button" id="reset" class="btn btn-primary btn-xs me-5">Reset</button>
 
                             </div>
-                            <div style="margin-left: 353px;">
+                           {{-- <div style="margin-left: 353px;">
                                 Total Amount : <?php echo $datas = App\Models\Wallet::select('balance')->where('customer_id',$customer->id)->sum('balance'); ?>
-                            </div>
+                            </div>--}}
 
                             <!--end::Search-->
                         </div>

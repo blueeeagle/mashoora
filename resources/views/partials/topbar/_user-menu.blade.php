@@ -23,11 +23,11 @@
     <!--end::Menu item-->
 
     <!--begin::Menu separator-->
-    <div class="separator my-2"></div>
+    <!--<div class="separator my-2"></div>-->
     <!--end::Menu separator-->
 
     <!--begin::Menu item-->
-    <div class="menu-item px-5">
+    <div class="menu-item px-5 d-none">
         <a href="{{ theme()->getPageUrl('settings.index') }}" class="menu-link px-5">
             {{ __('My Profile') }}
         </a>
@@ -35,7 +35,7 @@
     <!--end::Menu item-->
 
     <!--begin::Menu item-->
-    <div class="menu-item px-5">
+    <div class="menu-item px-5 d-none">
         <a href="#" class="menu-link px-5" data-bs-toggle="tooltip" data-bs-placement="left" title="{{ __('Coming soon') }}">
             <span class="menu-text">{{ __('My Projects') }}</span>
             <span class="menu-badge">
@@ -46,7 +46,7 @@
     <!--end::Menu item-->
 
     <!--begin::Menu item-->
-    <div class="menu-item px-5" data-kt-menu-trigger="hover" data-kt-menu-placement="left-start">
+    <div class="menu-item px-5 d-none" data-kt-menu-trigger="hover" data-kt-menu-placement="left-start">
         <a href="#" class="menu-link px-5">
             <span class="menu-title">{{ __('My Subscription') }}</span>
             <span class="menu-arrow"></span>
@@ -110,7 +110,7 @@
     <!--end::Menu item-->
 
     <!--begin::Menu item-->
-    <div class="menu-item px-5" data-bs-toggle="tooltip" data-bs-placement="left" title="{{ __('Coming soon') }}">
+    <div class="menu-item px-5 d-none" data-bs-toggle="tooltip" data-bs-placement="left" title="{{ __('Coming soon') }}">
         <a href="#" class="menu-link px-5">
             {{ __('My Statements') }}
         </a>
@@ -118,11 +118,11 @@
     <!--end::Menu item-->
 
     <!--begin::Menu separator-->
-    <div class="separator my-2"></div>
+    <div class="separator my-2 d-none"></div>
     <!--end::Menu separator-->
 
     <!--begin::Menu item-->
-    <div class="menu-item px-5" data-kt-menu-trigger="hover" data-kt-menu-placement="left-start">
+    <div class="menu-item px-5 d-none" data-kt-menu-trigger="hover" data-kt-menu-placement="left-start">
         <a href="#" class="menu-link px-5">
             <span class="menu-title position-relative">
                 {{ __('Language') }}
@@ -195,7 +195,7 @@
     <!--end::Menu item-->
 
     <!--begin::Menu item-->
-    <div class="menu-item px-5 my-1">
+    <div class="menu-item px-5 my-1 d-none">
         <a href="{{ theme()->getPageUrl('settings.index') }}" class="menu-link px-5">
             {{ __('Account Settings') }}
         </a>
@@ -212,11 +212,11 @@
 
     @if (theme()->isDarkModeEnabled())
         <!--begin::Menu separator-->
-        <div class="separator my-2"></div>
+        <div class="separator my-2 d-none"></div>
         <!--end::Menu separator-->
 
         <!--begin::Menu item-->
-        <div class="menu-item px-5">
+        <div class="menu-item px-5 d-none">
             <div class="menu-content px-5">
                 <label class="form-check form-switch form-check-custom form-check-solid pulse pulse-success" for="kt_user_menu_dark_mode_toggle">
                     <input class="form-check-input w-30px h-20px" type="checkbox" value="1" name="skin" id="kt_user_menu_dark_mode_toggle" {{ theme()->isDarkMode() ? 'checked' : '' }} data-kt-url="{{ theme()->getPageUrl('', '', theme()->isDarkMode() ? '' : 'dark') }}"/>

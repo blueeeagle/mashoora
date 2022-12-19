@@ -1,4 +1,82 @@
 <x-base-layout>
+    <div class="modal fade" id="statusupdate" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered mw-650px">
+            <div class="modal-content rounded">
+                <div class="modal-header pb-0 border-0 justify-content-end">
+                    <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                        <span class="svg-icon svg-icon-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
+                                    transform="rotate(-45 6 17.3137)" fill="currentColor" />
+                                <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                                    fill="currentColor" />
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+                <div class="modal-body scroll-y px-10 px-lg-15 pt-0 pb-15">
+                    <form id="statusform" class="form" action="#">
+                        <div class="mb-13 text-center">
+                            <h1 class="mb-3">Pay Out Approval</h1>
+                        </div>
+
+                        <div class="d-flex flex-column mb-8 fv-row">
+                            <label class="d-flex align-items-center fs-6 fw-bold mb-2">
+                                <span class="required">Status</span>
+                            </label>
+                            <select class="form-select form-select-solid" required data-control="select2" data-hide-search="true" data-placeholder="Approvel Status" name="status" id="status">
+                                <option value="">Select option</option>
+                                <option value="2">Approve</option>
+                                <option value="3">Decline</option>
+                            </select>
+                        </div>
+
+                        <div class=" flex-column mb-8 fv-row" data-approvel hidden>
+                            <label class="d-flex align-items-center fs-6 fw-bold mb-2">
+                                <span class="required">Transaction ID</span>
+                            </label>
+                            <input type="text" class="form-control form-control-solid" name="Txid" placeholder="Transaction ID" id="Txid"/>
+                        </div>
+
+                        <div class=" flex-column mb-8 fv-row" data-approvel hidden>
+                            <label class="d-flex align-items-center fs-6 fw-bold mb-2">
+                                <span class="required">Transaction Type</span>
+                            </label>
+                            <select class="form-select form-select-solid" data-control="select2" data-hide-search="true" data-placeholder="Transaction Type" name="type" id="typetrx">
+                                <option value="">Select Status</option>
+                                <option value="Cheque / Demand Draft">Cheque / Demand Draft</option>
+                                <option value="E-Transfer">E-Transfer</option>
+                            </select>
+                        </div>
+                        <div class=" flex-column mb-8 fv-row" data-approvel hidden>
+                            <label class="d-flex align-items-center fs-6 fw-bold mb-2">
+                                <span class="required">Pay Date</span>
+                            </label>
+                            <input class="form-control form-control-solid" name="pay_date" placeholder="pay_date" id="pay_date" />
+                        </div>
+                        <div class=" flex-column mb-8 fv-row" >
+                            <label class="d-flex align-items-center fs-6 fw-bold mb-2">
+                                <span class="required">Comments</span>
+                            </label>
+                            <textarea class="form-control"  name="commands"></textarea>
+                        </div>
+                        <div class="text-center">
+                            <button type="reset" class="btn btn-light me-3 kt_modal_new_target_cancel">Cancel</button>
+                            <button type="submit" class="btn btn-primary kt_modal_new_target_submit">
+                                <span class="indicator-label">Submit</span>
+                                <span class="indicator-progress">Please wait...
+                                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
 
     <div id="kt_engage_demos" class="bg-body" data-kt-drawer="true" data-kt-drawer-name="explore" data-kt-drawer-activate="true" data-kt-drawer-overlay="true" data-kt-drawer-width="{default:'350px', 'lg': '475px'}" data-kt-drawer-direction="end" data-kt-drawer-toggle="#kt_engage_demos_toggle" data-kt-drawer-close="#kt_engage_demos_close">
         <!--begin::Card-->
@@ -104,12 +182,12 @@
                             <option selected hidden value="9">Action</option>
                         </select>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
     </div>
-    
+
 
     <div class="d-flex flex-column flex-column-fluid">
         <!--begin::Toolbar-->
@@ -169,7 +247,7 @@
         <!--end::Toolbar-->
         <!--begin::Content-->
 
-        
+
         <div id="kt_app_content" class="app-content flex-column-fluid">
             <!--begin::Content container-->
             <div id="kt_app_content_container" class="app-container container-xxl">
@@ -177,46 +255,20 @@
                 <div class="card">
                     <!--begin::Card header-->
                     <div class="card-header border-0">
-                        <!--begin::Card title-->
                         <div class="card-title">
-                            <!--begin::Search-->
-                            <div class="d-flex align-items-center position-relative my-1">
-                                <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
-                                <span class="svg-icon svg-icon-1 position-absolute ms-6">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1" transform="rotate(45 17.0365 15.1223)" fill="currentColor"></rect>
-                                        <path d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z" fill="currentColor"></path>
-                                    </svg>
-                                </span>
-                                <!--end::Svg Icon-->
-                                <input type="text" id="kt_subheader_search_form"  data-kt-docs-table-filter="search" class="form-control form-control-solid w-250px ps-15" placeholder="Search ">
-
-                            </div>
-                            <div class="d-flex align-items-center p-10">
-                                <!--<button type="button" id="search" class="btn btn-primary me-5">Search</button>-->
-                                <button type="button" id="reset" class="btn btn-primary btn-xs me-5">Reset</button>
-                                
-                            </div>
-
-                            <!--end::Search-->                                   
+                            <button class="btn btn-primary me-5 btn-sm" data-rendering value="Pending">
+                                <span data-apptick="Pending" class="svg-icon svg-icon-muted svg-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                            <path d="M9.89557 13.4982L7.79487 11.2651C7.26967 10.7068 6.38251 10.7068 5.85731 11.2651C5.37559 11.7772 5.37559 12.5757 5.85731 13.0878L9.74989 17.2257C10.1448 17.6455 10.8118 17.6455 11.2066 17.2257L18.1427 9.85252C18.6244 9.34044 18.6244 8.54191 18.1427 8.02984C17.6175 7.47154 16.7303 7.47154 16.2051 8.02984L11.061 13.4982C10.7451 13.834 10.2115 13.834 9.89557 13.4982Z" fill="currentColor"></path>
+                                                </svg></span>Pending List</button>
+                            <button class="btn btn-success me-5 btn-sm" data-rendering value="Approved">
+                                <span data-apptick="Approved" hidden class="svg-icon svg-icon-muted svg-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                            <path d="M9.89557 13.4982L7.79487 11.2651C7.26967 10.7068 6.38251 10.7068 5.85731 11.2651C5.37559 11.7772 5.37559 12.5757 5.85731 13.0878L9.74989 17.2257C10.1448 17.6455 10.8118 17.6455 11.2066 17.2257L18.1427 9.85252C18.6244 9.34044 18.6244 8.54191 18.1427 8.02984C17.6175 7.47154 16.7303 7.47154 16.2051 8.02984L11.061 13.4982C10.7451 13.834 10.2115 13.834 9.89557 13.4982Z" fill="currentColor"></path>
+                                                </svg></span>Approved List</button>
+                            <button class="btn btn-danger me-5 btn-sm" data-rendering value="Decline">
+                                <span data-apptick="Decline" hidden class="svg-icon svg-icon-muted svg-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                            <path d="M9.89557 13.4982L7.79487 11.2651C7.26967 10.7068 6.38251 10.7068 5.85731 11.2651C5.37559 11.7772 5.37559 12.5757 5.85731 13.0878L9.74989 17.2257C10.1448 17.6455 10.8118 17.6455 11.2066 17.2257L18.1427 9.85252C18.6244 9.34044 18.6244 8.54191 18.1427 8.02984C17.6175 7.47154 16.7303 7.47154 16.2051 8.02984L11.061 13.4982C10.7451 13.834 10.2115 13.834 9.89557 13.4982Z" fill="currentColor"></path>
+                                                </svg></span>Declined List</button>
                         </div>
-                       <!--begin::Card toolbar-->
-                        <div class="card-toolbar" data-select2-id="select2-data-131-2zax">
-
-                            <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base" data-select2-id="select2-data-130-3ekp">
-                                <!--begin::Filter-->
-                                <button type="button" id="kt_engage_demos_toggle" class="btn btn-light-primary me-3" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
-                                <!--begin::Svg Icon | path: icons/duotune/general/gen031.svg-->
-                                <span class="svg-icon svg-icon-2">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M19.0759 3H4.72777C3.95892 3 3.47768 3.83148 3.86067 4.49814L8.56967 12.6949C9.17923 13.7559 9.5 14.9582 9.5 16.1819V19.5072C9.5 20.2189 10.2223 20.7028 10.8805 20.432L13.8805 19.1977C14.2553 19.0435 14.5 18.6783 14.5 18.273V13.8372C14.5 12.8089 14.8171 11.8056 15.408 10.964L19.8943 4.57465C20.3596 3.912 19.8856 3 19.0759 3Z" fill="currentColor"></path>
-                                    </svg>
-                                </span>
-                                <!--end::Svg Icon-->Advanced search</button>
-                                <!--begin::Menu 1-->
-                            </div>
-                        </div>
-                        <!--end::Card toolbar-->
                     </div>
                     <!--end::Card header-->
                     <!--begin::Card body-->
@@ -228,142 +280,36 @@
                                     <thead>
                                         <tr class="fw-semibold fs-6 text-gray-800">
                                             <th>#</th>
-                                            <th>Booking ID</th>
-                                            <th>Slot Date & Time <br/> Type</th>
                                             <th>Consultant</th>
-                                            <th>Customer</th>
-                                            <th>Pay Out Status</th>
-                                            <th>Amount</th>
+                                            <th>Details</th>
+                                            <th>Request Date</th>
+                                            <th>Pay Out Amount</th>
+                                            <th>Admin Amount</th>
+                                            <th>Account Status</th>
                                             <th>Status</th>
-                                            <th>Date & Time Stamp</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
-                                    <tfoot>
-                                        <tr>
-                                            <td colspan="8"></td>
-                                            <td><button class="btn btn-danger btn-sm" onclick="update_approval(this)" value="1" id="decline">Decline</button></th>
-                                            <td><button class="btn btn-success btn-sm" onclick="update_approval(this)" value="2" id="approve">Approve</button></th>
-                                        </tr>
-                                    </tfoot>
                                 </table>
-                                
+
                             </div>
-                            
+
                         </div>
                     </div>
                     <!--end::Card body-->
-                </div> 
+                </div>
             </div>
             <!--end::Content container-->
         </div>
         <!--end::Content-->
     </div>
 @section('scripts')
+<script src="{{ URL::asset(theme()->getDemo().'/js/pay_out.js') }}"></script>
+
 <script type="text/javascript">
-    var checked =[];
-    var table = null;
-        $(document).ready(function () {
-            table = $("#kt_customers_table").DataTable({
-                initComplete: function(settings, json) {
-                    const select = ToogleColum.val()
-                    table.columns().every(function (index) {
-                        if(!select.includes(index.toString())){
-                            var column =  table.column(index)
-                            column.visible(false)
-                        }else{
-                            var column =  table.column(index)
-                            column.visible(true)
-                        }
-                        var column =  table.column(index)
-                            column.visible(true)
-                    })
-                },
-                responsive: true,
-                buttons: [
-                        'print',
-                        'copyHtml5',
-                        'excelHtml5',
-                        'csvHtml5',
-                        'pdfHtml5',
-                    ],
-                // Pagination settings
-                // dom: `<'row'<'col-sm-12 'tr>>
-                // <'row'<'col-sm-12 col-md-5 dataTables_pager'i ><'col-sm-12 col-md-7 'lp>>`,
-                // read more: https://datatables.net/examples/basic_init/dom.html
+    const pay_out = `{{route('approval.pay_out.datatable')}}`
+    const app_status = `{{ route('approval.pay_out.status')}}`
 
-                lengthMenu: [5, 10, 25, 100],
-                // searching: false,
-                pageLength: 10,
-                searchDelay: 500,
-                processing: true,
-                serverSide: true,
-                bInfo : false,
-                layout: {
-                    scroll: false, // enable/disable datatable scroll both horizontal and vertical when needed.
-                    footer: false, // display/hide footer
-                },
-                ajax: {
-                    url : "{{route('approval.pay_out.datatable')}}",
-                    type: 'POST',
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                        columnsDef : ['id','booking','appointment_date','consultant_id','customer_id','pay_out_status','updated_at','option']
-                    }
-
-                },
-                columns: [
-                    { data: 'DT_RowIndex' },
-                    { data: 'booking'},
-                    { data: 'appointment_date' },
-                    { data: 'consultant_id' },
-                    { data: 'customer_id' },
-                    { data: 'statement'},
-                    { data: 'amount'},
-                    { data: 'pay_out_status'},
-                    { data: 'updated_at'},
-                    { data: 'action'},
-                ],
-                columnDefs : [
-                    
-                    {
-                        targets: -1,
-                        render: function (data, type, row) {
-                            return `<input  class="typecheck" type="checkbox" id="appointment_id" value='${row.id}' >`;
-                        },
-
-                    }
-                ],
-                drawCallback : function( settings ) { }
-            });
-
-            
-            const filterSearch = document.querySelector('[data-kt-docs-table-filter="search"]');
-            filterSearch.addEventListener('keyup', function (e) {
-                table.search(e.target.value).draw();
-            });
-            
-            $( "#reset" ).click(function() {
-                $('#kt_subheader_search_form').val('');
-               table.search($('#kt_subheader_search_form').val()).draw();   
-            });
-           
-        });
-
-        $('body').on('click','.typecheck',function(e){
-            var alreadyCheck = checked.includes(e.target.value);
-            if(e.currentTarget.checked==true && !alreadyCheck){ 
-                checked.push(e.target.value); 
-            }
-            else{
-                checked = arrayRemove(checked,e.target.value );
-                function arrayRemove(arr, value) { 
-                    return arr.filter(function(ele){ 
-                        return ele != value; 
-                    });
-                }
-            }
-        })
 
         function update_approval(e){
             if(e.value == 1){
@@ -372,7 +318,7 @@
             else{
                 var status = "Approve";
             }
-            
+
             if(checked.length !=0 ){
                 $.ajax({
                     url: "{{ route('approval.pay_out.status')}}",

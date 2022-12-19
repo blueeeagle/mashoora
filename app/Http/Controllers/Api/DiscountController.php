@@ -33,12 +33,9 @@ class DiscountController extends Controller
     }
 
     public function edit(Request $request,Discount $discount){
-        $discount->{'parent_Cat'} = $discount->parentcat();
-        $discount->{'sub_Cat'} = $discount->subcat();
-        
         $category = Category::where('type',0)->where('status',1)->whereIn('id',explode(",",Auth::guard('consultant')->user()->categorie_id))->first();
         $subctegory = Category::where('type',1)->where('status',1)->whereIn('id',explode(",",Auth::guard('consultant')->user()->categorie_id))->get();
-        return response()->json(['category'=>$category,'subctegory'=>$subctegory]);
+        return response()->json(['category'=>$category,'subctegory'=>$subctegory,'discount'=>$discount]);
     }
 
     public function store(Request $Request)

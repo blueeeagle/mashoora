@@ -7,83 +7,55 @@ use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use App\Models\Category;
 use App\Models\PayApproval;
+use App\Models\Payment;
+use App\Models\Wallet;
+
 use Auth;
 use Validator;
 use DataTables;
 use DB;
-
+use Carbon\Carbon;
 class PayOutApprovalController extends Controller
 {
 
     public function __construct()
     {
         // $this->middleware('Permissions:Consultant_Approval_View',['only'=>['index']]);
-        
-    }
-    
-	public function datatables(Request $request){
-        $search=[];
-        $columns=$request->columns;
-        foreach($columns as $colum){
-            $search[] = $colum['search']['value'];
-        }
 
-        $datas = Appointment::with('consultant','customer','transaction','pay_approvals')->where('status','completed')->orderBy('id','desc')->get();
-        // ->when($search[1],function($query,$search){
-        //     return $query->where('countries.country_name','LIKE',"%{$search}%");
-        // })
-        
-    
+    }
+
+	public function datatables(Request $request){
+        $datas = PayApproval::with('consultant')->where('pay_out',1)->orderBy('id','desc')->get();
+        if($request->searchTable == 'Approved') $datas = PayApproval::with('consultant')->where('pay_out',2)->orderBy('id','desc')->get();
+        if($request->searchTable == 'Decline') $datas = PayApproval::with('consultant')->where('pay_out',3)->orderBy('id','desc')->get();
+
         return DataTables::of($datas)
         ->addIndexColumn()
-        ->addColumn('booking', function (Appointment $datas){
-           return  "B".$datas->id;
+        ->addColumn('pay_req_date', function(PayApproval $datas) {
+            return  date('Y-m-d',\strtotime($datas->created_at));
         })
-        ->editColumn('appointment_date', function (Appointment $datas){
-           return  date('d-m-Y H:i', strtotime($datas->appointment_date))."<br/>".$datas->appointment_type;
+        ->addColumn('pay_updated_date', function(PayApproval $datas) {
+            $updatedDate = ($datas->updated_date)?date('Y-m-d',\strtotime($datas->updated_date)):'--';
+            return  ['Request_date'=>date('Y-m-d',\strtotime($datas->created_at)),'updated'=>$updatedDate];
         })
-        ->editColumn('consultant_id', function(Appointment $data){
-            $consultant = $data->consultant;
-            return ($consultant)?$consultant->name."<br/>".$consultant->phone_no."<br/>".$consultant->email : '';
+        ->addColumn('consultant', function(PayApproval $datas) {
+            $consultant = unserialize(bzdecompress(utf8_decode($datas->consultantraw)));
+            return  $consultant;
         })
-        ->editColumn('customer_id', function(Appointment $data){
-            $customer = $data->customer;
-            return ($customer)?$customer->name."<br/>".$customer->phone_no."<br/>".$customer->email: '';
+        ->addColumn('consultant_amount', function(PayApproval $datas) {
+            $consultant = unserialize(bzdecompress(utf8_decode($datas->consultantraw)));
+            return  ['amount'=>$consultant->country->currency->currencycode.' '.$datas->amount];
         })
-        ->addColumn('amount', function(Appointment $data){
-            $transaction = $data->transaction;
-            return ($transaction)?$transaction->amount : '';
+        ->addColumn('admin_amount', function(PayApproval $datas) {
+            $consultant = unserialize(bzdecompress(utf8_decode($datas->consultantraw)));
+            $amount = $datas->amount/$consultant->admin->country->currency->price;
+            return  ['amount'=>$consultant->admin->country->currency->currencycode.' '.$amount];
         })
-        ->editColumn('updated_at', function (Appointment $datas){
-            return  date('d-m-Y H:i', strtotime($datas->updated_at)); 
+        ->addColumn('isbank', function(PayApproval $datas) {
+            $consultant = unserialize(bzdecompress(utf8_decode($datas->consultantraw)));
+            return $datas->consultant->bank_status;
         })
-        ->addColumn('pay_out_status', function($datas){
-            $status = $datas->pay_approvals;
-            $temp = null;
-            if($status !=""){
-                if($status->pay_out_status == 2){
-                return $temp = "<span class='badge badge-success'>Approved</span>";
-                }
-                if($status->pay_out_status == 3){
-                    return  $temp = "<span class='badge badge-danger'>Decline</span>";
-                }
-                return 'Pending';
-            }
-        })
-        ->addColumn('statement', function($datas){
-            $statement = $datas->pay_approvals;
-            if($statement !=""){
-                return $statement->statement;
-            }
-        })
-        ->addColumn('action',function($datas){
-            return [];
-        })        
-        ->addColumn('option',function($datas){
-            return ['view'=> \route('consultant.consultant.view',$datas->id)];
-        })
-        ->rawColumns(['appointment_date','consultant_id','customer_id','action','pay_out_status','statement'])
-        ->toJson(); //--- Returning Json Data To Client Side
+        ->toJson();
     }
 
 
@@ -92,24 +64,32 @@ class PayOutApprovalController extends Controller
 	}
 
 	public function status(Request $request){
-       
-        if($request->status == 'Decline'){
-            foreach ($request->id as $key => $id) {
-                $approval = PayApproval::where('appointment_id',$id)->first();
-                $approval->pay_out_status = 3;
-                $approval->update();
-            }
+
+        $PayApproval = PayApproval::where('id',$request->id)->first();
+        $PayApproval->pay_out = $request->status;
+        $PayApproval->Txid = $request->Txid;
+        $PayApproval->type = $request->type;
+        $PayApproval->updated_date = date('Y-m-d H:i');
+        $PayApproval->pay_date = $request->pay_date;
+        $PayApproval->commands = $request->commands;
+        $PayApproval->update();
+
+        if($request->status == 2) return response()->json(['status'=>true,'msg'=>'Approved']);
+        if($request->status == 3){
+            $Payment = new Payment;
+            $Payment->amount = $PayApproval->amount;
+            $Payment->type = 'add';
+            $Payment->action = 'Pay Out Return';
+            $Payment->consultant_id = $PayApproval->consultant_id;
+            $Payment->save();
+
+            $Wallet = Wallet::where('consultant_id',$PayApproval->consultant_id)->first();
+            $Wallet->balance = $Wallet->balance + $PayApproval->amount;
+            $Wallet->update();
             return response()->json(['status'=>true,'msg'=>'Declined']);
         }
-        if($request->status == 'Approve'){
-            foreach ($request->id as $key => $id) {
-                $approval = PayApproval::where('appointment_id',$id)->first();
-                $approval->pay_out_status = 2;
-                $approval->update();
-            }
-            return response()->json(['status'=>true,'msg'=>'Approved']);
-        }
+
     }
 
-    
+
 }

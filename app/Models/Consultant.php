@@ -23,6 +23,7 @@ use App\Models\Consultantcategory;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
 
 class Consultant extends Authenticatable
 {
@@ -110,7 +111,10 @@ public function getInsuranceAttribute(){
      public function reviewForView(){
         return $this->hasMany(Review::class,'consultant_id','id');
     }
-    
+    public function getReviewcountAttribute(){
+        $data = DB::select(DB::raw("SELECT sum(rating)/count(*) as count FROM `reviews` where consultant_id='$this->id'"));
+        return $data[0]->count;
+    }
     public function appointment_completed(){
         return $this->hasMany(Appointment::class,'consultant_id','id')->where('status','completed');
     }
@@ -142,5 +146,12 @@ public function getInsuranceAttribute(){
     }
     public function gettimeZone(){
         return new DateTime(null, new DateTimeZone( \DateTimeZone::listIdentifiers(\DateTimeZone::PER_COUNTRY, $this->country->country_code)[0]));
+    }
+    public function checkcomfee(){
+        return !($this->com_con_amount == null || $this->com_con_amount == "");
+    }
+    
+    public function checkofferfee(){
+        return !($this->com_off_amount == null || $this->com_off_amount == "");
     }
 }

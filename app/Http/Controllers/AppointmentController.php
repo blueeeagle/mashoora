@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Appointment;
 use App\Models\Wallet;
 use App\Models\Payment;
+use App\Models\AppointmentLog;
 use Illuminate\Support\Facades\Input;
 use DataTables;
 use Illuminate\Support\Collection;
@@ -71,7 +72,16 @@ class AppointmentController extends Controller
     public function view(Request $request)
     { 
         $appointment = Appointment::with('customer','consultant','insurance')->where('id',$request->id)->first();
-       
+       $AppointmentLog = AppointmentLog::where('appointment_id',$request->id)->get();
+
+        $data = DataTables::of($AppointmentLog)
+        ->addColumn('appointment_id', function(AppointmentLog $datas) {
+            return 'BK-'.$datas->appointment_id;
+        })
+        ->addColumn('created_at', function(AppointmentLog $datas) {
+            return date('Y-m-d h:i a',\strtotime($datas->created_at));
+        })
+        ->toJson();
       
          $customerTimeZone ='';
          $consultantTimeZone ='';
@@ -108,17 +118,25 @@ class AppointmentController extends Controller
         
         // dd($customerTime);
         unset($appointment->rawdata);
-        return response()->json(['status'=>true,'App_data'=>$appointment]);
+        return response()->json(['status'=>true,'App_data'=>$appointment,'App_log'=>$data]);
     }
 
     public function status(Request $request){
         // dd($request);
       if($request->status == 'Confirmed'){
-        $approval = Appointment::whereIn('id',$request->id)->update(['status'=>'Confirmed']);
+        $approval = Appointment::whereIn('id',$request->id)->get();
+        foreach ($approval as $key => $value) {
+            $value->status = 'Confirmed';
+            $value->update();
+        }
         return response()->json(['status'=>true,'msg'=>'Status Changed']);
       }
       if($request->status == 'Reject'){
-        $approval = Appointment::whereIn('id',$request->id)->update(['status'=>'Cancelled']);
+        $approval = Appointment::whereIn('id',$request->id)->get();
+        foreach ($approval as $key => $value) {
+            $value->status = 'Cancelled';
+            $value->update();
+        }
         return response()->json(['status'=>true,'msg'=>'Status Changed']);
       }
 
@@ -128,14 +146,8 @@ class AppointmentController extends Controller
             # code...
             if($value->status != 'Cancelled' && $value->status != 'Completed') {
                 $value->status = 'Completed';
-                $value->pay_in = 1;
+                if(empty($value->insurance_id)){ $value->pay_in = 1; }
                 $value->update();
-                // $wallet = wallet::where('consultant_id',$value->consultant_id)->first();
-                // if($wallet){
-                //     $Booking =  unserialize(bzdecompress(utf8_decode($value->rawdata)));
-                //     $Amount = ($Booking->amount/$Booking->customercurrnecy->price)*$Booking->consultantcurrency->price;
-                //     if(!$value->insurance_id) $this->addsubammount($Amount,'add','PAYMENT IN',$wallet,$value->id);
-                // }
             }
         }
         return response()->json(['status'=>true,'msg'=>'Status Changed']);
@@ -158,7 +170,12 @@ class AppointmentController extends Controller
                 if($countdown > $this->strtotimeconvert($Companysetting->discard_cut_off_time)){
                     $wallet = Wallet::where('customer_id',$value->customer_id)->first();
                     $Amount = $Booking->amount;
+                    $value->pay_in = 5;
+                    $value->update();
                     if(!$value->insurance_id) $this->addsubammountcustomer($Amount,'add','Refund',$wallet,$value->id);
+                }else{
+                    $value->pay_in = 1;
+                    $value->update();
                 }
             }
         }
@@ -176,6 +193,7 @@ class AppointmentController extends Controller
                 $Booking->cancellconsultant = ['status'=> true,'msg'=>'Appointment have be cancelled sucessfully','now'=> date("Y-m-d H:i")];
                 $value->rawdata = utf8_encode(bzcompress(serialize($Booking), 9));
                 $value->status = 'Cancelled';
+                $value->pay_in = 4;
                 $value->cancell_consultant = $value->consultant_id;
                 $value->update();
 
@@ -195,6 +213,7 @@ class AppointmentController extends Controller
             # code...
             if($value->status != 'Cancelled' && $value->status != 'Completed') {
                 $value->status = 'NoShowByConsultant';
+                $value->pay_in = 4;
                 $value->update();
                 $wallet = Wallet::where('customer_id',$value->customer_id)->first();
                 if($wallet){
@@ -213,6 +232,7 @@ class AppointmentController extends Controller
             # code...
             if($value->status != 'Cancelled' && $value->status != 'Completed') {
                 $value->status = 'NoShowByCustomer';
+                $value->pay_in = 1;
                 $value->update();
             }
         }

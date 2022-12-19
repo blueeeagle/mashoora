@@ -120,7 +120,7 @@ class ScheduleController extends Controller{
             return '';
         })
         ->addColumn('scheduleOrNot',function(Consultant $data){
-            if(!$data->Allschedule->isEmpty()) return 1;
+            if(!$data->Schedule->isEmpty()) return 1;
             return 0;
         })
         ->addColumn('view', function(Consultant $data){

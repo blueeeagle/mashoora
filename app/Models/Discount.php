@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Category;
 use App\Models\Consultantcategory;
 use App\Models\Consultant;
+use App\Models\Discountuser;
 class Discount extends Model
 {
     use HasFactory;
@@ -15,6 +16,8 @@ class Discount extends Model
                             'flat_percentage','amount','from_date','to_date','category_id','specialization_id',
                             'video','voice','direct','text','status'];
 
+    protected $appends = ['cat','sub','discountpurchasecount'];
+    
     public function category(){
         return $this->belongsTo(Category::class);
     }
@@ -24,10 +27,19 @@ class Discount extends Model
     public function consultant(){
         return $this->belongsTo(Consultant::class,'consultant_id');
     }
-public function parentcat(){
+    public function parentcat(){
         return Category::whereIn('id',\explode(',',$this->categorie_id))->where('type',0)->where('status',1)->first();
     }
     public function subcat(){
         return Category::whereIn('id',\explode(',',$this->categorie_id))->where('type',1)->where('status',1)->get();
-    }  
+    }
+    public function getCatAttribute(){
+        return Category::whereIn('id',\explode(',',$this->category_id))->where('type',0)->first();
+    }
+    public function getSubAttribute(){
+        return Category::whereIn('id',\explode(',',$this->category_id))->where('type',1)->get();
+    }
+    public function getDiscountpurchasecountAttribute(){
+        return Discountuser::where('discount_id',$this->id)->count();
+    }
 }
