@@ -15,6 +15,7 @@ use Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use App\Jobs\OfferPostJob;
 
 class OfferController extends Controller
 {
@@ -70,7 +71,7 @@ class OfferController extends Controller
             $offer->image = $Request->file('image')->store("/uploadFiles/offer/",'public_custom');
         }
         $offer->save();
-
+        $this->dispatch(new OfferPostJob($offer));
        return response()->json(['msg'=>'Offer Addes']);
     }
 

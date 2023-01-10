@@ -195,7 +195,7 @@
                     <div class="d-flex align-items-center flex-row-fluid flex-wrap">
                         <!--begin:Author-->
                         <div class="flex-grow-1 me-2">
-                            <a href="../../demo1/dist/pages/user-profile/overview.html"
+                            <a href="{{ route('approval.consultant.index') }}"
                                 class="text-gray-800 text-hover-primary fs-6 fw-bolder">Consultant</a>
                             <span class="text-muted fw-bold d-block fs-7">{{ number_format($consultant['pending'],0,'.',',') }}</span>
                         </div>
@@ -234,7 +234,7 @@
                     <div class="d-flex align-items-center flex-row-fluid flex-wrap">
                         <!--begin:Author-->
                         <div class="flex-grow-1 me-2">
-                            <a href="../../demo1/dist/pages/user-profile/overview.html"
+                            <a href="{{ route('approval.firm.index') }}"
                                 class="text-gray-800 text-hover-primary fs-6 fw-bolder">Firm</a>
                             <span class="text-muted fw-bold d-block fs-7">{{ number_format($Firmapprovel,0,'.',',')}}</span>
                         </div>
@@ -273,7 +273,7 @@
                     <div class="d-flex align-items-center flex-row-fluid flex-wrap">
                         <!--begin:Author-->
                         <div class="flex-grow-1 me-2">
-                            <a href="../../demo1/dist/pages/user-profile/overview.html"
+                            <a href="{{ route('approval.pay_in.index') }}"
                                 class="text-gray-800 text-hover-primary fs-6 fw-bolder">Pay In</a>
                             <span class="text-muted fw-bold d-block fs-7">{{ number_format($payIn,0,'.',',') }}</span>
                         </div>
@@ -312,7 +312,7 @@
                     <div class="d-flex align-items-center flex-row-fluid flex-wrap">
                         <!--begin:Author-->
                         <div class="flex-grow-1 me-2">
-                            <a href="../../demo1/dist/pages/user-profile/overview.html"
+                            <a href="{{ route('approval.pay_out.index') }}"
                                 class="text-gray-800 text-hover-primary fs-6 fw-bolder">Pay Out</a>
                             <span class="text-muted fw-bold d-block fs-7">{{ number_format($PayOut,0,'.',',') }}</span>
                         </div>

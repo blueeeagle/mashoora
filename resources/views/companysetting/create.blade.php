@@ -42,7 +42,7 @@
                     @include('companysetting.basicinfo')
                 </div>
                 <div class="card mb-5 mb-xl-10">
-                    <form class="formEdit" action="{{ route('setting.companysettings.detailsupdate') }}" method="post" id="">
+                    <form class="formEdit" action="{{ route('setting.companysettings.detailsupdate') }}"  onsubmit="tinymce.triggerSave();" method="post" id="">
                     @csrf
                     <div class="card-header cursor-pointer">
                         <div class="card-title m-0">
@@ -91,6 +91,10 @@
                             <div class="col-xl-6">
                                 <label class="required form-label fs-6 mb-4">Company Name</label>
                                 <input type="text" name="comapany_name" value="{{ $Companysetting->comapany_name }}" class="form-control form-control-solid mb-4" placeholder="Company Name" required />
+                            </div>
+                            <div class="col-xl-6">
+                                <label class="required form-label fs-6 mb-4">Company Email</label>
+                                <input type="email" name="email" value="{{ $Companysetting->email }}" class="form-control form-control-solid mb-4" placeholder="Company Email" required />
                             </div>
                             <div class="col-xl-6">
                                 <label class="required form-label fs-6 mb-4">Legal Name</label>
@@ -171,7 +175,7 @@
                 </div>
                 {{-- Companysettings --}}
                 <div class="card mb-5 mb-xl-10">
-                    <form class="formEdit" action="{{ route('setting.companysettings.settingupdate') }}" method="post" id="">
+                    <form class="formEdit" action="{{ route('setting.companysettings.settingupdate') }} " method="post" id="">
                     @csrf
                     <div class="card-header cursor-pointer">
                         <div class="card-title m-0">

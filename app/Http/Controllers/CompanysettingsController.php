@@ -80,6 +80,7 @@ class CompanysettingsController extends Controller
 public function detailsupdate(Request $Request){
         $Companysetting = Companysetting::where('id',1)->first();
         $Request['have_tax'] = isset($Request->have_tax)?1:0;
+        // dd($Request->all());
         $Companysetting->update($Request->all());
        return response()->json(['status'=>true,'msg'=>'Details updated']);
 

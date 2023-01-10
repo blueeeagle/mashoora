@@ -16,6 +16,7 @@ use DB;
 use Illuminate\Support\Collection;
 use Validator;
 use Illuminate\Support\Facades\Storage;
+use App\Jobs\DiscountPostJob;
 
 class DiscountController extends Controller
 {
@@ -149,6 +150,7 @@ class DiscountController extends Controller
     $Discount->category_id = \implode(',',$Request->category_id);
     // $Discount->status = (isset($Request->status)?1:0);
     $Discount->save();
+    $this->dispatch(new DiscountPostJob($Discount));
 
     return response()->json(['msg'=>'Discount Added']);
   }

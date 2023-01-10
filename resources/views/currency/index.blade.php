@@ -249,8 +249,22 @@
         <!--end::Content-->
     </div>
 @section('scripts')
-<script type="text/javascript">
 
+<script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-messaging.js"></script>
+
+<script type="text/javascript">
+    const config = {
+        apiKey: "AIzaSyD9LNiyoP1HzDSZtaI1xEZg8iqWd0zgyzs",
+        authDomain: "otparun-c5a3e.firebaseapp.com",
+        projectId: "otparun-c5a3e",
+        storageBucket: "otparun-c5a3e.appspot.com",
+        messagingSenderId: "989404442406",
+        appId: "1:989404442406:web:f9b9e670fe921b28429be7",
+        measurementId: "G-DN1BVLF8NJ"
+    };
+    firebase.initializeApp(config);
         $(document).ready(function () {
 
             table = $("#kt_customers_table").DataTable({

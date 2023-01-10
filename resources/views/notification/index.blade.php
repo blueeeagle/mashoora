@@ -1,5 +1,5 @@
 <x-base-layout>
-    
+
     <div class="d-flex flex-column flex-column-fluid">
         <!--begin::Toolbar-->
         <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
@@ -31,7 +31,7 @@
                 </div>
                 <!--end::Page title-->
                 <!--begin::Actions-->
-                
+
                 <!--end::Actions-->
             </div>
             <!--end::Toolbar container-->
@@ -48,7 +48,7 @@
                     <!--begin::Card header-->
                     <div class="card-header border-0">
                         <!--begin::Card title-->
-                        
+
                     </div>
                     <!--end::Card header-->
                     <!--begin::Card body-->
@@ -69,9 +69,9 @@
                                     <td rowspan="2">Action Taken By</td>
                                     <th colspan="3" scope="colgroup">Customer</th>
                                     <th colspan="3" scope="colgroup">Consultant</th>
-                                    <th colspan="2" scope="colgroup">Admin</th>
+                                    <th colspan="2" scope="colgroup">Companey</th>
                                 </tr>
-                                <tr>                                    
+                                <tr>
                                     <th scope="col">PN</th>
                                     <th scope="col">Mail</th>
                                     <th scope="col">SMS</th>
@@ -436,14 +436,14 @@
                                     <td><input type="checkbox" class="form-check-input mb-4 " name="type[]" value="135" <?php  if(in_array(135,$datas)){echo "checked";} ?>><br>
                                     <i class='fas fa-exclamation-circle' onclick="Myfunction(135)"></i></td>
                                     <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="136" <?php  if(in_array(136,$datas)){echo "checked";} ?>><br>
-                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(136)"></i></td>                                  
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(136)"></i></td>
                                 </tr>
                                 <tr>
                                 <th scope="">18</th>
                                     <th scope="row">Customer Reschedule Appoinment (Before Grace Period)</th>
                                     <td>Customer / Admin /Consultant</td>
                                     <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="137" <?php  if(in_array(137,$datas)){echo "checked";} ?>><br>
-                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(137)"></i></td>  
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(137)"></i></td>
                                     <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="138" <?php  if(in_array(138,$datas)){echo "checked";} ?>><br>
                                     <i class='fas fa-exclamation-circle' onclick="Myfunction(138)"></i></td>
                                     <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="139" <?php  if(in_array(139,$datas)){echo "checked";} ?>><br>
@@ -457,7 +457,7 @@
                                     <td><input type="checkbox" class="form-check-input mb-4 " name="type[]" value="143" <?php  if(in_array(143,$datas)){echo "checked";} ?>><br>
                                     <i class='fas fa-exclamation-circle' onclick="Myfunction(143)"></i></td>
                                     <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="144" <?php  if(in_array(144,$datas)){echo "checked";} ?>><br>
-                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(144)"></i></td>                                   
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(144)"></i></td>
                                 </tr>
                                 <tr>
                                 <th scope="">19</th>
@@ -478,14 +478,14 @@
                                     <td><input type="checkbox" class="form-check-input mb-4 " name="type[]" value="151" <?php  if(in_array(151,$datas)){echo "checked";} ?>><br>
                                     <i class='fas fa-exclamation-circle' onclick="Myfunction(151)"></i></td>
                                     <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="152" <?php  if(in_array(152,$datas)){echo "checked";} ?>><br>
-                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(152)"></i></td>                                   
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(152)"></i></td>
                                 </tr>
                                 <tr>
                                 <th scope="">20</th>
                                     <th scope="row">No Show Appointments</th>
                                     <td>Consultant / Admin</td>
                                     <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="153" <?php  if(in_array(153,$datas)){echo "checked";} ?>><br>
-                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(153)"></i></td> 
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(153)"></i></td>
                                     <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="154" <?php  if(in_array(154,$datas)){echo "checked";} ?>><br>
                                     <i class='fas fa-exclamation-circle' onclick="Myfunction(154)"></i></td>
                                     <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="155" <?php  if(in_array(155,$datas)){echo "checked";} ?>><br>
@@ -499,14 +499,14 @@
                                     <td><input type="checkbox" class="form-check-input mb-4 " name="type[]" value="159" <?php  if(in_array(159,$datas)){echo "checked";} ?>><br>
                                     <i class='fas fa-exclamation-circle' onclick="Myfunction(159)"></i></td>
                                     <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="160" <?php  if(in_array(160,$datas)){echo "checked";} ?>><br>
-                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(160)"></i></td>                                  
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(160)"></i></td>
                                 </tr>
                                 <tr>
                                 <th scope="">21</th>
                                     <th scope="row">Consultant Signed Up Successfully</th>
                                     <td>Consultant</td>
                                     <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="161" <?php  if(in_array(161,$datas)){echo "checked";} ?>><br>
-                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(161)"></i></td> 
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(161)"></i></td>
                                     <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="162" <?php  if(in_array(162,$datas)){echo "checked";} ?>><br>
                                     <i class='fas fa-exclamation-circle' onclick="Myfunction(162)"></i></td>
                                     <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="163" <?php  if(in_array(163,$datas)){echo "checked";} ?>><br>
@@ -520,14 +520,14 @@
                                     <td><input type="checkbox" class="form-check-input mb-4 " name="type[]" value="167" <?php  if(in_array(167,$datas)){echo "checked";} ?>><br>
                                     <i class='fas fa-exclamation-circle' onclick="Myfunction(167)"></i></td>
                                     <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="168" <?php  if(in_array(168,$datas)){echo "checked";} ?>><br>
-                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(168)"></i></td>                                   
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(168)"></i></td>
                                 </tr>
                                 <tr>
                                 <th scope="">22</th>
                                     <th scope="row">Consultant Approves Appointment (Paid by Insurance)</th>
                                     <td>Consultant / Admin</td>
                                     <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="169" <?php  if(in_array(169,$datas)){echo "checked";} ?>><br>
-                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(169)"></i></td> 
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(169)"></i></td>
                                     <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="170" <?php  if(in_array(170,$datas)){echo "checked";} ?>><br>
                                     <i class='fas fa-exclamation-circle' onclick="Myfunction(170)"></i></td>
                                     <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="171" <?php  if(in_array(171,$datas)){echo "checked";} ?>><br>
@@ -711,48 +711,48 @@
                                     <td><input type="checkbox" class="form-check-input mb-4 " name="type[]" value="240" <?php  if(in_array(240,$datas)){echo "checked";} ?>><br>
                                     <i class='fas fa-exclamation-circle' onclick="Myfunction(240)"></i></td>
                                 </tr>
-                                <!--<tr>-->
-                                <!--<th scope="">31</th>-->
-                                <!--    <th scope="row">Offer Posted</th>-->
-                                <!--    <td>Consultant / Admin</td>-->
-                                <!--    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="241" <?php  if(in_array(241,$datas)){echo "checked";} ?>><br>-->
-                                <!--    <i class='fas fa-exclamation-circle' onclick="Myfunction(241)"></i></td>-->
-                                <!--    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="242" <?php  if(in_array(242,$datas)){echo "checked";} ?>><br>-->
-                                <!--    <i class='fas fa-exclamation-circle' onclick="Myfunction(242)"></i></td>-->
-                                <!--    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="243" <?php  if(in_array(243,$datas)){echo "checked";} ?>><br>-->
-                                <!--    <i class='fas fa-exclamation-circle' onclick="Myfunction(243)"></i></td>-->
-                                <!--    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="244" <?php  if(in_array(244,$datas)){echo "checked";} ?>><br>-->
-                                <!--    <i class='fas fa-exclamation-circle' onclick="Myfunction(244)"></i></td>-->
-                                <!--    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="245" <?php  if(in_array(245,$datas)){echo "checked";} ?>><br>-->
-                                <!--    <i class='fas fa-exclamation-circle' onclick="Myfunction(245)"></i></td>-->
-                                <!--    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="246" <?php  if(in_array(246,$datas)){echo "checked";} ?>><br>-->
-                                <!--    <i class='fas fa-exclamation-circle' onclick="Myfunction(246)"></i></td>-->
-                                <!--    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="247" <?php  if(in_array(247,$datas)){echo "checked";} ?>><br>-->
-                                <!--    <i class='fas fa-exclamation-circle' onclick="Myfunction(247)"></i></td>-->
-                                <!--    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="248" <?php  if(in_array(248,$datas)){echo "checked";} ?>><br>-->
-                                <!--    <i class='fas fa-exclamation-circle' onclick="Myfunction(248)"></i></td>-->
-                                <!--</tr>-->
-                                <!--<tr>-->
-                                <!--<th scope="">32</th>-->
-                                <!--    <th scope="row">Discount Posted</th>-->
-                                <!--    <td>Consultant / Admin</td>-->
-                                <!--    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="249" <?php  if(in_array(249,$datas)){echo "checked";} ?>><br>-->
-                                <!--    <i class='fas fa-exclamation-circle' onclick="Myfunction(249)"></i></td>                                    -->
-                                <!--    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="250" <?php  if(in_array(250,$datas)){echo "checked";} ?>><br>-->
-                                <!--    <i class='fas fa-exclamation-circle' onclick="Myfunction(250)"></i></td>-->
-                                <!--    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="251" <?php  if(in_array(251,$datas)){echo "checked";} ?>><br>-->
-                                <!--    <i class='fas fa-exclamation-circle' onclick="Myfunction(251)"></i></td>-->
-                                <!--    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="252" <?php  if(in_array(252,$datas)){echo "checked";} ?>><br>-->
-                                <!--    <i class='fas fa-exclamation-circle' onclick="Myfunction(252)"></i></td>-->
-                                <!--    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="253" <?php  if(in_array(253,$datas)){echo "checked";} ?>><br>-->
-                                <!--    <i class='fas fa-exclamation-circle' onclick="Myfunction(253)"></i></td>-->
-                                <!--    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="254" <?php  if(in_array(254,$datas)){echo "checked";} ?>><br>-->
-                                <!--    <i class='fas fa-exclamation-circle' onclick="Myfunction(254)"></i></td>-->
-                                <!--    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="255" <?php  if(in_array(255,$datas)){echo "checked";} ?>><br>-->
-                                <!--    <i class='fas fa-exclamation-circle' onclick="Myfunction(255)"></i></td>-->
-                                <!--    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="256" <?php  if(in_array(256,$datas)){echo "checked";} ?>><br>-->
-                                <!--    <i class='fas fa-exclamation-circle' onclick="Myfunction(256)"></i></td>-->
-                                <!--</tr>-->
+                                <tr>
+                                <th scope="">31</th>
+                                    <th scope="row">Offer Posted</th>
+                                    <td>Consultant / Admin</td>
+                                    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="241" <?php  if(in_array(241,$datas)){echo "checked";} ?>><br>
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(241)"></i></td>
+                                    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="242" <?php  if(in_array(242,$datas)){echo "checked";} ?>><br>
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(242)"></i></td>
+                                    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="243" <?php  if(in_array(243,$datas)){echo "checked";} ?>><br>
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(243)"></i></td>
+                                    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="244" <?php  if(in_array(244,$datas)){echo "checked";} ?>><br>
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(244)"></i></td>
+                                    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="245" <?php  if(in_array(245,$datas)){echo "checked";} ?>><br>
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(245)"></i></td>
+                                    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="246" <?php  if(in_array(246,$datas)){echo "checked";} ?>><br>
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(246)"></i></td>
+                                    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="247" <?php  if(in_array(247,$datas)){echo "checked";} ?>><br>
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(247)"></i></td>
+                                    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="248" <?php  if(in_array(248,$datas)){echo "checked";} ?>><br>
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(248)"></i></td>
+                                </tr>
+                                <tr>
+                                <th scope="">32</th>
+                                    <th scope="row">Discount Posted</th>
+                                    <td>Consultant / Admin</td>
+                                    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="249" <?php  if(in_array(249,$datas)){echo "checked";} ?>><br>
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(249)"></i></td>
+                                    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="250" <?php  if(in_array(250,$datas)){echo "checked";} ?>><br>
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(250)"></i></td>
+                                    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="251" <?php  if(in_array(251,$datas)){echo "checked";} ?>><br>
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(251)"></i></td>
+                                    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="252" <?php  if(in_array(252,$datas)){echo "checked";} ?>><br>
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(252)"></i></td>
+                                    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="253" <?php  if(in_array(253,$datas)){echo "checked";} ?>><br>
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(253)"></i></td>
+                                    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="254" <?php  if(in_array(254,$datas)){echo "checked";} ?>><br>
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(254)"></i></td>
+                                    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="255" <?php  if(in_array(255,$datas)){echo "checked";} ?>><br>
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(255)"></i></td>
+                                    <td><input type="checkbox" class="form-check-input mb-4" name="type[]" value="256" <?php  if(in_array(256,$datas)){echo "checked";} ?>><br>
+                                    <i class='fas fa-exclamation-circle' onclick="Myfunction(256)"></i></td>
+                                </tr>
                                 <tbody>
                                 </table>
                                 <button type="submit" class="btn btn-info" style="margin-left: 629px;">Save</button>
@@ -769,66 +769,66 @@
     </div>
     <!-- Modal-->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content rounded">
-                <div class="modal-header pb-0 border-0 justify-content-end">
-                    <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
-                        <span class="svg-icon svg-icon-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
-                                    transform="rotate(-45 6 17.3137)" fill="currentColor" />
-                                <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
-                                    fill="currentColor" />
-                            </svg>
-                        </span>
-                    </div>
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content rounded">
+            <div class="modal-header pb-0 border-0 justify-content-end">
+                <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                    <span class="svg-icon svg-icon-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
+                                transform="rotate(-45 6 17.3137)" fill="currentColor" />
+                            <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                                fill="currentColor" />
+                        </svg>
+                    </span>
                 </div>
-                <div class="modal-body scroll-y px-10 px-lg-15 pt-0 pb-15">
-                    <form id="exampleModal77" class="form" action="#" method="post">
-                        @csrf
-                        <div class="row">
-                            <div class="col-md-8 remove_title">
-                                <div class="d-flex flex-column mb-8 fv-row">
-                                    <label class="d-flex align-items-center fs-6 fw-bold mb-2">
-                                        <span class="required">Title or Subject</span>
-                                    </label>
-                                    <textarea class="form-control set_title" required placeholder="" required name="title" ></textarea>
-                                    <input type="hidden" name="type" value="" class="set_type">
-                                </div>
+            </div>
+            <div class="modal-body scroll-y px-10 px-lg-15 pt-0 pb-15">
+                <form id="exampleModal77" class="form" action="#" method="post">
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="d-flex flex-column mb-8 fv-row">
+                                <label class="d-flex align-items-center fs-6 fw-bold mb-2">
+                                    <span class="required">Title or Subject</span>
+                                </label>
+                                <textarea class="form-control" id="title" required placeholder="" required name="title" ></textarea>
+                                <input type="hidden" name="type" value="" class="set_type">
                             </div>
-                            <div class="col-md-8">
-                                <div class="d-flex flex-column mb-8">
-                                    <label class="required fs-6 fw-bold mb-2">Description of Body</label>                        
-                                    <textarea id="register_address" name="description" class="tox-target set_description"></textarea>
-                                </div>  
-                            </div> 
-
-                            <div class="col-sm-4">
-                                <div class="d-flex flex-column mb-8">
-                                    <label class="required fs-6 fw-bold mb-2">Variables</label>
-                                    <textarea class="form-control variables" required placeholder="" disabled name="variables" rows="22">
-                                        {message}
-                                        {name}
-                                        {phone_no}
-                                        {email}
-                                        {amount}
-                                    </textarea>
-                                </div>
-                            </div>
-                        </div> 
-                        <div class="text-center">
-                            <button type="reset" class="btn btn-light me-3 kt_modal_new_target_cancel">Cancel</button>
-                            <button type="submit" class="btn btn-primary kt_modal_new_target_submit">
-                                <span class="indicator-label">Submit</span>
-                                <span class="indicator-progress">Please wait...
-                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
-                            </button>
                         </div>
-                    </form>
-                </div>
+                        <div class="col-md-8">
+                            <div class="d-flex flex-column mb-8">
+                                <label class="required fs-6 fw-bold mb-2">Description of Body</label>
+                                <textarea id="templateBody" name="description" class="tox-target"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="d-flex flex-column mb-8">
+                                <label class="required fs-6 fw-bold mb-2">Variables</label>
+                                <textarea class="form-control variables" required placeholder="" disabled name="variables" rows="22">
+                                    {message}
+                                    {name}
+                                    {phone_no}
+                                    {email}
+                                    {amount}
+                                </textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="reset" class="btn btn-light me-3 kt_modal_new_target_cancel">Cancel</button>
+                        <button type="submit" class="btn btn-primary kt_modal_new_target_submit">
+                            <span class="indicator-label">Submit</span>
+                            <span class="indicator-progress">Please wait...
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
 @section('scripts')
 <script src='{{ URL::asset(theme()->getDemo().'/plugins/custom/flatpickr/flatpickr.bundle.js')}}'></script>
@@ -837,11 +837,11 @@
 <script src='{{ URL::asset(theme()->getDemo().'/plugins/custom/fslightbox/fslightbox.bundle.js') }}'></script>
 <script src="{{ URL::asset(theme()->getDemo().'/js/template.js') }}"></script>
 <script>
-    const updateURL = `{{ route('notification.notification.template-store') }}`    
+    const updateURL = `{{ route('notification.notification.template-store') }}`
     </script>
 <script>
 
-var options2 = {selector: "#register_address"};
+var options2 = {selector: "#templateBody"};
 
 if (KTApp.isDarkMode()) {
             options2["skin"] = "oxide-dark";
@@ -854,39 +854,25 @@ if (KTApp.isDarkMode()) {
 
 function Myfunction(val)
 {
-     $('.set_title').val('');
-    tinyMCE.activeEditor.setContent('');
-    if(val==3 || val==6 || val==11 || val==14 || val==19 || val==22 || val==27 || val==30 || val==35 || val==38 || val==43 || val==46 || val==51 || val==54 || val==59 || val==62 || val==67 || val==70 || val==75 || val==78 || val==83 || val==86 || val==91 || val==94 || val==99 || val==102 || val==107 || val==110 || val==115 || val==118 || val==123 || val==126 || val==131 || val==134 || val==139 || val==142 || val==147 || val==150 || val==155 || val==158 || val==163 || val==166 || val==171 || val==174 || val==179 || val==182 || val==187 || val==190 || val==195 || val==198 || val==203 || val==206 || val==211 || val==214 || val==219 || val==222 || val==227 || val==230 || val==235 || val==238)
-    {
-        $('.remove_title').css('display','none');
-    }else{
-        $('.remove_title').css('display','block');
-    }
     $('.set_type').val(val);
     $.ajax({
         type: 'GET',
-        url: `{{url('/')}}/notification/variables/`+val,               
+        url: `{{url('/')}}/notification/variables/`+val,
         data: {value:val},
     success: function(data) {
-        $.ajax({
-        type: 'GET',
-        url: `{{url('/')}}/notification/template/`+val,               
-            data: {value:val},
-        success: function(data1) {
-
-            const myArray = data1.split("--");
-            $('.set_title').val(myArray[0]);
-            tinyMCE.activeEditor.setContent(myArray[1]);
+        if(!data.status){
+            alert("Something is wrong");
+            return;
         }
-        });
-
-        var allVals = [];  
-        data.forEach((element) => {
-            allVals.push(("\r\n")+ element);
+        var allVals = [];
+        data.variable.forEach((element) => {
+            allVals.push(("\r\n")+ '{'+element+'}');
         });
         $('.variables').val(allVals);
+        tinymce.get('templateBody').setContent(data.notify.description || '')
+        $('#title').val(data.notify.title)
         $('#exampleModal').modal('show');
-    }  
+    }
     });
 }
 </script>

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Agora\RtcTokenBuilderSample;
+use App\Http\Controllers\Agora\RtmTokenBuilderSample;
 use DataTables;
 use Validator;
 use DB;
@@ -29,6 +30,18 @@ use App\Models\Consultantcategory;
 use App\Models\Document;
 use App\Models\Country;
 use App\Models\PayApproval;
+use App\Models\Notificationdata;
+use App\Models\Agorachat;
+
+//JOB
+use App\Jobs\ConsultantStartJob;
+use App\Jobs\ConsultantCompletdJob;
+use App\Jobs\ConsultantCancelJob;
+use App\Jobs\NoShowAppJob;
+use App\Jobs\ConsultantCreatedJob;
+use App\Jobs\ConsultantAcceptAppJob;
+use App\Jobs\ConsultantRejectAppJob;
+use App\Jobs\ConsultantRequestPayoutJob;
 
 class Booking {
     public $consultant = null;
@@ -124,10 +137,12 @@ class ConsultantController extends Controller{
             $consultant->api_token = Str::random(60);
             $consultant->remember_token = Str::random(60);
             $consultant->phone_no_verify_at = Carbon::now();
+            $consultant->notifiation_token = $request->notification_token ?? '';
             $consultant->step ='1';
             $consultant->status = 1;
             $consultant->save();
-
+            $this->dispatch(new ConsultantCreatedJob($consultant));
+            
             $Wallet = new Wallet;
             $Wallet->consultant_id = $consultant->id;
             $Wallet->save();
@@ -143,8 +158,10 @@ class ConsultantController extends Controller{
         $consultant  = Consultant::where('phone_no',$phone_no)->first();
             if($consultant->status == 0) return response()->json(array('status'=>false,'msg'=>'Your account is Deactive contact admin'));
             // if($consultant->approval == 1) return response()->json(array('status'=>false,'msg'=>'Your account is Decline contact admin'));
-        
+        $consultant->notifiation_token = isset($request->notification_token)?$request->notification_token:'';
+        $consultant->update();
         $consultant->country;
+        
         $consultant->{'parent_Cat'} = $consultant->parentcat();
         $consultant->{'sub_Cat'} = $consultant->subcat();
         $consultant->{'Insurance'} = $consultant->Insurance;
@@ -422,20 +439,41 @@ class ConsultantController extends Controller{
     public function startsession(Request $request, Appointment $Appointment){
         if($Appointment->agora_token == null){
             $Booking = unserialize(bzdecompress(utf8_decode($Appointment->rawdata)));
-            $RtcTokenBuilderSample = new RtcTokenBuilderSample;
-            $token  = $RtcTokenBuilderSample->tok($Booking->consultant->preferre_slot*60,$request->role);
+            if($Booking->type == 'text'){
+                $RtmTokenBuilderSample = new RtmTokenBuilderSample;
+                $customerToken  = $RtmTokenBuilderSample->tok($Booking->consultant->preferre_slot*60,$request->role,$Appointment->Customer->id);
+                $consultantToken  = $RtmTokenBuilderSample->tok($Booking->consultant->preferre_slot*60,$request->role,$Booking->consultant->id);
+                $token = ['customer'=>$customerToken,'consultant'=>$consultantToken];
+                $token[] = '';
+            }else{
+                $RtcTokenBuilderSample = new RtcTokenBuilderSample;
+                $token  = $RtcTokenBuilderSample->tok($Booking->consultant->preferre_slot*60,$request->role);
+            }
             $Appointment->agora_token = json_encode($token);
             $Appointment->update();
+            $this->dispatch(new ConsultantStartJob($Appointment));
             return response()->json(['Token'=>$token[0],'ChannelName'=>$token[1]]);
         }
         return response()->json(['Token'=>$Appointment->agora_token]);
     }
     public function recreatesession(Request $request, Appointment $Appointment){
+            
             $Booking = unserialize(bzdecompress(utf8_decode($Appointment->rawdata)));
-            $RtcTokenBuilderSample = new RtcTokenBuilderSample;
-            $token  = $RtcTokenBuilderSample->tok($Booking->consultant->preferre_slot*60,$request->role);
+            if($Booking->type == 'text'){
+                $RtmTokenBuilderSample = new RtmTokenBuilderSample;
+                $customerToken  = $RtmTokenBuilderSample->tok($Booking->consultant->preferre_slot*60,$request->role,$Appointment->Customer->id);
+                $consultantToken  = $RtmTokenBuilderSample->tok($Booking->consultant->preferre_slot*60,$request->role,$Booking->consultant->id);
+                $token[] = ['customer'=>$customerToken,'consultant'=>$consultantToken];
+                $token[] = '';
+                
+            }else{
+                $RtcTokenBuilderSample = new RtcTokenBuilderSample;
+                $token  = $RtcTokenBuilderSample->tok($Booking->consultant->preferre_slot*60,$request->role);
+            }
             $Appointment->agora_token =json_encode($token);
             $Appointment->update();
+            $this->dispatch(new ConsultantStartJob($Appointment));
+            
             return response()->json(['Token'=>$token[0],'ChannelName'=>$token[1]]);
     }
     public function bookingdetail(Request $request, Appointment $Appointment){
@@ -504,6 +542,7 @@ class ConsultantController extends Controller{
     public function bookingaccept(Request $request, Appointment $Appointment){
         $Appointment->status = 'Confirmed';
         $Appointment->update();
+        $this->dispatch(new ConsultantAcceptAppJob($Appointment));
         return response()->json(['status' => true]);
     }
     public function NoShowByCustomer(Request $request, Appointment $Appointment){
@@ -511,6 +550,7 @@ class ConsultantController extends Controller{
         $Appointment->status = 'NoShowByCustomer';
         $Appointment->pay_in = 1;
         $Appointment->update();
+        $this->dispatch(new NoShowAppJob($Appointment));
         return response()->json(['status' => true]);
     }
     public function bookingReject(Request $request, Appointment $Appointment){
@@ -518,6 +558,7 @@ class ConsultantController extends Controller{
         $Appointment->status = 'Cancelled';
         $Appointment->cancell_consultant = Auth::guard('consultant')->user()->id;
         $Appointment->update();
+        $this->dispatch(new ConsultantRejectAppJob($Appointment));
         return response()->json(['status' => true]);
     }
     public function bookingcancel(Request $request, Appointment $Appointment){
@@ -533,13 +574,14 @@ class ConsultantController extends Controller{
         $Appointment->pay_in = 5;
         $Appointment->cancell_consultant = Auth::guard('consultant')->user()->id;
         $Appointment->update();
-        
+        $this->dispatch(new ConsultantCancelJob($Appointment));
         return response()->json(['status' => true,]);
     }
     public function bookingcompleted(Request $request, Appointment $Appointment){
         $Appointment->status = 'Completed';
         $Appointment->consultant_command = ($request->consultant_command)?$request->consultant_command:'';
         $Appointment->update();
+        $this->dispatch(new ConsultantCompletdJob($Appointment));
         return response()->json(['status' => true,]);
     }
 
@@ -654,6 +696,7 @@ class ConsultantController extends Controller{
         $PayApproval->consultant_id = Auth::guard('consultant')->user()->id;
         $PayApproval->consultantraw = utf8_encode(bzcompress(serialize($consultant), 9));
         $PayApproval->save();
+        $this->dispatch(new ConsultantRequestPayoutJob($PayApproval));
         return response()->json(['status'=>true,'msg'=>'']);
     }
     
@@ -695,6 +738,49 @@ class ConsultantController extends Controller{
 
         return $Payment;
     }
+    
+    public function Notification(){
+        $Notificationdata = Notificationdata::where('consultant_id',Auth::guard('consultant')->user()->id)->orderBy('id', 'desc')->get();
+        $NotificationdataCount = Notificationdata::where('consultant_id',Auth::guard('consultant')->user()->id)->where('is_read',0)->count();
+        return response()->json(['Notificationdata'=>$Notificationdata,'Count'=>$NotificationdataCount]);
+    }
+    public function notificationread(Request $request){
+        $IDs = explode(',',$request->id);
+        if(!empty($IDs)){
+            $data = Notificationdata::whereIn('id',$IDs)->update(['is_read'=>1]);
+        }
+        return response()->json(['status'=>true]);
+    }
+    public function chatlistApp(){
+        $Agorachat = Agorachat::where('consultant_id',Auth::guard('consultant')->user()->id)->get()->groupBy('appointment_id');
+        $ids = [];
+        foreach($Agorachat as $key => $agorachat){
+                $ids[] = $key;
+        }
+        if(empty($ids)){
+            return response()->json(['status'=>false,'data'=>[]]);
+        }
+        $Appointment = Appointment::whereIn('id',$ids)->orderBy('id', 'desc')->get();
+        foreach($Appointment as &$value){
+            unset($value->rawdata);
+        }
+        return response()->json(['status'=>false,'data'=>$Appointment]);
+        
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     //6 - Consultant Started Appointment Notification
     public function consultant_start_appointment($id)

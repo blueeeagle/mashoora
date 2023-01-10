@@ -82,6 +82,15 @@ private static $installed = array (
       ),
       'reference' => '6b69015d83d3daf9004a71a89f26e27d27ef6a16',
     ),
+    'beyondcode/laravel-websockets' => 
+    array (
+      'pretty_version' => '1.13.2',
+      'version' => '1.13.2.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '50f8a1e77227a2d2302d45b99185d68a1c1c6866',
+    ),
     'brick/math' => 
     array (
       'pretty_version' => '0.9.3',
@@ -90,6 +99,15 @@ private static $installed = array (
       array (
       ),
       'reference' => 'ca57d18f028f84f777b2168cd1911b0dee2343ae',
+    ),
+    'cboden/ratchet' => 
+    array (
+      'pretty_version' => 'v0.4.4',
+      'version' => '0.4.4.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '5012dc954541b40c5599d286fd40653f5716a38f',
     ),
     'composer/pcre' => 
     array (
@@ -195,6 +213,15 @@ private static $installed = array (
       ),
       'reference' => 'be85b3f05b46c39bbc0d95f6c071ddff669510fa',
     ),
+    'edujugon/push-notification' => 
+    array (
+      'pretty_version' => 'v5.1.0',
+      'version' => '5.1.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'b9edadb2474fe412ef84350eedb71494679ef701',
+    ),
     'egulias/email-validator' => 
     array (
       'pretty_version' => '3.2',
@@ -203,6 +230,15 @@ private static $installed = array (
       array (
       ),
       'reference' => 'a5ed8d58ed0c340a7c2109f587951b1c84cf6286',
+    ),
+    'evenement/evenement' => 
+    array (
+      'pretty_version' => 'v3.0.1',
+      'version' => '3.0.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '531bfb9d15f8aa57454f5f0285b18bec903b8fb7',
     ),
     'ezyang/htmlpurifier' => 
     array (
@@ -230,6 +266,15 @@ private static $installed = array (
       array (
       ),
       'reference' => 'd7f08a622b3346766325488aa32ddc93ccdecc75',
+    ),
+    'fig/http-message-util' => 
+    array (
+      'pretty_version' => '1.1.5',
+      'version' => '1.1.5.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '9d94dc0154230ac39e5bf89398b324a86f63f765',
     ),
     'filp/whoops' => 
     array (
@@ -793,6 +838,24 @@ private static $installed = array (
       ),
       'reference' => 'c379636dc50e829edb3a8bcb944a01aa1aed8f25',
     ),
+    'paragonie/random_compat' => 
+    array (
+      'pretty_version' => 'v9.99.100',
+      'version' => '9.99.100.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '996434e5492cb4c3edcb9168db6fbb1359ef965a',
+    ),
+    'paragonie/sodium_compat' => 
+    array (
+      'pretty_version' => 'v1.19.0',
+      'version' => '1.19.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'cb15e403ecbe6a6cc515f855c310eb6b1872a933',
+    ),
     'phar-io/manifest' => 
     array (
       'pretty_version' => '2.0.3',
@@ -1050,6 +1113,15 @@ private static $installed = array (
       ),
       'reference' => 'c23686f9c48ca202710dbb967df8385a952a2daf',
     ),
+    'pusher/pusher-php-server' => 
+    array (
+      'pretty_version' => '7.2.1',
+      'version' => '7.2.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '5d708d43d774218e1068037c56a887658a4930ac',
+    ),
     'ralouphie/getallheaders' => 
     array (
       'pretty_version' => '3.0.3',
@@ -1077,12 +1149,111 @@ private static $installed = array (
       ),
       'reference' => '8505afd4fea63b81a85d3b7b53ac3cb8dc347c28',
     ),
+    'ratchet/rfc6455' => 
+    array (
+      'pretty_version' => 'v0.3.1',
+      'version' => '0.3.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '7c964514e93456a52a99a20fcfa0de242a43ccdb',
+    ),
+    'react/cache' => 
+    array (
+      'pretty_version' => 'v1.2.0',
+      'version' => '1.2.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'd47c472b64aa5608225f47965a484b75c7817d5b',
+    ),
+    'react/dns' => 
+    array (
+      'pretty_version' => 'v1.10.0',
+      'version' => '1.10.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'a5427e7dfa47713e438016905605819d101f238c',
+    ),
+    'react/event-loop' => 
+    array (
+      'pretty_version' => 'v1.3.0',
+      'version' => '1.3.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '187fb56f46d424afb6ec4ad089269c72eec2e137',
+    ),
+    'react/http' => 
+    array (
+      'pretty_version' => 'v1.8.0',
+      'version' => '1.8.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'aa7512ee17258c88466de30f9cb44ec5f9df3ff3',
+    ),
+    'react/promise' => 
+    array (
+      'pretty_version' => 'v2.9.0',
+      'version' => '2.9.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '234f8fd1023c9158e2314fa9d7d0e6a83db42910',
+    ),
+    'react/promise-stream' => 
+    array (
+      'pretty_version' => 'v1.5.0',
+      'version' => '1.5.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'e6d2805e09ad50c4896f65f5e8705fe4ee7731a3',
+    ),
+    'react/promise-timer' => 
+    array (
+      'pretty_version' => 'v1.9.0',
+      'version' => '1.9.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'aa7a73c74b8d8c0f622f5982ff7b0351bc29e495',
+    ),
+    'react/socket' => 
+    array (
+      'pretty_version' => 'v1.12.0',
+      'version' => '1.12.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '81e1b4d7f5450ebd8d2e9a95bb008bb15ca95a7b',
+    ),
+    'react/stream' => 
+    array (
+      'pretty_version' => 'v1.2.0',
+      'version' => '1.2.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '7a423506ee1903e89f1e08ec5f0ed430ff784ae9',
+    ),
     'rhumsaa/uuid' => 
     array (
       'replaced' => 
       array (
         0 => '4.3.1',
       ),
+    ),
+    'ringcentral/psr7' => 
+    array (
+      'pretty_version' => '1.3.0',
+      'version' => '1.3.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '360faaec4b563958b673fb52bbe94e37f14bc686',
     ),
     'roave/security-advisories' => 
     array (
@@ -1496,6 +1667,15 @@ private static $installed = array (
       array (
       ),
       'reference' => '318718453c2be58266f1a9e74063d13cb8dd4165',
+    ),
+    'symfony/psr-http-message-bridge' => 
+    array (
+      'pretty_version' => 'v2.1.4',
+      'version' => '2.1.4.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'a125b93ef378c492e274f217874906fb9babdebb',
     ),
     'symfony/routing' => 
     array (

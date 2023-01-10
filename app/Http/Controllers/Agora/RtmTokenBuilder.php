@@ -17,12 +17,12 @@ class RtmTokenBuilder
      *                          Agora Service within 10 minutes after the token is generated, set expireTimestamp as 600(seconds).
      * @return The RTM token.
      */
-    public static function buildToken($appId, $appCertificate, $userId, $expire)
+    public static function buildToken($appId, $appCertificate, $userId, $expire, $role)
     {
         $accessToken = new AccessToken($appId, $appCertificate, $expire);
         $serviceRtm = new ServiceRtm($userId);
 
-        $serviceRtm->addPrivilege($serviceRtm::PRIVILEGE_LOGIN, $expire);
+        $serviceRtm->addPrivilege($role, $expire);
         $accessToken->addService($serviceRtm);
 
         return $accessToken->build();

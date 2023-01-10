@@ -14,6 +14,15 @@ use DataTables;
 use Illuminate\Support\Collection;
 use Validator;
 
+//JOB
+use App\Jobs\ConsultantCancelJob;
+use App\Jobs\ConsultantCompletdJob;
+use App\Jobs\CustomerCancelAppAGJob;
+use App\Jobs\CustomerCancelAppBGJob;
+use App\Jobs\NoShowAppJob;
+use App\Jobs\ConsultantAcceptAppJob;
+use App\Jobs\ConsultantRejectAppJob;
+
 class AppointmentController extends Controller
 {
 
@@ -27,7 +36,7 @@ class AppointmentController extends Controller
         if($request->searchTable == 'cancelled') $datas = Appointment::with('customer','consultant')->where('status','Cancelled')->orderBy('id','desc')->get();
         if($request->searchTable == 'noShow') $datas = Appointment::with('customer','consultant')->whereIn('status',['NoShowByCustomer','NoShowByConsultant'])->orderBy('id','desc')->get();
         if($request->searchTable == 'completed') $datas = Appointment::with('customer','consultant')->where('status','Completed')->orderBy('id','desc')->get();
-
+        
         return  DataTables::of($datas)
         ->editColumn('customer_id', function(Appointment $datas) {
             $datas->booking;
@@ -128,6 +137,7 @@ class AppointmentController extends Controller
         foreach ($approval as $key => $value) {
             $value->status = 'Confirmed';
             $value->update();
+            $this->dispatch(new ConsultantAcceptAppJob($value));
         }
         return response()->json(['status'=>true,'msg'=>'Status Changed']);
       }
@@ -136,6 +146,7 @@ class AppointmentController extends Controller
         foreach ($approval as $key => $value) {
             $value->status = 'Cancelled';
             $value->update();
+            $this->dispatch(new ConsultantRejectAppJob($value));
         }
         return response()->json(['status'=>true,'msg'=>'Status Changed']);
       }
@@ -148,6 +159,7 @@ class AppointmentController extends Controller
                 $value->status = 'Completed';
                 if(empty($value->insurance_id)){ $value->pay_in = 1; }
                 $value->update();
+                $this->dispatch(new ConsultantCompletdJob($value));
             }
         }
         return response()->json(['status'=>true,'msg'=>'Status Changed']);
@@ -172,10 +184,12 @@ class AppointmentController extends Controller
                     $Amount = $Booking->amount;
                     $value->pay_in = 5;
                     $value->update();
+                    $this->dispatch(new CustomerCancelAppAGJob($value));
                     if(!$value->insurance_id) $this->addsubammountcustomer($Amount,'add','Refund',$wallet,$value->id);
                 }else{
                     $value->pay_in = 1;
                     $value->update();
+                    $this->dispatch(new CustomerCancelAppBGJob($value));
                 }
             }
         }
@@ -196,7 +210,7 @@ class AppointmentController extends Controller
                 $value->pay_in = 4;
                 $value->cancell_consultant = $value->consultant_id;
                 $value->update();
-
+                $this->dispatch(new ConsultantCancelJob($value));
                 $wallet = Wallet::where('customer_id',$value->customer_id)->first();
                 if($wallet){
                     $Amount = $Booking->amount;
@@ -215,6 +229,7 @@ class AppointmentController extends Controller
                 $value->status = 'NoShowByConsultant';
                 $value->pay_in = 4;
                 $value->update();
+                $this->dispatch(new NoShowAppJob($value));
                 $wallet = Wallet::where('customer_id',$value->customer_id)->first();
                 if($wallet){
                     $Booking =  unserialize(bzdecompress(utf8_decode($value->rawdata)));
@@ -234,6 +249,7 @@ class AppointmentController extends Controller
                 $value->status = 'NoShowByCustomer';
                 $value->pay_in = 1;
                 $value->update();
+                $this->dispatch(new NoShowAppJob($value));
             }
         }
         return response()->json(['status'=>true,'msg'=>'Status Changed']);

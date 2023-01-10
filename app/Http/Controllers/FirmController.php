@@ -298,7 +298,7 @@ class FirmController extends Controller
             $Contact[] = $data;
         }
 
-        return \view('firm.edit',['firm'=>$firm,'countrys'=>$countrys,'state'=>$state,'city'=>$city,'contact'=>$Contact,'gallery'=>$gallery,'category'=>$category,'subcategory'=>$selectCategory->child]);
+        return \view('firm.edit',['firm'=>$firm,'countrys'=>$countrys,'state'=>$state,'city'=>$city,'contact'=>$Contact,'gallery'=>$gallery,'category'=>$category,'subcategory'=>$selectCategory->child ?? []]);
     }
     public function store(Request $Request){
         //  dd($Request);

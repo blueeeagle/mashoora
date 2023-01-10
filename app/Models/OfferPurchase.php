@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\OfferLog;
 use Auth;
+use App\Models\Companysetting;
 
 class OfferPurchase extends Model
 {
@@ -87,5 +88,24 @@ class OfferPurchase extends Model
         } catch (\Throwable $th) {
             return null;
         }
+    }
+    
+    public function GenerateTemplate(){
+        $Companysetting = Companysetting::where('id',1)->first();
+        $rawoffer = unserialize(bzdecompress(utf8_decode($this->rawoffer)));
+        $this->TemplateData = new \stdClass();
+        $this->TemplateData->{'ConsultantName'} = $this->consultant->name;
+        $this->TemplateData->{'ConsultantEmail'} = $this->consultant->email;
+        $this->TemplateData->{'ConsultantPhoneNo'} = $this->consultant->phone_no;
+
+        $this->TemplateData->{'PurchaseID'} = $this->payment_id;
+        $this->TemplateData->{'CustomerName'} = $this->customer->name ?? '';
+        $this->TemplateData->{'CustomerAmount'} = $rawoffer->customer_currency->currencycode.' '.$rawoffer->amount_converted;
+
+        $this->TemplateData->{'consultantAmount'} = $this->consultant->country->currency->currencycode.' '.$this->amount;
+        $this->TemplateData->{'AdminAmount'} = $Companysetting->country->currency->currencycode.' '.round($this->amount/$Companysetting->country->currency->price,2);
+        $this->TemplateData->{'description'} = $this->description;
+        $this->TemplateData->{'offerTitle'} = $this->offer_title;
+        return $this->TemplateData;
     }
 }

@@ -31,7 +31,10 @@
        
         @if(isset($phone))
             <label class="required form-label fs-6 mb-4" >Mobile no</label>
-            <input type="text" name="phone" id="phone" class="form-control mb-4" placeholder="Mobile no" required/>
+            <div class="input-group mb-5">
+                <span class="input-group-text" data-repeater-dialle="" data-cphone="">--</span>
+                <input type="text" name="phone" class="form-control" value="" placeholder="Mobile no" required/>
+            </div>
         @endif
     </div>
 </div>
@@ -86,7 +89,11 @@
         
         @if(isset($phone))
             <label class="required form-label fs-6 mb-4" >Mobile no</label>
-            <input type="text" name="phone" id="phone" class="form-control mb-4" value="{{$phone}}" placeholder="Mobile no" required/>
+            <div class="input-group mb-5">
+                <span class="input-group-text" data-repeater-dialle="" data-cphone="">{{$dialing}}</span>
+                <input type="text" name="phone" class="form-control" value="{{$phone}}" placeholder="Mobile no" required/>
+            </div>
+            
         @endif
     </div>
 </div>

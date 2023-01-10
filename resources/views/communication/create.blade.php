@@ -1,57 +1,38 @@
 <x-base-layout>
     <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
-        <!--begin::Toolbar-->
-        <div class="toolbar" id="kt_toolbar">
+        <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
             <!--begin::Container-->
-            <div id="kt_toolbar_container" class="container-fluid d-flex flex-stack">
+            <div id="kt_app_toolbar_container" class="app-container container-xxl d-flex flex-stack">
                 <!--begin::Page title-->
-                <div data-kt-swapper="true" data-kt-swapper-mode="prepend" data-kt-swapper-parent="{default: '#kt_content_container', 'lg': '#kt_toolbar_container'}" class="page-title d-flex align-items-center flex-wrap me-3 mb-5 mb-lg-0">
+                <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
                     <!--begin::Title-->
-                    <h1 class="d-flex text-dark fw-bolder fs-3 align-items-center my-1">Manage Communication</h1>
+                    <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">Communication</h1>
                     <!--end::Title-->
-                    <!--begin::Separator-->
-                    <span class="h-20px border-gray-300 border-start mx-4"></span>
-                    <!--end::Separator-->
                     <!--begin::Breadcrumb-->
-                    <ul class="breadcrumb breadcrumb-separatorless fw-bold fs-7 my-1">
+                    <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
                         <!--begin::Item-->
                         <li class="breadcrumb-item text-muted">
-                            <a href="" class="text-muted text-hover-primary">Home</a>
+                            <a href="#" class="text-muted text-hover-primary">Home</a>
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
                         <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-300 w-5px h-2px"></span>
+                            <span class="bullet bg-gray-400 w-5px h-2px"></span>
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
-                        <li class="breadcrumb-item text-muted">Other</li>
-                        <!--end::Item-->
-                        <!--begin::Item-->
-                        <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-300 w-5px h-2px"></span>
-                        </li>
-                        <!--end::Item-->
-                        <!--begin::Item-->
-                        <li class="breadcrumb-item text-muted"><a href="{{ route('other.communication.index') }}" class="text-muted text-hover-primary">Manage Communication</a></li>
-                        <!--end::Item-->
-                        <!--begin::Item-->
-                        <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-300 w-5px h-2px"></span>
-                        </li>
-                        <!--end::Item-->
-                        <!--begin::Item-->
-                        <li class="breadcrumb-item text-dark">Create Communication</li>
+                        <li class="breadcrumb-item text-muted">Master</li>
                         <!--end::Item-->
                     </ul>
                     <!--end::Breadcrumb-->
+                </div>
+                <div class="d-flex align-items-center gap-2 gap-lg-3">
+                    <a href="{{ route('other.communication.index') }}" class="btn btn-sm btn-secondary" ><i class="fas fa-arrow-left "></i></a>
                 </div>
                 <!--end::Page title-->
             </div>
             <!--end::Container-->
         </div>
-        <!--end::Toolbar-->
-        <!--begin::Post-->
         <div class="post d-flex flex-column-fluid" id="kt_post">
             <!--begin::Container-->
             <div id="kt_content_container" class="container-xxl">
@@ -66,12 +47,12 @@
                                    <div class="form-group row">
                                     <div class="fv-row mb-10 col-md-6">
                                         <label for="" class="form-label">Communication Mode<span class="text-danger">*</span></label>
-                                        <select class="form-select" name="communication_mode" id="communication_mode" data-control="select2" data-placeholder="Select an option">
+                                        <select class="form-select" id="typeCommuniction" required name="communication_mode" id="communication_mode" data-control="select2" data-placeholder="Select an option">
                                             <option></option>
                                            <option value="0">SMS</option>
                                            <option value="1">Push Notification</option>
                                             <option value="2">Email</option>
-                                            
+
                                         </select>
                                     </div>
 
@@ -90,13 +71,13 @@
                                         <input class="form-control form-control-solid" name="send_on" placeholder="Select Date & Time" id="kt_daterangepicker_3"/>
                                     </div>
 
-                                    <div class="fv-row mb-10 col-md-6">
+                                    <div class="fv-row mb-10 col-md-6" id="subjectD" >
                                         <label class="form-label fs-6 mb-2" >Subject<span class="text-danger">*</span></label>
                                         <input type="text" name="subject" class="form-control" placeholder="Subject"/>
                                     </div>
                                     <div class="fv-row mb-10 col-md-6">
                                         <label class="form-label fs-6 mb-2" >Body<span class="text-danger">*</span></label>
-                                        <textarea name="body" class="form-control" placeholder="Body"></textarea>
+                                        <textarea name="body" class="form-control" placeholder="Body" required></textarea>
                                     </div>
                                     </div>
                                     <!--<div class="position-relative w-md-400px me-md-2">-->
@@ -109,12 +90,12 @@
                                     <!--    </span>-->
                                         <!--end::Svg Icon-->
                                     <!--    <input type="text" class="form-control form-control-solid ps-10 datatable-input" data-col-index='1' name="search" value="" placeholder="Name" />-->
-                                    
+
                                     <!--</div>-->
                                     <!--<div class="position-relative w-md-300px me-md-2">-->
                                     <!--    <button type="button" id="search" class="btn btn-primary me-5">Search</button>-->
                                     <!--</div>-->
-                                    
+
                                     <!-- Data Table for "Send To" -->
                                     <div class="row gy-10 gx-xl-10">
                                         <div class="card card-docs flex-row-fluid mb-2">
@@ -158,7 +139,7 @@
         $(document).ready(function () {
             back = `{{ route('other.communication.index') }}`
             table = $("#communicate").DataTable({
-                    
+
                     responsive: true,
                     buttons: [
                             'print',
@@ -187,7 +168,7 @@
                         }
                     },
                     columns: [
-                        { data: 'DT_RowIndex'},                        
+                        { data: 'DT_RowIndex'},
                         { data: 'name'},
                         { data: 'phone_no'},
                         { data: 'email'},
@@ -195,37 +176,42 @@
                     ],
                     columnDefs : [
                         {
-                            targets: -1,                                                
+                            targets: -1,
                             className: 'text-end',
                             render: function (data, type, row) {
-                                
+
                                 return `<input ${(checked.includes(row.id))?'checked':''} class="typecheck" type="checkbox" name='customer_consultant_id[]' value='${row.id}' >`;
                             },
                         },
                     ],
                     drawCallback : function( settings ) { }
                     // bDestroy: true
-                });      
+                });
         })
         function sendTo(obj){
             table.column(4).search(obj.value, false, false);
-            table.table().draw();                                      
+            checked = []
+            table.table().draw();
         }
         $('body').on('click','.typecheck',function(e){
-            checked.push(e.target.value);
+            checked.push(parseInt(e.target.value));
             $(send_to).prop('required','true');
-        
+
         })
 
         // date & time
-        $("#kt_daterangepicker_3").daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                minYear: 1901,
-                timePicker: true,
-                maxYear: parseInt(moment().format("YYYY"),10)
-            },
-        );
+        startFlatpickr = flatpickr($('#kt_daterangepicker_3'), {
+            enableTime: false,
+            dateFormat: "Y-m-d",
+            minDate : '{{ date('Y-m-d',strtotime("+1 days")) }}'
+        });
+
+        // $("#typeCommuniction").on('select2:select', function (e) {
+        //     var data = e.params.data;
+        //     if(data.id == '2') document.getElementById('subjectD').hidden = false
+        //     else document.getElementById('subjectD').hidden = true
+        // });
+
     </script>
     @endsection
 </x-base-layout>

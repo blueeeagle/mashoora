@@ -15,6 +15,8 @@ use Auth;
 use Validator;
 use DataTables;
 use DB;
+use App\Jobs\PayinApproveJob;
+use App\Jobs\PayinDeclineJob;
 
 class PayInApprovalController extends Controller
 {
@@ -217,6 +219,7 @@ class PayInApprovalController extends Controller
                         $Amount = $this->GETComm_Amount($consultant,$Booking->customercurrnecy,$Booking->consultantcurrency,$Booking->amount);
                         $value->pay_in = 2;                
                         $value->update();
+                        $this->dispatch(new PayinApproveJob($value));
                         $wallet = wallet::where('consultant_id',$value->consultant_id)->first();
                         $this->addsubammountconsultant($Amount,'add','Pay In',$wallet,$value->id);
                         $base_amount = ($Booking->amount/$Booking->customercurrnecy->price)*$Booking->consultantcurrency->price;
@@ -233,7 +236,8 @@ class PayInApprovalController extends Controller
                         $Adminpayment->action = 'Booking Complete';
                         $Adminpayment->customer_id = $value->customer_id;
                         $Adminpayment->save();
-
+                        
+                        
                         $Wallet = Wallet::where('id',0)->first();
                         $Wallet->balance = $Wallet->balance - ($Amount/$Booking->consultantcurrency->price);
                         $Wallet->update();
@@ -256,6 +260,7 @@ class PayInApprovalController extends Controller
                         $Amount = $Booking->amount;
                         $value->pay_in = 3;
                         $value->update();
+                        $this->dispatch(new PayinDeclineJob($value));
                         $wallet = Wallet::where('customer_id',$value->customer_id)->first();
                         $this->addsubammountconsultantcustomer($Amount,'add','Refund',$wallet,$value->id);
 

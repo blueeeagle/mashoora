@@ -154,4 +154,12 @@ public function getInsuranceAttribute(){
     public function checkofferfee(){
         return !($this->com_off_amount == null || $this->com_off_amount == "");
     }
+    
+    public function GenerateTemplate(){
+        $this->TemplateData = new \stdClass();
+        $this->TemplateData->{'ConsultantName'} = $this->name;
+        $this->TemplateData->{'ConsultantEmail'} = $this->email;
+        $this->TemplateData->{'ConsultantPhoneNo'} = $this->phone_no;
+        return $this->TemplateData;
+    }
 }

@@ -43,7 +43,4 @@ class AppointmentHistoryController extends Controller
         ->rawColumns(['status'])
         ->toJson();
     }
-
-    
-
 }

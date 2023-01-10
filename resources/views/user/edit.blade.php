@@ -43,7 +43,7 @@
                 <div class="card card-flush">
                     <!--begin::Card body-->
                     <div class="card-body pt-0">
-                        <form action="{{ route('admin.user.update',$user->id) }}" method="post" id="formCreate">
+                        <form action="{{ route('admin.user.update',$user->id) }}" method="post" id="formEdit">
                             @csrf
                             <div class="py-5">
 

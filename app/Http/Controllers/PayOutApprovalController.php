@@ -15,6 +15,10 @@ use Validator;
 use DataTables;
 use DB;
 use Carbon\Carbon;
+
+use App\Jobs\ConsultantRejectPayoutJob;
+use App\Jobs\ConsultantAcceptPayoutJob;
+
 class PayOutApprovalController extends Controller
 {
 
@@ -74,8 +78,13 @@ class PayOutApprovalController extends Controller
         $PayApproval->commands = $request->commands;
         $PayApproval->update();
 
-        if($request->status == 2) return response()->json(['status'=>true,'msg'=>'Approved']);
+        if($request->status == 2){
+            $this->dispatch(new ConsultantAcceptPayoutJob($PayApproval));
+            return response()->json(['status'=>true,'msg'=>'Approved']);
+        }
+            
         if($request->status == 3){
+            $this->dispatch(new ConsultantRejectPayoutJob($PayApproval));
             $Payment = new Payment;
             $Payment->amount = $PayApproval->amount;
             $Payment->type = 'add';

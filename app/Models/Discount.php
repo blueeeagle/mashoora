@@ -8,6 +8,8 @@ use App\Models\Category;
 use App\Models\Consultantcategory;
 use App\Models\Consultant;
 use App\Models\Discountuser;
+use App\Models\Companysetting;
+
 class Discount extends Model
 {
     use HasFactory;
@@ -41,5 +43,25 @@ class Discount extends Model
     }
     public function getDiscountpurchasecountAttribute(){
         return Discountuser::where('discount_id',$this->id)->count();
+    }
+    
+     public function GenerateTemplate(){
+        $Companysetting = Companysetting::where('id',1)->first();
+
+        $this->TemplateData = new \stdClass();
+        $this->TemplateData->{'ConsultantName'} = $this->consultant->name;
+        $this->TemplateData->{'ConsultantEmail'} = $this->consultant->email;
+        $this->TemplateData->{'ConsultantPhoneNo'} = $this->consultant->phone_no;
+
+        $this->TemplateData->{'type'} = $this->flat_percentage;
+        if($this->flat_percentage == 0){
+            $consultantAmount =  $this->consultant->country->currency->currencycode.' '.$this->amount;
+        }else{
+            $consultantAmount = $this->amount;
+        }
+        $this->TemplateData->{'consultantAmount'} = $consultantAmount;
+        $this->TemplateData->{'promocode'} = $this->promo_code;
+        $this->TemplateData->{'promotitle'} = $this->promo_title;
+        return $this->TemplateData;
     }
 }

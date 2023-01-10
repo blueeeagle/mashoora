@@ -58,7 +58,7 @@ class CategoryController extends Controller
                 </div>";
         })
         ->addColumn('categories', function (Category $data){
-            if($data->categories_id) return $data->child_forIndex->name;
+            if($data->categories_id) return $data->child_forIndex->name ?? '';
             return "";
         })
         ->editColumn('created_at', function(Category $data) use($Companysetting){

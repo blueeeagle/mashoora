@@ -49,6 +49,8 @@ function search(event){
     table.table().draw();
 }
 
+
+
 function reset(event){
     event.preventDefault()
     const datatable_input = document.querySelectorAll('.datatable-input')

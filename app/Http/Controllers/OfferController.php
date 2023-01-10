@@ -14,6 +14,7 @@ use DataTables;
 use Illuminate\Support\Collection;
 use Validator;
 use Illuminate\Support\Facades\Storage;
+use App\Jobs\OfferPostJob;
 
 class OfferController extends Controller
 {
@@ -184,7 +185,7 @@ class OfferController extends Controller
 
         $Offer->image = $Request->image;
         $Offer->save();
-
+        $this->dispatch(new OfferPostJob($Offer));
        return response()->json(['msg'=>'Offer Added']);
 
     }

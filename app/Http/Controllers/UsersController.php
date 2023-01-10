@@ -216,7 +216,8 @@ class UsersController extends Controller
         $user->picture = $Request->picture;
         $user->register_address = $Request->register_address;
         $user->permission = ($Request->permession == null)?'':\implode(',',$Request->permession);
-        if($Request->is_two_way_auth){$user->is_two_way_auth=$Request->is_two_way_auth;}
+        $user->is_two_way_auth = isset($Request->is_two_way_auth)?2:1;
+        
         $user->update();
         return response()->json(['msg'=>'Update']);
     }

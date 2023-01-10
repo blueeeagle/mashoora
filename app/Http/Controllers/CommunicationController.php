@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Input;
 use DataTables;
 use Illuminate\Support\Collection;
 use Validator;
+use App\Jobs\CommunicationJob;
 
 class CommunicationController extends Controller
 {
@@ -34,6 +35,8 @@ class CommunicationController extends Controller
     }
     
     public function index(){
+        // $CommunicationJob = new CommunicationJob;
+        // $this->dispatch($CommunicationJob);
         return view('communication.index');
     }
 
@@ -166,7 +169,7 @@ class CommunicationController extends Controller
         $communication->fill($Request->all());
         $communication->status = (isset($Request->status)?1:0);
         $communication->save();
-
+    
         $communication_sends = new CommunicationSend;
 
         if($Request->customer_consultant_id !=''){

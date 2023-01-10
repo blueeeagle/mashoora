@@ -16,7 +16,7 @@ use Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-
+use App\Jobs\DiscountPostJob;
 class DiscountController extends Controller
 {
 
@@ -84,7 +84,7 @@ class DiscountController extends Controller
         $Discount->category_id = \implode(',',$Request->category_id);
         $Discount->status = (isset($Request->status)?1:0);
         $Discount->save();
-
+        $this->dispatch(new DiscountPostJob($Discount));
         return response()->json(['msg'=>'Discount Addes'], 200);
     }
 

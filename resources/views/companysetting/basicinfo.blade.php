@@ -68,7 +68,7 @@
                                         fill="currentColor"></path>
                                 </svg>
                             </span>
-                            <span data-update-email>{{ $Companysetting->legal_name }}</span>
+                            <span data-update-email>{{ $Companysetting->email }}</span>
                         </a>
                     </div>
                     <!--end::Info-->

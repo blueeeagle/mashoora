@@ -5,7 +5,7 @@
         <div class="card shadow-none rounded-0 w-100">
             <!--begin::Header-->
             <div class="card-header" id="kt_engage_demos_header">
-                <h3 class="card-title fw-bolder text-gray-700">Advanced Search</h3>
+                <h3 class="card-title fw-bolder text-gray-700">Filter</h3>
                 <div class="card-toolbar">
                     <button type="button" class="btn btn-sm btn-icon btn-active-color-primary h-40px w-40px me-n6" id="kt_engage_demos_close">
                         <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
@@ -28,50 +28,53 @@
                     <div class="fv-row mb-12">
                         <select class="form-select form-select-solid" data-control="select2" data-placeholder="Search option" data-allow-clear="true" id="filter" multiple="multiple">
                             <option value="phone_no">Phone No</option>
-                            <option value="dob">Name/Email</option>
+                            <option value="name">Name/Email</option>
                             <option value="gender">Gender</option>
                             <option value="dob">DOB</option>
                             <option value="address">Address</option>
+                            <option value="country">Country</option>
                         </select>
                     </div>
                     <div class="row">
-                        <div class="col-xxl-4" data-id-filter="phone_no" hidden>
+                        <div class="col-6" data-id-filter="phone_no" hidden>
                             <label class="fs-6 form-label fw-bolder text-dark">Phone No</label>
                             <input type="tel" class="form-control form-control form-control-solid datatable-input" data-col-index='1' />
                         </div>
-                           <div class="col-xxl-4" data-id-filter="email" hidden>
+                           <div class="col-6" data-id-filter="name" hidden>
                             <label class="fs-6 form-label fw-bolder text-dark">Name / Email</label>
-                            <input type="email" class="form-control form-control form-control-solid datatable-input" data-col-index='5' />
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='2' />
                         </div>
                         
-                         <div class="col-xxl-4" data-id-filter="gender" hidden>
+                         <div class="col-6" data-id-filter="gender" hidden>
                             <label class="fs-6 form-label fw-bolder text-dark">Gender</label>
-                            <select class="form-control form-control form-control-solid datatable-input" data-col-index='4'>
+                            <select class="form-control form-control form-control-solid datatable-input" data-col-index='3'>
                                 <option value="">Select Gender</option>
                                 <option value="male">Male</option>
                                 <option value="female">Female</option>
                             </select>
                         </div>
                         
-                        <div class="col-xxl-4" data-id-filter="dob" hidden>
+                        <div class="col-6" data-id-filter="dob" hidden>
                             <label class="fs-6 form-label fw-bolder text-dark">Date Of Birth</label>
-                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='3' />
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='4' />
                         </div>
                        
                      
-                        <div class="col-xxl-4" data-id-filter="address" hidden>
+                        <div class="col-6" data-id-filter="address" hidden>
                             <label class="fs-6 form-label fw-bolder text-dark">Address</label>
-                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='6' />
+                            <input type="text" class="form-control form-control form-control-solid datatable-input" data-col-index='5' />
                         </div>
-                        <div class="col-xxl-4" data-id-filter="country_id" hidden>
+                        
+                        <div class="col-6" data-id-filter="country" hidden>
                             <label class="fs-6 form-label fw-bolder text-dark">Country</label>
-                            <select class="form-control form-control form-control-solid datatable-input" data-col-index='7'>
+                            <select class="form-control form-control form-control-solid datatable-input" data-control="select2" data-col-index='6'>
                                 <option value="">Select</option>
                                 @foreach ($Country as $key => $value)
                                 <option value="{{ $value->id }}">{{ $value->country_name }}</option>
                                 @endforeach
                             </select>
                         </div>
+                        
                         <div class="col-xxl-4" data-id-filter="state_id" hidden>
                             <label class="fs-6 form-label fw-bolder text-dark">State</label>
                             <select class="form-control form-control form-control-solid datatable-input" data-col-index='8'>
@@ -189,7 +192,7 @@
                     <div class="m-0">
                         <!--begin::Menu toggle-->
                          <!--begin::Filter-->
-                        <button type="button" id="kt_engage_demos1_toggle" class="btn btn-sm btn-flex bg-body btn-color-gray-700 btn-active-color-primary fw-bold" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
+                        <button type="button" id="kt_engage_demos_toggle" class="btn btn-sm btn-flex bg-body btn-color-gray-700 btn-active-color-primary fw-bold" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
                         <!--begin::Svg Icon | path: icons/duotune/general/gen031.svg-->
                         <span class="svg-icon svg-icon-2">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -248,14 +251,15 @@
 
                             <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base" data-select2-id="select2-data-130-3ekp">
                                 <!--begin::Filter-->
-                                <button type="button" id="kt_engage_demos_toggle" class="btn btn-light-primary me-3" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
+                                <!--<button type="button" id="kt_engage_demos_toggle" class="btn btn-light-primary me-3" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">-->
                                 <!--begin::Svg Icon | path: icons/duotune/general/gen031.svg-->
-                                <span class="svg-icon svg-icon-2">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M19.0759 3H4.72777C3.95892 3 3.47768 3.83148 3.86067 4.49814L8.56967 12.6949C9.17923 13.7559 9.5 14.9582 9.5 16.1819V19.5072C9.5 20.2189 10.2223 20.7028 10.8805 20.432L13.8805 19.1977C14.2553 19.0435 14.5 18.6783 14.5 18.273V13.8372C14.5 12.8089 14.8171 11.8056 15.408 10.964L19.8943 4.57465C20.3596 3.912 19.8856 3 19.0759 3Z" fill="currentColor"></path>
-                                    </svg>
-                                </span>
-                                <!--end::Svg Icon-->Advanced search</button>
+                                <!--<span class="svg-icon svg-icon-2">-->
+                                <!--    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">-->
+                                <!--        <path d="M19.0759 3H4.72777C3.95892 3 3.47768 3.83148 3.86067 4.49814L8.56967 12.6949C9.17923 13.7559 9.5 14.9582 9.5 16.1819V19.5072C9.5 20.2189 10.2223 20.7028 10.8805 20.432L13.8805 19.1977C14.2553 19.0435 14.5 18.6783 14.5 18.273V13.8372C14.5 12.8089 14.8171 11.8056 15.408 10.964L19.8943 4.57465C20.3596 3.912 19.8856 3 19.0759 3Z" fill="currentColor"></path>-->
+                                <!--    </svg>-->
+                                <!--</span>-->
+                                    <!--Advanced search-->
+                                <!--</button>-->
                                 <!--begin::Menu 1-->
                             </div>
                         </div>
@@ -294,10 +298,20 @@
         <!--end::Content-->
     </div>
 @section('scripts')
-<script type="text/javascript">
 
+    <!--<script src="{{ URL::asset(theme()->getDemo().'/js/customer_index.js') }}"></script>-->
+    <!--<script>-->
+    <!--    var cus_url = "{{route('user.customer.datatable')}}";-->
+    <!--</script>-->
+    
+    <script type="text/javascript">
+    var DatatabelForm = []
     var table = null;
         $(document).ready(function () {
+            function getDatatabelForm(){
+                debugger
+                return DatatabelForm
+            }
             table = $("#kt_customers_table").DataTable({
                 initComplete: function(settings, json) {
                     const select = ToogleColum.val()
@@ -403,7 +417,6 @@
         });
 
     </script>
-    
 @endsection
 </x-base-layout>
 

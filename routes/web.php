@@ -43,6 +43,8 @@ use App\Http\Controllers\PayOutApprovalController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Adminpaymentcontroller;
 use App\Http\Controllers\DashboadController;
+use App\Http\Controllers\ChatController;
+
 use Illuminate\Support\Facades\Route;
 //arun
 /*
@@ -367,6 +369,10 @@ Route::middleware('auth')->group(function () {
     
     Route::get('appChart', [Adminpaymentcontroller::Class,'appChart'])->name('appChart');
     Route::post('appChartdata', [Adminpaymentcontroller::Class,'appChartdata'])->name('appChartdata');
+    
+    Route::get('chat/messager', [ChatController::Class,'index'])->name('chat.messager');
+    Route::get('chat/getcustomer', [ChatController::Class,'getcustomer'])->name('chat.getcustomer');
+    Route::get('chat/getconsultant', [ChatController::Class,'getconsultant'])->name('chat.getconsultant');
 });
 
 Route::resource('users', UsersController::class);

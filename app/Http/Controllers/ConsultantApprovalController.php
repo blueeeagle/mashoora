@@ -11,6 +11,8 @@ use Validator;
 use DataTables;
 use DB;
 use Illuminate\Support\Facades\Storage;
+use App\Jobs\ConsultantProfileDeclineJob;
+use App\Jobs\ConsultantProfileApprovelJob;
 
 class ConsultantApprovalController extends Controller
 {
@@ -78,6 +80,7 @@ class ConsultantApprovalController extends Controller
                 $approval = Consultant::where('id',$id)->first();
                 $approval->approval = 1;
                 $approval->update();
+                $this->dispatch(new ConsultantProfileDeclineJob($approval));
             }
             return response()->json(['status'=>true,'msg'=>'Declined']);
         }
@@ -86,6 +89,7 @@ class ConsultantApprovalController extends Controller
                 $approval = Consultant::where('id',$id)->first();
                 $approval->approval = 2;
                 $approval->update();
+                $this->dispatch(new ConsultantProfileApprovelJob($approval));
             }
             return response()->json(['status'=>true,'msg'=>'Approved']);
         }

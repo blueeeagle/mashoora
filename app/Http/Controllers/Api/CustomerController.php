@@ -24,7 +24,10 @@ use App\Models\Country;
 use App\Models\Insurance;
 use App\Models\Category;
 use App\Models\Adminpayment;
+use App\Models\Notificationdata;
+use App\Models\Agorachat;
 
+use Log;
 use DataTables;
 use Validator;
 use DB;
@@ -37,6 +40,18 @@ use Illuminate\Support\Collection;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+
+//JOB
+use App\Jobs\CustomerCreateJob;
+use App\Jobs\CustomerAddAmountJob;
+use App\Jobs\CustomerBookedJob;
+use App\Jobs\Customerjoinjob;
+use App\Jobs\CustomerReviewJob;
+use App\Jobs\CustomerCancelAppAGJob;
+use App\Jobs\CustomerCancelAppBGJob;
+use App\Jobs\CustomerRescheduleAGJob;
+use App\Jobs\CustomerRescheduleBGJob;
+use App\Jobs\PurchasOfferJob;
 
 class Booking {
     public $consultant = null;
@@ -207,8 +222,10 @@ class CustomerController extends Controller
             $Customer->api_token = Str::random(60);
             $Customer->remember_token = Str::random(60);
             $Customer->phone_no_verify_at = Carbon::now();
+            $Customer->notifiation_token = isset($request->notification_token)?$request->notification_token:'';
             $Customer->status = 1;
             $Customer->save();
+            $this->dispatch(new CustomerCreateJob($Customer));
             // for currency
             $Country  = Country::where('country_code',$dialing)->first();
             
@@ -224,7 +241,8 @@ class CustomerController extends Controller
         if($Customer->status == 0){
             return response()->json(array('msg'=>'Customer ID is Deactive contact Admin','service'=>false));
         }
-
+        $Customer->notifiation_token = isset($request->notification_token)?$request->notification_token:'';
+        $Customer->update();
         $this->Booking->customercurrnecy = $Customer->dialingcountry->currency;
         Auth::guard('customer')->login($Customer);
         $Wallet = Wallet::where('customer_id',Auth::guard('customer')->user()->id)->first();
@@ -238,8 +256,14 @@ class CustomerController extends Controller
     }
 
     public function filteringData(){
+        $this->getsession();
+        $cat = $this->Booking->cat_id['cat'] ?? null;
+        $sub = $this->Booking->cat_id['sub'] ?? null;
         $Firm = Firm::select('id','comapany_name')->where('status',1)->get();
-        $Consultantcategory = Consultantcategory::where('status',1)->get();
+        $Consultantcategory = Consultantcategory::where('status',1)
+        ->when($cat,function($query,$search){ return $query->where('categorie_id',$search->id);   })
+        ->when($sub,function($query,$search){ return $query->where('subcategorie_id',$search->id);   })
+        ->get();
         $Language = Language::where('status',1)->get();
 
         return response()->json(['orga'=>$Firm,'lang'=>$Language,'spec'=>$Consultantcategory]);
@@ -264,6 +288,7 @@ class CustomerController extends Controller
     }
 
     public function consultantcatsub(Request $request,$id,$sub = null){
+        // Log::info($request->all());
         $this->getsession();
         $this->Booking->cat_id = [];
         $this->Booking->cat_id['cat'] = Category::where('id',$id)->first();
@@ -277,6 +302,9 @@ class CustomerController extends Controller
 
         ->when($request->gender,function($query,$search){ return $query->where('gender',$search); })
         ->when($request->orga,function($query,$search){ return $query->where('firm_choose',$search); })
+        ->when($request->country_id,function($query,$search){ return $query->whereIn('country_id',explode(',',$search)); })
+        ->when($request->state_id,function($query,$search){ return $query->whereIn('state_id',explode(',',$search)); })
+        ->when($request->city_id,function($query,$search){ return $query->whereIn('city_id',explode(',',$search)); })
 
         ->when($request->type,function($query,$search){
             if($search == 'video') return $query->where('video',1);
@@ -291,7 +319,7 @@ class CustomerController extends Controller
             else return $query->orderBy('direct_amount',$search);
         });
         if($request->search){
-            $datas->orWhereHas ('firm', function($query) use ($request){ $query->where('comapany_name','like',"%$request->search%")->where('approval',2)->where('status',1); });
+            $datas->orWhereHas('firm', function($query) use ($request){ $query->where('comapany_name','like',"%$request->search%")->where('approval',2)->where('status',1); });
         }
         if($request->lang){
             $arrays = \explode(',',$request->lang);
@@ -310,14 +338,9 @@ class CustomerController extends Controller
             }
         }
         $datas = $datas->orderBy('id','desc')->get();
-        // dd($datas);
-
-        if($request->has('rating')){
-            if($request->rating == 'asc') $datas = (new Collection($datas))->sortBy('review_count');
-            if($request->rating == 'desc') $datas = (new Collection($datas))->sortByDesc('review_count');
-        }
         
-        $datas = $datas->filter(function ($value, $key) {
+
+        $datas = $datas->filter(function ($value, $key) use ($request) {
             if(count($value->review)){
                 $star = 0.0;
                 foreach($value->review as $review){
@@ -328,7 +351,15 @@ class CustomerController extends Controller
             }else{
                 $value->{'Total_Review'} = ['count'=>0,'star'=>0.0];
             }
-            return $value;
+            if($request->has('rating')){ 
+                $rating = explode(',',$request->rating);
+                foreach($rating as $rate){
+                    if($rate <= $value->Total_Review['star'] && ($rate+0.9) >= $value->Total_Review['star']){ return $value; }
+                }
+            }else{
+                return $value;
+            }
+            
         });
         $datas = $datas->filter(function ($value, $key) { 
             if(!$value->firm) return $value;
@@ -575,6 +606,8 @@ class CustomerController extends Controller
             $Appointment->pay_out = 4; 
         }
         $Appointment->save();
+        Log::info('APP IN');
+        $this->dispatch(new CustomerBookedJob($Appointment));
         if($request->insurance_id == ""){ $payment = $this->addsubammount($this->Booking->amount,'sub','Booking',$Appointment->id); }
         $Discountuser->appointment_id = $Appointment->id;
         if(isset($this->Booking->Discount)){ $Discountuser->save(); }
@@ -593,6 +626,7 @@ class CustomerController extends Controller
         $Appointment->rawdata = utf8_encode(bzcompress(serialize($this->Booking), 9));
         $Appointment->map = $request->id;
         $Appointment->update();
+        $this->dispatch(new CustomerRescheduleBGJob($Appointment));
         $this->setsession();
         return response()->json(['status'=>true,'msg'=>'Appointment Reschedule'], 200);
     }
@@ -603,7 +637,10 @@ class CustomerController extends Controller
         $past = $this->modefyAppointment($past);
         return response()->json(['upcoming'=>$upcoming,'past'=>$past], 200);
     }
-
+    public function AppointmentJoin(Request $request, Appointment $Appointment){
+        $this->dispatch(new Customerjoinjob($Appointment));
+        return response()->json();
+    }
     public function bookingdetail(Request $request, Appointment $Appointment){
         $Appointment->Consultant;
         $Appointment->Review;
@@ -669,6 +706,8 @@ class CustomerController extends Controller
         $Appointment->rawdata = utf8_encode(bzcompress(serialize($Booking), 9));
         $Appointment->cancell_customer = Auth::guard('customer')->user()->id;
         $Appointment->update();
+        if($Time <= $this->strtotimeconvert($Companysetting->discard_cut_off_time)) $this->dispatch(new CustomerCancelAppAGJob($Appointment));
+        else $this->dispatch(new CustomerCancelAppBGJob($Appointment));
         return response()->json(['status' => true,'msg'=>$msg]);
     }
 
@@ -695,7 +734,10 @@ class CustomerController extends Controller
             if(empty($data)) return response()->json(['data'=>[],'msg'=>'No Schedule found','status'=>true], 200);
             return response()->json(['data'=>$data,'msg'=>'','status'=>true], 200);
         }
-        else return response()->json(['status'=>false,'MSG'=>"Sorry your appointment reschedule is not accept Due to $Companysetting->reschedule_cut_off_time hours policy"]);
+        else{ 
+            $this->dispatch(new CustomerRescheduleAGJob($Appointment));
+            return response()->json(['status'=>false,'MSG'=>"Sorry your appointment reschedule is not accept Due to $Companysetting->reschedule_cut_off_time hours policy"]);
+        }
     }
 
     public function review(Request $request,Appointment $Appointment){
@@ -706,6 +748,7 @@ class CustomerController extends Controller
         $Review->rating = $request->rating;
         $Review->comments = $request->comments;
         $Review->save();
+        $this->dispatch(new CustomerReviewJob($Appointment));
         return response()->json(['status' => true]);
     }
 
@@ -762,6 +805,7 @@ class CustomerController extends Controller
         $Offerpurchase->payment_id = \rand(1999,99999);
         $Offerpurchase->purchase_date = date('Y-m-d H:i:s');
         $Offerpurchase->save();
+        $this->dispatch(new PurchasOfferJob($Offerpurchase));
         return response()->json(['status'=>true]);
 
     }
@@ -779,6 +823,10 @@ class CustomerController extends Controller
     }
 
     public function addwallet(Request $request){
+        $amount = Auth::guard('customer')->user()->dialingcountry->currency->currencycode.' '.$request->amount;
+        $Customer = Clone Auth::guard('customer')->user();
+        $Customer->{'amount'} = $amount;
+        $this->dispatch(new CustomerAddAmountJob($Customer));
         $payment = $this->addsubammount($request->amount,'add','Added to Wallet');
         
         $Companysetting = Companysetting::with('country')->where('id',1)->first();
@@ -924,6 +972,47 @@ class CustomerController extends Controller
 
         return $Payment;
     }
+    
+    public function Notification(){
+        $Notificationdata = Notificationdata::where('customer_id',Auth::guard('customer')->user()->id)->orderBy('id', 'desc')->get();
+        $NotificationdataCount = Notificationdata::where('customer_id',Auth::guard('customer')->user()->id)->where('is_read',0)->count();
+        return response()->json(['Notificationdata'=>$Notificationdata,'Count'=>$NotificationdataCount]);
+    }
+    public function notificationread(Request $request){
+        $IDs = explode(',',$request->id);
+        if(!empty($IDs)){
+            $data = Notificationdata::whereIn('id',$IDs)->update(['is_read'=>1]);
+        }
+        return response()->json(['status'=>true]);
+    }
+    public function chatlistApp(){
+        $Agorachat = Agorachat::where('customer_id',Auth::guard('customer')->user()->id)->get()->groupBy('appointment_id');
+        $ids = [];
+        foreach($Agorachat as $key => $agorachat){
+                $ids[] = $key;
+        }
+        if(empty($ids)){
+            return response()->json(['status'=>false,'data'=>[]]);
+        }
+        $Appointment = Appointment::whereIn('id',$ids)->orderBy('id', 'desc')->get();
+        foreach($Appointment as &$value){
+            unset($value->rawdata);
+        }
+        return response()->json(['status'=>false,'data'=>$Appointment]);
+        
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     //7 - Customer Customer Joined Appointment
     public function customer_join_appointment($id)

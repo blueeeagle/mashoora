@@ -16,6 +16,10 @@ use Illuminate\Support\Collection;
 use Validator;
 use App\Models\Companysetting;
 
+
+use App\Jobs\CustomerCreateJob;
+use App\Jobs\CustomerAddAmountJob;
+use App\Jobs\CustomerBookedJob;
 class CustomerController extends Controller
 {
     public function __construct()
@@ -73,13 +77,13 @@ class CustomerController extends Controller
         }
 
         $datas = Customer::with('country')->with('state')->with('city')->when($search[1],function($query,$search){   return $query->where('phone_no','like',"%{$search}%");   })
-        ->when($search[2],function($query,$search){   return $query->where('name','like',"%{$search}%");   })
-        ->when($search[3],function($query,$search){ $search = explode(',',$search);  return $query->whereBetween('dob',$search);   })
-        ->when($search[4],function($query,$search){   return $query->where('gender',$search);   })
-        ->when($search[5],function($query,$search){   return $query->where('email','like',"%{$search}%");   })
-        ->when($search[6],function($query,$search){   return $query->where('register_address','like',"%{$search}%");   })
+        ->when($search[2],function($query,$search){   return $query->where('name','like',"%{$search}%")->orWhere('email','like',"%{$search}%");   })
+        ->when($search[3],function($query,$search){   return $query->where('gender',$search);   })
+        ->when($search[4],function($query,$search){ $search = explode(',',$search);  return $query->whereBetween('dob',$search);   })
+        ->when($search[5],function($query,$search){   return $query->where('register_address','like',"%{$search}%");   })
+        ->when($search[6],function($query,$search){   return $query->where('country_id',$search);   })
         ->orderBy('id','desc')->get();
-
+        // dd($datas);
         return DataTables::of($datas)
         ->addIndexColumn()
         ->editColumn('name', function(Customer $data){
@@ -130,6 +134,11 @@ class CustomerController extends Controller
     }
 
     public function create(){
+        $Appointment = Appointment::where('id',159)->first();
+        // $Customer = Customer::where('id',14)->first();
+        // $this->dispatch(new CustomerCreateJob($Customer));
+        // $this->dispatch(new CustomerAddAmountJob($Customer,['amount'=>100]));
+        $this->dispatch(new CustomerBookedJob($Appointment));
         $countrys = Country::where('status',1)->get();
         return \view('customer.create',['countrys'=>$countrys]);
     }
@@ -163,7 +172,7 @@ class CustomerController extends Controller
         $Customer->country_code = $countrys->country_code;
         $Customer->mobile_reg = 0;
         $Customer->save();
-
+        $this->dispatch(new CustomerCreateJob($Customer));
        return response()->json(['msg'=>'Customer Addes']);
     }
 

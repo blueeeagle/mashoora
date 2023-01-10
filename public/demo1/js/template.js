@@ -48,7 +48,7 @@ var exampleModal77 = function () {
                         submitButton.disabled = true;
                         const formData = new FormData(e.target);
                         formData.append("_token", csrf);
-                        formData.append("description",tinyMCE.get('register_address').getContent());
+                        formData.append("description",tinyMCE.get('templateBody').getContent());
                         fetch(updateURL,{
                             method: 'POST', // or 'PUT'
                             body: formData

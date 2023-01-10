@@ -114,26 +114,26 @@ class User extends Authenticatable implements MustVerifyEmail
     protected static function boot()
     {
         parent::boot();
-        User::created(function ($model) {
+        // User::created(function ($model) {
 
-            $data=array($model->first_name,$model->email,$model->phone,$model->created_at);
-            $template1=NotificationTemplate::where('type','=',2)->first();
-            $template2=NotificationTemplate::where('type','=',5)->first();
-            $template3=NotificationTemplate::where('type','=',8)->first();  
+        //     $data=array($model->first_name,$model->email,$model->phone,$model->created_at);
+        //     $template1=NotificationTemplate::where('type','=',2)->first();
+        //     $template2=NotificationTemplate::where('type','=',5)->first();
+        //     $template3=NotificationTemplate::where('type','=',8)->first();  
 
-            if($template1)
-            {
-                helperController::email($model,$data,1);
-            }
-            if($template2)
-            {
-                helperController::email($model,$data,5);
-            }
-            if($template3)
-            {
-                helperController::email($model,$data,8);
-            } 
+        //     if($template1)
+        //     {
+        //         helperController::email($model,$data,1);
+        //     }
+        //     if($template2)
+        //     {
+        //         helperController::email($model,$data,5);
+        //     }
+        //     if($template3)
+        //     {
+        //         helperController::email($model,$data,8);
+        //     } 
 
-        });
+        // });
     }
 }

@@ -147,7 +147,40 @@ class Appointment extends Model
             $this->Booking = null;  
 
         }
-        
+    }
+    
+    public function GenerateTemplate(){
+
+        $this->Booking = unserialize(bzdecompress(utf8_decode($this->rawdata)));
+        $this->TemplateData = new \stdClass();
+        $this->TemplateData->{'CustomerName'} = $this->customer->name;
+        $this->TemplateData->{'BookingID'} = "BK-$this->id";
+        $this->TemplateData->{'ConsultantName'} = $this->Booking->consultant->name;
+        $this->TemplateData->{'CustomerAmount'} = $this->Booking->customercurrnecy->currencycode.''.$this->Booking->amount;
+        $this->TemplateData->{'ConsultantAmount'} = $this->Booking->consultantcurrency->currencycode.' '.($this->Booking->amount/$this->Booking->customercurrnecy->price)*$this->Booking->consultantcurrency->price;
+        //create Date
+        $date = date_create($this->appointment_date);
+        $datestr = date_format($date,"M d,Y,l");
+        $datestr .= ' '.date_format($date,"h:i a")." - ". date("h:i a",strtotime(date_format($date,"Y-m-d H:i")) + $this->Booking->consultant->preferre_slot*60);
+        $this->TemplateData->{'AppointmentCustomerDate'} = $datestr;
+        //create date
+        date_default_timezone_set($this->Booking->consultantTimeZone);
+        $date = strtotime($this->appointment_date) - ($this->Booking->diff);
+        $date = date("Y-m-d H:i",$date);
+        $date = date_create($date);
+        $datestr = date_format($date,"M d,Y,l");
+        $datestr .= ' '.date_format($date,"h:i a")." - ". date("h:i a",strtotime(date_format($date,"Y-m-d H:i")) + $this->Booking->consultant->preferre_slot*60);
+
+        $this->TemplateData->{'AppointmentConsultantDate'} = $datestr;
+        $this->TemplateData->{'insurance'} = $this->insurance->comapany_name ?? '';
+        $this->TemplateData->{'PolicyID'} = $this->policyid ?? '';
+        $this->TemplateData->{'AppointmentType'} = $this->Booking->type;
+        $this->TemplateData->{'Category'} = $this->Booking->cat_id['cat']->name ?? '';
+        $this->TemplateData->{'status'} = $this->status;
+        $this->TemplateData->{'GracePeriod'} = $this->Booking->Companysetting->discard_cut_off_time;
+        $this->TemplateData->{'Review'} =  $this->consultantsingleAppreview->comments ?? '';
+        $this->TemplateData->{'Rating'} =  $this->consultantsingleAppreview->rating ?? '0.0';
+        return $this->TemplateData;
     }
     
 }

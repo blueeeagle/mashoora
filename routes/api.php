@@ -66,7 +66,8 @@ Route::post('/customer/login', [CustomerController::class, 'login']);
 Route::post('/customer/verifyotp', [CustomerController::class, 'VerifyOtp']);
 
 //Geust
-Route::prefix('customer')->group(function () { 
+Route::prefix('customer')->group(function () {
+    Route::get('/filteringData', [CustomerController::class, 'filteringData']);
     //consultant
     Route::prefix('consultant')->group(function () {
         Route::get('/', [CustomerController::class, 'consultant']);
@@ -74,7 +75,7 @@ Route::prefix('customer')->group(function () {
         Route::get('/consultantdetails/{consultant}', [CustomerController::class, 'consultantdetails']);
     });
     
-        //Firm
+    //Firm
     Route::prefix('firm')->group(function () {
         Route::get('/getfirm', [CustomerController::class, 'getfirm']);
         Route::get('/consultantfirm/{firm}', [CustomerController::class, 'consultantfirm']);
@@ -86,12 +87,17 @@ Route::prefix('customer')->group(function () {
 
 
 Route::prefix('customer')->middleware('Apiauth:customer')->group(function () {
+    Route::get('/chatlist', [CustomerController::class, 'chatlistApp']);
     Route::post('/logout', [CustomerController::class, 'logout']);
     Route::post('/updateprofile', [CustomerController::class, 'updateprofile']);
     Route::get('/bookings', [CustomerController::class, 'bookings']);
-    Route::get('/filteringData', [CustomerController::class, 'filteringData']);
+    // Route::get('/filteringData', [CustomerController::class, 'filteringData']);
     Route::get('/getprofile', [CustomerController::class, 'getprofile']);
-        
+    //Notification
+    Route::prefix('notification')->group(function () { 
+        Route::get('', [CustomerController::class, 'Notification']);
+        Route::post('read', [CustomerController::class, 'notificationread']);
+    });
     //consultant
     Route::prefix('consultant')->group(function () {
         
@@ -127,6 +133,9 @@ Route::prefix('customer')->middleware('Apiauth:customer')->group(function () {
         Route::get('/bookingcancel/{Appointment}', [CustomerController::class, 'bookingCancel']);
         Route::get('/bookingreschedule/{Appointment}', [CustomerController::class, 'bookingReschedule']);
         Route::get('/review/{Appointment}', [CustomerController::class, 'review']);
+        Route::get('/appointmentJoin/{Appointment}', [CustomerController::class, 'AppointmentJoin']);
+        Route::post('/upload/chat/{Appointment}', [helperController::class, 'SaveChatData']);
+        Route::get('/get/chat/{Appointment}', [helperController::class, 'getchatdata']);
     });
     
     //offers
@@ -143,7 +152,13 @@ Route::post('/consultant/login', [ConsultantController::class, 'login']);
 Route::post('/consultant/verifyotp', [ConsultantController::class, 'VerifyOtp']);
 Route::prefix('consultant')->middleware('Apiauth:consultant')->group(function () {
     Route::get('/logout', [ConsultantController::class, 'logout']);
+    Route::get('/chatlist', [ConsultantController::class, 'chatlistApp']);
     Route::get('/get/consultant', [ConsultantController::class, 'getconsultant']);
+    //Notification
+    Route::prefix('notification')->group(function () { 
+        Route::get('', [ConsultantController::class, 'Notification']);
+        Route::post('read', [CustomerController::class, 'notificationread']);
+    });
     //profile update
     Route::prefix('profile')->group(function () {
         Route::post('/storeProfile', [ConsultantController::class, 'storeProfile']);
@@ -164,6 +179,8 @@ Route::prefix('consultant')->middleware('Apiauth:consultant')->group(function ()
         Route::get('/bookingcompleted/{Appointment}', [ConsultantController::class, 'bookingcompleted']);
         Route::get('/bookingnoshow/{Appointment}', [ConsultantController::class, 'NoShowByCustomer']);
         Route::get('/bookingreject/{Appointment}', [ConsultantController::class, 'bookingReject']);
+        Route::POST('/upload/chat/{Appointment}', [helperController::class, 'SaveChatData']);
+        Route::get('/get/chat/{Appointment}', [helperController::class, 'getchatdata']);
     });
     //schedule
     Route::prefix('schedule')->group(function () {

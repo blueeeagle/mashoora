@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Wallet;
 use App\Models\Appointment;
 
+//Job
+use App\Jobs\ConsultantCreatedJob;
 class ConsultantController extends Controller
 {
 	public function __construct()
@@ -318,7 +320,7 @@ class ConsultantController extends Controller
                 $consultant->country_code = $request->country_code;
                 $consultant->mobile_reg = 0;
                 $consultant->save();
-                
+                $this->dispatch(new ConsultantCreatedJob($consultant));
                 $Wallet = new Wallet;
                 $Wallet->consultant_id = $consultant->id;
                 $Wallet->save();

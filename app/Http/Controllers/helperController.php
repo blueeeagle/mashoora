@@ -17,8 +17,11 @@ use Illuminate\Support\Facades\Storage;
 use DB;
 use App\Models\Companysetting;
 use App\Models\Language;
+use App\Models\Appointment;
+use App\Models\Agorachat;
 use App\Models\NotificationTemplate;
 use Auth;
+use Illuminate\Support\Facades\Hash;
 
 
 class helperController extends Controller
@@ -99,9 +102,13 @@ public function firm(){
     }
 
     public function get_user(Request $request)
-    {
-        $user = User::where('email', $request->email)->first();
-        return response()->json(['is_two_way'=>$user->is_two_way_auth,'phone'=>$user->phone], 200);
+    {   $password = Hash::make($request->password);
+        $user = User::where('email',$request->email)->first();
+
+        if(!password_verify($request->password, optional($user)->getAuthPassword())) return response()->json(['status'=>false], 200);
+        $phone = $user->country->dialing.' '.$user->phone;
+        
+        return response()->json(['status'=>true,'is_two_way'=>$user->is_two_way_auth,'phone'=>$phone], 200);
     }
 
     public static function email($user,$data,$type)
@@ -163,6 +170,36 @@ public function firm(){
         $child = Category::where('categories_id',$Request->id)->where('status',1)->orderBy('name','ASC')->get();
     	return response()->json(['child'=>$child]);
     }
-    
+    public function SaveChatData(Request $request, Appointment $Appointment){
+        $consultant_id = $Appointment->consultant_id;
+        $customer_id = $Appointment->customer_id;
+        $appointment_id = $Appointment->id;
+
+        if(!$request->chat){
+            return response()->json(['status'=>false,'msg'=>'Required Chat Data']);
+        }
+        $UploadData = [];
+        $Chat = \json_decode($request->chat);
+        foreach ($Chat->text as $key => $value) {
+            # code...
+            $UploadData[] = [
+                'consultant_id' =>$consultant_id,
+                'customer_id' =>$customer_id,
+                'appointment_id' =>$appointment_id,
+                'text' =>$value->text,
+                'fromId' =>$value->fromId,
+                'toId' =>$value->toId,
+                'timeStamp' =>$value->timeStamp,
+                'dateTime' =>$value->dateTime,
+            ];
+
+        }
+        $response = Agorachat::insert($UploadData);
+        return response()->json(['status'=>true,'msg'=>'Data Saved']);
+    }
+    public function getchatdata(Request $request, Appointment $Appointment){
+        $data = Agorachat::where('appointment_id',$Appointment->id)->get();
+        return response()->json(['status'=>true,'data'=>$data]);
+    }
     
 }
