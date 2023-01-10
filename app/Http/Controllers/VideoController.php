@@ -75,6 +75,7 @@ class VideoController extends Controller
 			'video_title' => 'required|unique:videos,video_title,'.$Request->video_title,
             'post_from' => 'required',
             'video_url' => 'required',
+            'sort_no' => 'required',
 		];
 
 		$customs=[

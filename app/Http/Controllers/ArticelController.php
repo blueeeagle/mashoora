@@ -181,9 +181,9 @@ class ArticelController extends Controller
     }
 
 
-    public function destroy(Article $article)
+    public function destroy(Article $articel)
     {
-        $article->delete();
+        $articel->delete();
         $data1['msg'] = 'Data Deleted Successfully.';
         $data1['status'] = true;
         return response()->json($data1);
