@@ -184,7 +184,7 @@
                     <!--end::Card header-->
                     <!--begin::Card body-->
                     <div class="card-body pt-0">
-                        <!--begin::Table-->
+                        
                         <div id="kt_customers_table_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
                             <div class="table-responsive" style="margin-top:-25px;">
                                 <table class="table table-row-bordered table-row-dashed gy-5" id="kt_customers_table">
