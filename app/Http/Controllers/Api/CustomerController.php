@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
@@ -26,6 +25,7 @@ use App\Models\Category;
 use App\Models\Adminpayment;
 use App\Models\Notificationdata;
 use App\Models\Agorachat;
+use App\Http\Controllers\PaymentGatway\IPayBenefitPipe;
 
 use Log;
 use DataTables;
@@ -299,12 +299,11 @@ class CustomerController extends Controller
         ->when($request->search,function($query,$search){ return $query->where('name','like',"%{$search}%"); })
         ->when($id,function($query,$search){ return $query->whereRaw("FIND_IN_SET('$search',categorie_id)"); })
         ->when($sub,function($query,$search){ return $query->whereRaw("FIND_IN_SET('$search',categorie_id)"); })
-
-        ->when($request->gender,function($query,$search){ return $query->where('gender',$search); })
-        ->when($request->orga,function($query,$search){ return $query->where('firm_choose',$search); })
         ->when($request->country_id,function($query,$search){ return $query->whereIn('country_id',explode(',',$search)); })
         ->when($request->state_id,function($query,$search){ return $query->whereIn('state_id',explode(',',$search)); })
         ->when($request->city_id,function($query,$search){ return $query->whereIn('city_id',explode(',',$search)); })
+        ->when($request->gender,function($query,$search){ return $query->where('gender',$search); })
+        ->when($request->orga,function($query,$search){ return $query->where('firm_choose',$search); })
 
         ->when($request->type,function($query,$search){
             if($search == 'video') return $query->where('video',1);
@@ -999,9 +998,43 @@ class CustomerController extends Controller
             unset($value->rawdata);
         }
         return response()->json(['status'=>false,'data'=>$Appointment]);
-        
     }
-    
+    //payment
+    public function Benefitspayment(Request $request){
+        $iPayBenefitPipe = new iPayBenefitPipe();
+        
+        // Do NOT change the values of the following parameters at all.
+        $iPayBenefitPipe->setaction("1");
+        $iPayBenefitPipe->setcardType("D");
+        $iPayBenefitPipe->setcurrencyCode("048");
+
+        // modify the following to reflect your pages URLs
+        $iPayBenefitPipe->setresponseURL(route('benefits.paymentsuccess'));
+        $iPayBenefitPipe->seterrorURL(route('benefits.paymentfail'));
+
+        // set a unique track ID for each transaction so you can use it later to match transaction response and identify transactions in your system and “BENEFIT Payment Gateway” portal.
+        $iPayBenefitPipe->settrackId(Str::uuid());
+
+        // set transaction amount
+        $iPayBenefitPipe->setamt("1.500");
+
+        // The following user-defined fields (UDF1, UDF2, UDF3, UDF4, UDF5) are optional fields.
+        // However, we recommend setting theses optional fields with invoice/product/customer identification information as they will be reflected in “BENEFIT Payment Gateway” portal where you will be able to link transactions to respective customers. This is helpful for dispute cases.
+        // $iPayBenefitPipe->setudf1("set value 1");
+        // $iPayBenefitPipe->setudf2("set value 2");
+        // $iPayBenefitPipe->setudf3("set value 3");
+        // $iPayBenefitPipe->setudf4("set value 4");
+        // $iPayBenefitPipe->setudf5("set value 5");
+
+        $isSuccess = $iPayBenefitPipe->performeTransaction();
+        if($isSuccess==1){
+            dd($iPayBenefitPipe->getresult());
+            // header('location:'.$Pipe->getresult());
+        }
+        else{
+            // echo 'Error: '.$Pipe->geterror().'<br />Error Text: '.$Pipe->geterrorText();
+        }
+    }
     
     
     

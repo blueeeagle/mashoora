@@ -113,6 +113,7 @@ License: {{ theme()->getOption('product', 'license') }}
 <script>
     const csrf = `{{ csrf_token() }}`
     const baseURl = `{{ url('') }}`
+    const defaultImage = "{{ asset('storage//uploadFiles/default_image.jpg') }}"
 </script>
 @yield('scripts')
 </body>

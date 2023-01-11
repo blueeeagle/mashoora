@@ -257,11 +257,15 @@
                             </div>
                             <div class="col-xl-3">
                                 <label class="required form-label fs-6 mb-4">Logo (For Login Page)</label><br/>
-                                @include('components.imagecrop',['name'=>'logo_login_page','imgsrc'=>$Companysetting->logo_login_page])
+                                <div>
+                                    @include('components.imagecrop',['name'=>'logo_login_page','imgsrc'=>$Companysetting->logo_login_page])
+                                </div>
                             </div>
                             <div class="col-xl-3">
                                 <label class="required form-label fs-6 mb-4">Logo (For Header)</label><br/>
-                                @include('components.imagecrop',['name'=>'logo_header','imgsrc'=>$Companysetting->logo_header])
+                                <div>
+                                    @include('components.imagecrop',['name'=>'logo_header','imgsrc'=>$Companysetting->logo_header])
+                                </div>
                             </div>
                         </div>
                     </div>

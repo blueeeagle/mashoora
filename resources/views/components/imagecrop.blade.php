@@ -42,8 +42,7 @@
 
 @endif
 <script>
-    const defaultImage = "{{ asset('storage//uploadFiles/default_image.jpg') }}"
-    console.log(defaultImage);
+   
     $(document).ready(function(){
         $image_crop_{{ $name }} = $('#image_demo_{{$name}}').croppie({
         enableExif: true,

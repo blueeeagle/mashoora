@@ -69,3 +69,4 @@ Stack trace:
 #13 {main}
   thrown in /home/valuehostmaster/public_html/mashoora/vendor/laravel/framework/src/Illuminate/Container/Container.php on line 877
 [26-Dec-2022 12:52:03 Asia/Bahrain] PHP Fatal error:  Constant expression contains invalid operations in /home/valuehostmaster/public_html/mashoora/app/Http/Controllers/Agora/RtcTokenBuilderSample.php on line 8
+[11-Jan-2023 07:08:44 Asia/Bahrain] PHP Fatal error:  Namespace declaration statement has to be the very first statement or after any declare call in the script in /home/valuehostmaster/public_html/mashoora/app/Http/Controllers/Api/CustomerController.php on line 3

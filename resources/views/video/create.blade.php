@@ -142,19 +142,25 @@
                 selecterdiv1.removeAttribute('hidden')
                 selecterdiv2.setAttribute('hidden',true)
                 selecterdiv3.setAttribute('hidden',true)
-                $(firm_id).prop('required','true');
+                // $(firm_id).prop('required','true');
+                // $(consultant_id).prop('required','false');
+                // $(admin_id).prop('required','fale');
             }
             if(event.target.value == 1){
                 selecterdiv2.removeAttribute('hidden')
                 selecterdiv1.setAttribute('hidden',true)
                 selecterdiv3.setAttribute('hidden',true)
-                $(consultant_id).prop('required','true');
+                // $(consultant_id).prop('required','true');
+                // $(firm_id).prop('required','false');
+                // $(admin_id).prop('required','fale');
             }
             if(event.target.value == 2){
                 selecterdiv3.removeAttribute('hidden')
                 selecterdiv1.setAttribute('hidden',true)
                 selecterdiv2.setAttribute('hidden',true)
-                $(admin_id).prop('required','true');
+                // $(admin_id).prop('required','true');
+                // $(firm_id).prop('required','false');
+                // $(consultant_id).prop('required','fale');
             }
         }
         

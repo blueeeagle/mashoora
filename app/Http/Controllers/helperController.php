@@ -22,7 +22,7 @@ use App\Models\Agorachat;
 use App\Models\NotificationTemplate;
 use Auth;
 use Illuminate\Support\Facades\Hash;
-
+Use Log;
 
 class helperController extends Controller
 {
@@ -200,6 +200,13 @@ public function firm(){
     public function getchatdata(Request $request, Appointment $Appointment){
         $data = Agorachat::where('appointment_id',$Appointment->id)->get();
         return response()->json(['status'=>true,'data'=>$data]);
+    }
+    
+    public function paymentsuccess(Request $request){
+        Log::info($request->all());
+    }
+    public function paymentfail(Request $request){
+        Log::info($request->all());
     }
     
 }

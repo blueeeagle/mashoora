@@ -251,4 +251,9 @@ Route::post('discount/save', [DiscountController::Class,'store']);
 Route::post('discount/update', [DiscountController::Class,'update']);
 Route::post('discount/delete', [DiscountController::Class,'destroy']);
 
+Route::post('benefitspayment', [CustomerController::Class,'Benefitspayment']);
+
+Route::post('paymentsuccess', [helperController::Class,'paymentsuccess'])->name('benefits.paymentsuccess');
+Route::post('paymentfail', [helperController::Class,'paymentfail'])->name('benefits.paymentfail');
+
 

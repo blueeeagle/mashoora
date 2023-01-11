@@ -14,6 +14,7 @@ public function __construct()
 
     }
     public function index(Request $Request){
+        // dd(phpinfo());
         // $id = Agorachat::select('appointment_id')->where('customer_id',3)->get()->groupBy('appointment_id');
         // dd($id);
         $Customer = Customer::all();
